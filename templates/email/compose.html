@@ -1,0 +1,742 @@
+{% extends "base.html" %}
+
+{% block title %}Compose Campaign Email — ELECHUB{% endblock %}
+{% block header_title %}Draft Campus Campaign Email Broadcast{% endblock %}
+
+{% block head %}
+<!-- Quill Rich Text Editor CDN -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<style>
+    /* Quill Editor Customizations */
+    .ql-toolbar.ql-snow {
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        border-color: #e2e8f0;
+        background: #f8fafc;
+        padding: 8px 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .ql-container.ql-snow {
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        border-color: #e2e8f0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        background: #ffffff;
+    }
+    .ql-editor {
+        min-height: 280px;
+        line-height: 1.65;
+        color: #1e293b;
+    }
+    .ql-editor p {
+        margin-bottom: 0.75rem;
+    }
+    .ql-editor h1, .ql-editor h2, .ql-editor h3 {
+        color: #0f172a;
+        font-weight: 800;
+    }
+    .ql-editor blockquote {
+        border-left: 4px solid #4f46e5;
+        padding-left: 14px;
+        color: #475569;
+        font-style: italic;
+        background: #f8fafc;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-radius: 0 8px 8px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6 pb-16">
+    <!-- Header Bar -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('email_campaigns.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Email Studio
+                </a>
+            </div>
+            <h1 class="text-xl font-black text-slate-900 mt-1">Compose Campaign Email Broadcast</h1>
+            <p class="text-xs text-slate-500">Draft rich manifesto letters, format policy points with custom styles, and personalize with voter merge tags.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button type="button" onclick="openTestModal()" class="px-4 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-vial"></i> Send Test to Myself
+            </button>
+            <button type="button" onclick="fetchLiveEmailPreview()" class="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-eye"></i> Preview (3 Recipients)
+            </button>
+        </div>
+    </div>
+
+    <!-- SMTP Gateway Status Banner -->
+    {% if not smtp_active %}
+    <div class="p-4 rounded-2xl bg-amber-50/90 border border-amber-200/80 flex items-center justify-between gap-4 text-xs shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <span class="font-bold text-amber-900">Current Gateway: Smart Simulation Mode</span>
+                <p class="text-amber-700 text-[11px] mt-0.5">SMTP credentials are unconfigured. Dispatches will simulate locally and <strong>will NOT be delivered to real recipient inboxes</strong> until your mail server (e.g. Gmail App Password) is connected.</p>
+            </div>
+        </div>
+        <a href="{{ url_for('email_campaigns.settings') }}" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold transition shrink-0 flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-gear"></i> Configure Live Mail Server
+        </a>
+    </div>
+    {% else %}
+    <div class="p-3 px-4 rounded-2xl bg-emerald-50/90 border border-emerald-200/80 flex items-center justify-between gap-4 text-xs shadow-sm">
+        <div class="flex items-center gap-2.5 text-emerald-800 font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Live SMTP Gateway Connected ({{ mail_username }}) — Dispatches will be delivered to real student inboxes.</span>
+        </div>
+        <a href="{{ url_for('email_campaigns.settings') }}" class="text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-1">
+            Settings <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Quick-Load Campus Campaign Templates -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                Choose Campaign Email Starter or Write from Scratch
+            </label>
+            <span class="text-[11px] text-slate-400 font-medium">Click any template or start blank — all text and styles are 100% editable</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <button type="button" onclick="loadEmailTemplate('blank')" class="p-3.5 rounded-xl border-2 border-indigo-600 bg-indigo-50/40 text-left transition email-tpl-btn">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-900">1. Blank Freeform Draft</span>
+                    <i class="fa-solid fa-feather-pointed text-emerald-600 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Start from scratch and type your own personalized message directly.</p>
+            </button>
+
+            <button type="button" onclick="loadEmailTemplate('manifesto')" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition email-tpl-btn">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-900">2. Manifesto & Agenda</span>
+                    <i class="fa-solid fa-book-open text-indigo-600 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Vision letter, core policy pillars, and student leadership promise.</p>
+            </button>
+
+            <button type="button" onclick="loadEmailTemplate('rally')" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition email-tpl-btn">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-900">3. Rally & Debate Notice</span>
+                    <i class="fa-solid fa-bullhorn text-amber-500 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Date, venue, speaking line-up, and attendance call for campus rallies.</p>
+            </button>
+
+            <button type="button" onclick="loadEmailTemplate('turnout')" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition email-tpl-btn">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-900">4. Election Day Turnout</span>
+                    <i class="fa-solid fa-clock text-rose-500 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Urgent voting reminder on polling stations and voting hours.</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Compose Form -->
+    <form method="POST" action="{{ url_for('email_campaigns.compose') }}" id="emailForm" class="space-y-6">
+        <input type="hidden" name="template_type" id="template_type" value="Manifesto">
+        <input type="hidden" name="body_html" id="hidden_body_html">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left 4 Columns: Targeting & Attachments -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Candidate Selection -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie text-indigo-600"></i> Associated Candidate
+                    </h3>
+                    <select name="candidate_id" id="candidate_id" onchange="onCandidateChange()"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-600 bg-white">
+                        <option value="">-- General Campaign / Slate Broadcast --</option>
+                        {% for c in candidates %}
+                        <option value="{{ c.id }}" {% if selected_candidate_id == c.id %}selected{% endif %} data-name="{{ c.name }}" data-position="{{ c.position }}" data-slogan="{{ c.slogan }}">
+                            {{ c.name }} ({{ c.position }})
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <!-- Poster Attachment Option -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <label class="flex items-start gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="attach_poster" id="attach_poster" value="1" {% if preselect_attach_poster %}checked{% endif %}
+                                class="w-4 h-4 mt-0.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div>
+                                <span class="text-xs font-bold text-slate-800">Attach Official Campaign Poster</span>
+                                <p class="text-[11px] text-slate-500">Automatically attaches candidate's generated flyer/poster to each voter email.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Recipient Source Selection -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-indigo-600"></i> Voter Inboxes Source
+                    </h3>
+
+                    <!-- Target Mode Selector -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                            <input type="radio" name="target_mode" value="list" checked onclick="toggleTargetMode('list')" class="text-indigo-600 focus:ring-indigo-500">
+                            <span>Single Voter Contact List</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                            <input type="radio" name="target_mode" value="election_all" onclick="toggleTargetMode('election_all')" class="text-indigo-600 focus:ring-indigo-500">
+                            <span>All Election Lists Combined (Deduped)</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                            <input type="radio" name="target_mode" value="manual" onclick="toggleTargetMode('manual')" class="text-indigo-600 focus:ring-indigo-500">
+                            <span>Direct Manual Email Inboxes</span>
+                        </label>
+                    </div>
+
+                    <!-- Single List Dropdown -->
+                    <div id="singleListGroup">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Select Contact List</label>
+                        <select name="contact_list_id" id="contact_list_id"
+                            class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium bg-white">
+                            <option value="">-- Choose Contact List --</option>
+                            {% for cl in contact_lists %}
+                            <option value="{{ cl.id }}">{{ cl.name }} ({{ cl.contacts|length }} voters)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Election All Dropdown -->
+                    <div id="electionAllGroup" class="hidden">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Select Campaign Season / Election</label>
+                        <select name="election_id" id="election_id"
+                            class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium bg-white">
+                            {% for el in elections %}
+                            <option value="{{ el.id }}">{{ el.name }} ({{ el.contact_lists|length }} lists)</option>
+                            {% endfor %}
+                        </select>
+                        <p class="text-[10px] text-slate-400 mt-1">Every contact across all lists in this election will receive the email once (deduplicated by address).</p>
+                    </div>
+
+                    <!-- Manual Input Area -->
+                    <div id="manualGroup" class="space-y-1">
+                        <label class="block text-[11px] font-bold text-slate-600">Manual Email Addresses</label>
+                        <textarea name="manual_emails" id="manual_emails" rows="3" placeholder="scholar1@mak.ac.ug, scholar2@campus.ac.ug"
+                            class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-mono"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right 8 Columns: Subject & Quill Editor -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <!-- Subject Line -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Subject Line *</label>
+                        <input type="text" name="subject" id="emailSubject" required
+                            placeholder="e.g. Important Campaign Announcement for Student Voters"
+                            class="w-full px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Merge Tag Chips -->
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-500 mb-1.5">Insert Mail-Merge Personalization Tags:</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button type="button" onclick="insertMergeTag('{% raw %}{{ name }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-mono font-bold transition">
+                                + {% raw %}{{ name }}{% endraw %}
+                            </button>
+                            <button type="button" onclick="insertMergeTag('{% raw %}{{ candidate_name }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-mono font-bold transition">
+                                + {% raw %}{{ candidate_name }}{% endraw %}
+                            </button>
+                            <button type="button" onclick="insertMergeTag('{% raw %}{{ position }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-mono font-bold transition">
+                                + {% raw %}{{ position }}{% endraw %}
+                            </button>
+                            <button type="button" onclick="insertMergeTag('{% raw %}{{ slogan }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-mono font-bold transition">
+                                + {% raw %}{{ slogan }}{% endraw %}
+                            </button>
+                            <button type="button" onclick="insertMergeTag('{% raw %}{{ election_name }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-mono font-bold transition">
+                                + {% raw %}{{ election_name }}{% endraw %}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quill Rich Text Editor Container -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <label class="block text-xs font-bold text-slate-700">Email Body (Rich HTML Format) *</label>
+                            <!-- Quick Formatting Action Chips -->
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <button type="button" onclick="insertCalloutBox()" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold transition flex items-center gap-1" title="Insert styled manifesto highlight box">
+                                    <i class="fa-solid fa-highlighter text-[10px]"></i> Policy Callout
+                                </button>
+                                <button type="button" onclick="insertAgendaPillars()" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] font-bold transition flex items-center gap-1" title="Insert 3-pillar numbered agenda">
+                                    <i class="fa-solid fa-list-ol text-[10px]"></i> 3 Pillars
+                                </button>
+                                <button type="button" onclick="insertCandidateSignoff()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition flex items-center gap-1" title="Insert candidate signature">
+                                    <i class="fa-solid fa-signature text-[10px]"></i> Sign-off
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Primary Quill Editor -->
+                        <div id="quillEditorWrapper">
+                            <div id="quillEditor" style="min-height: 320px;" class="bg-white rounded-b-xl"></div>
+                        </div>
+
+                        <!-- Resilient Fallback Editor (activates seamlessly if offline or CDN is unreachable) -->
+                        <div id="fallbackEditorContainer" class="hidden space-y-1">
+                            <div class="flex flex-wrap items-center gap-1.5 p-2 bg-slate-100 border border-slate-200 rounded-t-xl text-xs">
+                                <button type="button" onclick="execFallbackFormat('bold')" class="p-1.5 px-2.5 font-bold hover:bg-white rounded bg-white/70 border border-slate-200" title="Bold">B</button>
+                                <button type="button" onclick="execFallbackFormat('italic')" class="p-1.5 px-2.5 italic hover:bg-white rounded bg-white/70 border border-slate-200" title="Italic">I</button>
+                                <button type="button" onclick="execFallbackFormat('underline')" class="p-1.5 px-2.5 underline hover:bg-white rounded bg-white/70 border border-slate-200" title="Underline">U</button>
+                                <button type="button" onclick="execFallbackFormat('insertUnorderedList')" class="p-1.5 px-2 hover:bg-white rounded bg-white/70 border border-slate-200" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+                                <button type="button" onclick="execFallbackFormat('insertOrderedList')" class="p-1.5 px-2 hover:bg-white rounded bg-white/70 border border-slate-200" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+                                <select onchange="execFallbackFormat('formatBlock', this.value); this.value='';" class="text-xs p-1 rounded border border-slate-300 bg-white font-semibold">
+                                    <option value="">Text Style...</option>
+                                    <option value="h1">Heading 1</option>
+                                    <option value="h2">Heading 2</option>
+                                    <option value="h3">Heading 3</option>
+                                    <option value="p">Paragraph</option>
+                                    <option value="blockquote">Quote</option>
+                                </select>
+                                <label class="flex items-center gap-1 px-1.5 py-1 bg-white rounded border border-slate-200 text-[10px] cursor-pointer" title="Pick text color">
+                                    <i class="fa-solid fa-palette text-indigo-600"></i>
+                                    <input type="color" onchange="execFallbackFormat('foreColor', this.value)" class="w-4 h-4 p-0 border-0 rounded cursor-pointer">
+                                </label>
+                            </div>
+                            <div id="fallbackEditor" contenteditable="true" oninput="syncFallbackContent()" style="min-height: 280px;" class="p-4 bg-white border border-slate-200 rounded-b-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans text-xs text-slate-800 leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+                        <a href="{{ url_for('email_campaigns.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition">
+                            Cancel
+                        </a>
+                        <button type="submit" id="broadcastEmailBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Queue & Broadcast Email Blast</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recipient Preview Container -->
+                <div id="previewBox" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-envelope-open text-indigo-600"></i> First 3 Recipient Inbox Previews
+                            </h3>
+                            <p class="text-[11px] text-slate-400">See personalized subjects and rendered bodies for student recipients.</p>
+                        </div>
+                        <button type="button" onclick="fetchLiveEmailPreview()" class="text-xs font-bold text-indigo-600 hover:underline">
+                            <i class="fa-solid fa-rotate"></i> Refresh Preview
+                        </button>
+                    </div>
+                    <div id="emailPreviewCards" class="space-y-3">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 text-center text-xs text-slate-400">
+                            Click <span class="font-bold text-indigo-600 cursor-pointer" onclick="fetchLiveEmailPreview()">Preview</span> to simulate personalized email rendering for registered voters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Test Send Modal -->
+<div id="emailTestModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-vial text-indigo-600"></i> Dispatch Test Email
+            </h3>
+            <button onclick="closeTestModal()" class="text-slate-400 hover:text-slate-600 text-sm">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <p class="text-xs text-slate-500">Send an immediate preview of this formatted email blast to your personal inbox to inspect formatting and attachments.</p>
+
+        <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Your Test Email Address</label>
+            <input type="email" id="testEmailAddress" placeholder="admin@campus.ac.ug" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+        </div>
+
+        <div id="testEmailResultBox" class="text-xs p-3 rounded-xl hidden"></div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+            <button type="button" onclick="closeTestModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50">
+                Close
+            </button>
+            <button type="button" id="sendEmailTestBtn" onclick="submitTestEmail()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane"></i> Send Test Now
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+let quill = null;
+let useFallbackEditor = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initEditor();
+});
+
+function initEditor() {
+    if (typeof Quill !== 'undefined') {
+        try {
+            quill = new Quill('#quillEditor', {
+                theme: 'snow',
+                placeholder: 'Draft your campaign message here. Format headings, lists, bold text, or use merge tags like {{ name }}, {{ candidate_name }}, etc.',
+                modules: {
+                    toolbar: [
+                        [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+                        [{ 'header': [1, 2, 3, 4, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'align': [] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],
+                        ['blockquote', 'code-block', 'link'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Listen for text changes to sync content
+            quill.on('text-change', () => {
+                syncQuillContent();
+            });
+
+            // Default template load (starts blank so user can type freely)
+            loadEmailTemplate('blank', true);
+            return;
+        } catch (e) {
+            console.warn('Quill initialization error, activating fallback editor:', e);
+        }
+    }
+
+    // Activate fallback editor if Quill is not available
+    activateFallbackEditor();
+}
+
+function activateFallbackEditor() {
+    useFallbackEditor = true;
+    const qWrapper = document.getElementById('quillEditorWrapper');
+    const fWrapper = document.getElementById('fallbackEditorContainer');
+    if (qWrapper) qWrapper.classList.add('hidden');
+    if (fWrapper) fWrapper.classList.remove('hidden');
+
+    loadEmailTemplate('blank', true);
+}
+
+function execFallbackFormat(cmd, val = null) {
+    document.execCommand(cmd, false, val);
+    syncFallbackContent();
+}
+
+function syncFallbackContent() {
+    const el = document.getElementById('fallbackEditor');
+    if (el) {
+        document.getElementById('hidden_body_html').value = el.innerHTML;
+    }
+}
+
+function syncQuillContent() {
+    if (quill) {
+        document.getElementById('hidden_body_html').value = quill.root.innerHTML;
+    } else if (useFallbackEditor) {
+        syncFallbackContent();
+    }
+}
+
+function insertMergeTag(tag) {
+    if (quill) {
+        const range = quill.getSelection(true) || { index: quill.getLength() };
+        quill.insertText(range.index, tag, 'user');
+        quill.setSelection(range.index + tag.length);
+        syncQuillContent();
+    } else {
+        const el = document.getElementById('fallbackEditor');
+        if (el) {
+            el.focus();
+            document.execCommand('insertText', false, tag);
+            syncFallbackContent();
+        }
+    }
+}
+
+function insertCalloutBox() {
+    const boxHtml = `<blockquote style="border-left: 4px solid #4f46e5; background: #eef2ff; padding: 12px 16px; border-radius: 8px; margin: 12px 0; color: #1e1b4b;"><strong>Key Campaign Policy:</strong> We pledge 100% transparency and students-first governance.</blockquote><p></p>`;
+    if (quill) {
+        const range = quill.getSelection(true) || { index: quill.getLength() };
+        quill.clipboard.dangerouslyPasteHTML(range.index, boxHtml);
+        syncQuillContent();
+    } else {
+        document.execCommand('insertHTML', false, boxHtml);
+        syncFallbackContent();
+    }
+}
+
+function insertAgendaPillars() {
+    const pillarsHtml = `<ol><li><strong>Student Welfare:</strong> 24/7 campus clinic services and emergency ambulance coverage.</li><li><strong>Academic Integrity:</strong> Transparent remarking policies and fast coursework grade publication.</li><li><strong>Campus Life & Security:</strong> Night lighting across all halls and expanded hostel shuttle services.</li></ol><p></p>`;
+    if (quill) {
+        const range = quill.getSelection(true) || { index: quill.getLength() };
+        quill.clipboard.dangerouslyPasteHTML(range.index, pillarsHtml);
+        syncQuillContent();
+    } else {
+        document.execCommand('insertHTML', false, pillarsHtml);
+        syncFallbackContent();
+    }
+}
+
+function insertCandidateSignoff() {
+    const signoffHtml = `{% raw %}<p>Warm regards,<br><strong>{{ candidate_name }}</strong><br>Candidate for {{ position }}<br><em>"{{ slogan }}"</em></p>{% endraw %}`;
+    if (quill) {
+        const range = quill.getSelection(true) || { index: quill.getLength() };
+        quill.clipboard.dangerouslyPasteHTML(range.index, signoffHtml);
+        syncQuillContent();
+    } else {
+        document.execCommand('insertHTML', false, signoffHtml);
+        syncFallbackContent();
+    }
+}
+
+function toggleTargetMode(mode) {
+    document.getElementById('singleListGroup').classList.toggle('hidden', mode !== 'list');
+    document.getElementById('electionAllGroup').classList.toggle('hidden', mode !== 'election_all');
+}
+
+{% raw %}
+const templates = {
+    blank: {
+        subject: "",
+        body: `<p>Dear {{ name }},</p>
+<p><br></p>`
+    },
+    manifesto: {
+        subject: "Official Campaign Manifesto: {{ candidate_name }} for {{ position }}",
+        body: `<p>Dear {{ name }},</p>
+<p>As we approach the historic <strong>{{ election_name }}</strong>, I am reaching out to share our shared vision for student welfare, transparent leadership, and academic progress.</p>
+<p>Our core policy commitments are anchored on three pillars:</p>
+<ol>
+    <li><strong>Student Welfare First:</strong> Upgrading campus medical center access and Wi-Fi across all student halls.</li>
+    <li><strong>Academic Excellence & Fair Assessment:</strong> Prompt release of coursework results and digitized marks appeal.</li>
+    <li><strong>Transparent & Accessible Leadership:</strong> Monthly hall townhalls and open budget accountability.</li>
+</ol>
+<p>Every single vote counts. On Election Day, let your voice be heard!</p>
+<p>Warm regards,<br><strong>{{ candidate_name }}</strong><br>Candidate for {{ position }}<br><em>"{{ slogan }}"</em></p>`
+    },
+    rally: {
+        subject: "INVITATION: Grand Campus Campaign Rally & Debate — {{ candidate_name }}",
+        body: `<p>Dear {{ name }},</p>
+<p>You are warmly invited to the official <strong>Grand Campaign Rally</strong> for {{ candidate_name }} ahead of the {{ election_name }}.</p>
+<p><strong>Event Details:</strong></p>
+<ul>
+    <li><strong>Date & Time:</strong> Thursday at 3:00 PM</li>
+    <li><strong>Venue:</strong> Freedom Square (Main Campus)</li>
+    <li><strong>Speakers:</strong> Guild President Candidates, College Representatives, and Student Union Mobilizers</li>
+</ul>
+<p>Come hear our policy debate, ask tough questions, and join the movement for real action.</p>
+<p>In student solidarity,<br><strong>Campaign Vanguard for {{ candidate_name }}</strong></p>`
+    },
+    turnout: {
+        subject: "REMINDER: Vote Today! Polling Stations Open — {{ candidate_name }}",
+        body: `<p>Dear {{ name }},</p>
+<p>Today is the day! The <strong>{{ election_name }}</strong> polling stations are officially open from 8:00 AM to 5:00 PM.</p>
+<p>Please carry your valid Student ID or Registration Card. Your vote will shape our campus policy, dining hall renovations, and hostel shuttle services for the coming year.</p>
+<p>Cast your vote for <strong>{{ candidate_name }}</strong> for {{ position }}.</p>
+<p>See you at the polls!</p>`
+    }
+};
+{% endraw %}
+
+let activeTemplateKey = 'blank';
+
+function loadEmailTemplate(type, force = false) {
+    const tpl = templates[type] || templates.blank;
+
+    // Protection: If user has typed their own message, confirm before overwriting
+    if (!force) {
+        let currentText = '';
+        if (quill) {
+            currentText = quill.getText().trim();
+        } else {
+            const el = document.getElementById('fallbackEditor');
+            currentText = el ? el.innerText.trim() : '';
+        }
+        if (currentText.length > 30 && type !== activeTemplateKey) {
+            if (!confirm('Loading a new template preset will replace your currently typed message. Do you want to continue?')) {
+                return;
+            }
+        }
+    }
+
+    activeTemplateKey = type;
+
+    const btnIndexMap = { blank: 0, manifesto: 1, rally: 2, turnout: 3 };
+    const targetIdx = btnIndexMap[type] !== undefined ? btnIndexMap[type] : 0;
+    document.querySelectorAll('.email-tpl-btn').forEach((b, idx) => {
+        if (idx === targetIdx) {
+            b.classList.add('border-indigo-600', 'bg-indigo-50/40');
+            b.classList.remove('border-slate-200');
+        } else {
+            b.classList.remove('border-indigo-600', 'bg-indigo-50/40');
+            b.classList.add('border-slate-200');
+        }
+    });
+
+    if (tpl.subject) {
+        document.getElementById('emailSubject').value = tpl.subject;
+    }
+    document.getElementById('template_type').value = type.charAt(0).toUpperCase() + type.slice(1);
+    if (quill) {
+        quill.root.innerHTML = tpl.body;
+    } else {
+        const el = document.getElementById('fallbackEditor');
+        if (el) el.innerHTML = tpl.body;
+    }
+    syncQuillContent();
+    fetchLiveEmailPreview();
+}
+
+function openTestModal() {
+    document.getElementById('emailTestModal').classList.remove('hidden');
+    document.getElementById('testEmailResultBox').classList.add('hidden');
+}
+
+function closeTestModal() {
+    document.getElementById('emailTestModal').classList.add('hidden');
+}
+
+function submitTestEmail() {
+    const email = document.getElementById('testEmailAddress').value.trim();
+    const subject = document.getElementById('emailSubject').value.trim();
+    const bodyHtml = quill ? quill.root.innerHTML : (document.getElementById('fallbackEditor')?.innerHTML || '');
+    const candidateId = document.getElementById('candidate_id').value;
+    const attachPoster = document.getElementById('attach_poster').checked;
+    const resultBox = document.getElementById('testEmailResultBox');
+    const sendBtn = document.getElementById('sendEmailTestBtn');
+
+    if (!email || !subject || !bodyHtml) {
+        resultBox.className = 'text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 block';
+        resultBox.textContent = 'Please enter a test email address, subject, and body.';
+        return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Dispatching...';
+
+    fetch('{{ url_for("email_campaigns.api_send_test") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            email: email,
+            subject: subject,
+            body_html: bodyHtml,
+            candidate_id: candidateId,
+            attach_poster: attachPoster
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Test Now';
+        if (data.success) {
+            resultBox.className = 'text-xs p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 block';
+            resultBox.innerHTML = `<strong>${data.message}</strong><br><span class="text-[10px] text-slate-600">Status: ${data.details.status} • Mode: ${data.details.mode}</span>`;
+        } else {
+            resultBox.className = 'text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 block';
+            resultBox.textContent = data.error || 'Failed to dispatch test.';
+        }
+    })
+    .catch(err => {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Test Now';
+        resultBox.className = 'text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 block';
+        resultBox.textContent = 'Network or server error sending test.';
+    });
+}
+
+function fetchLiveEmailPreview() {
+    const subject = document.getElementById('emailSubject').value;
+    const bodyHtml = quill ? quill.root.innerHTML : (document.getElementById('fallbackEditor')?.innerHTML || '');
+    const candidateId = document.getElementById('candidate_id').value;
+    const contactListId = document.getElementById('contact_list_id').value;
+    const cardsContainer = document.getElementById('emailPreviewCards');
+
+    cardsContainer.innerHTML = `<div class="py-4 text-center text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin text-indigo-600"></i> Rendering voter email previews...</div>`;
+
+    fetch('{{ url_for("email_campaigns.api_preview") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            subject: subject,
+            body_html: bodyHtml,
+            candidate_id: candidateId,
+            contact_list_id: contactListId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.previews.length > 0) {
+            cardsContainer.innerHTML = '';
+            data.previews.forEach((p, idx) => {
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-xl border border-indigo-100 bg-indigo-50/30 space-y-2';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between text-xs pb-1 border-b border-indigo-100">
+                        <span class="font-bold text-slate-800"><i class="fa-solid fa-user text-indigo-500 mr-1"></i> ${p.recipient_name} &lt;${p.recipient_email}&gt;</span>
+                        <span class="text-[10px] text-indigo-700 font-semibold uppercase">Voter Preview</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-900">Subject: ${escapeHtml(p.rendered_subject)}</div>
+                    <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-700 prose max-w-none">${p.rendered_body}</div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+    })
+    .catch(err => {
+        cardsContainer.innerHTML = `<div class="p-3 text-xs text-rose-600">Failed to render previews.</div>`;
+    });
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function onCandidateChange() {
+    fetchLiveEmailPreview();
+}
+
+// Client-side submit validation: ensure user's actual typed body is synced and non-empty
+const emailForm = document.getElementById('emailForm');
+if (emailForm) {
+    emailForm.addEventListener('submit', function(e) {
+        syncQuillContent();
+        const htmlVal = document.getElementById('hidden_body_html').value || '';
+        const d = document.createElement('div');
+        d.innerHTML = htmlVal;
+        const plain = (d.textContent || d.innerText || '').replace(/\s+/g, '').trim();
+        if (!plain) {
+            e.preventDefault();
+            alert('Your email message body is empty! Please write your message before broadcasting.');
+            if (quill) quill.focus();
+            else document.getElementById('fallbackEditor')?.focus();
+            return false;
+        }
+    });
+}
+</script>
+{% endblock %}

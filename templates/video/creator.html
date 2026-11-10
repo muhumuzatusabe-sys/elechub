@@ -1,0 +1,418 @@
+{% extends "base.html" %}
+
+{% block title %}Field Photo Promo Video Compiler — ELECHUB{% endblock %}
+{% block header_title %}Field Photo to Campaign Promo Video Compiler{% endblock %}
+
+{% block content %}
+<div class="space-y-6 pb-16 max-w-7xl mx-auto">
+    <!-- Studio Header -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-purple-600/30">
+                <i class="fa-solid fa-film"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold text-slate-900">Campaign Field Photo to Video Compiler</h1>
+                <p class="text-xs text-slate-500">Compile field photos into 30–45s cinematic promo videos & reels with Ken Burns pan/zoom and background music.</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <button type="button" onclick="openBulkModal()" class="px-4 py-2.5 rounded-xl border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Bulk Generate (Election)</span>
+            </button>
+            <button type="button" onclick="triggerVideoRender()" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md shadow-purple-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-video"></i>
+                <span>Render 1080p MP4 Video</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 7 Cols: Configuration, Photos & Audio -->
+        <div class="lg:col-span-7 space-y-5">
+            <!-- 1. Candidate Branding & Aspect Ratio -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                            Select Candidate
+                        </label>
+                        <select id="video-candidate-select" onchange="onCandidateSelectChange(this.value)"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-purple-600 bg-white">
+                            {% for c in candidates %}
+                            <option value="{{ c.id }}" {% if selected_candidate and selected_candidate.id == c.id %}selected{% endif %}>
+                                {{ c.name }} — {{ c.position }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                            Target Aspect Ratio
+                        </label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center justify-center p-2 rounded-xl border-2 border-purple-600 bg-purple-50/50 cursor-pointer text-xs font-bold text-slate-800 transition ratio-label" id="ratio-9-16-label">
+                                <input type="radio" name="aspect_ratio_picker" value="9:16" checked onchange="onRatioChange('9:16')" class="hidden">
+                                <i class="fa-solid fa-mobile-screen mr-1.5 text-purple-600"></i> 9:16 Reel
+                            </label>
+                            <label class="flex items-center justify-center p-2 rounded-xl border-2 border-slate-200 hover:border-slate-300 cursor-pointer text-xs font-bold text-slate-700 transition ratio-label" id="ratio-1-1-label">
+                                <input type="radio" name="aspect_ratio_picker" value="1:1" onchange="onRatioChange('1:1')" class="hidden">
+                                <i class="fa-regular fa-square mr-1.5 text-slate-500"></i> 1:1 Feed
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Field Photos Upload & Gallery -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                            Campaign Trail Photos ({{ photos|length }} uploaded)
+                        </label>
+                        <p class="text-[11px] text-slate-400">Field photos will be sequenced with Ken-Burns pan/zoom and optional captions.</p>
+                    </div>
+                </div>
+
+                <!-- Multi-file Upload Dropzone Form -->
+                {% if selected_candidate %}
+                <form method="POST" action="{{ url_for('video.upload_photos', candidate_id=selected_candidate.id) }}" enctype="multipart/form-data" class="space-y-3">
+                    <div class="border-2 border-dashed border-purple-200 hover:border-purple-400 rounded-2xl p-5 text-center bg-purple-50/20 transition cursor-pointer" onclick="document.getElementById('photoFilesInput').click()">
+                        <input type="file" id="photoFilesInput" name="photos" multiple accept="image/png, image/jpeg, image/webp" class="hidden" onchange="this.form.submit()">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mx-auto mb-2 text-lg">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-800">Click or drag photos from rallies, door-to-door, and debates</p>
+                        <p class="text-[10px] text-slate-400">PNG, JPG, WEBP • Multi-select supported</p>
+                    </div>
+                </form>
+                {% endif %}
+
+                <!-- Photos Gallery Grid with Caption Inputs -->
+                {% if photos %}
+                <div class="space-y-3 pt-2">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {% for p in photos %}
+                        <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-50 p-2 space-y-2">
+                            <div class="aspect-square rounded-lg overflow-hidden relative bg-slate-900">
+                                <img src="{{ p.url }}" class="w-full h-full object-cover" alt="Field Photo">
+                                <form method="POST" action="{{ url_for('video.delete_photo', candidate_id=selected_candidate.id) }}" class="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition">
+                                    <input type="hidden" name="filename" value="{{ p.filename }}">
+                                    <button type="submit" class="w-6 h-6 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-[10px] flex items-center justify-center shadow" title="Delete photo">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <input type="text" placeholder="Caption (e.g. Clean-up drive)" data-filename="{{ p.filename }}"
+                                class="photo-caption-input w-full px-2 py-1 text-[10px] rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="py-6 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-slate-100">
+                    No field photos uploaded yet for this candidate. Upload 2 to 8 photos to build a dynamic recap reel.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- 3. Background Audio Track Selector -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Background Music Track (Optional)
+                    </label>
+                    <button type="button" onclick="document.getElementById('musicFileInput').click()" class="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-upload"></i> Upload MP3
+                    </button>
+                </div>
+
+                <form method="POST" action="{{ url_for('video.upload_audio') }}" enctype="multipart/form-data" id="musicUploadForm" class="hidden">
+                    <input type="hidden" name="candidate_id" value="{{ selected_candidate.id if selected_candidate else '' }}">
+                    <input type="file" id="musicFileInput" name="audio" accept=".mp3, .wav, .m4a" onchange="document.getElementById('musicUploadForm').submit()">
+                </form>
+
+                <select id="audioTrackSelect" class="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 bg-white text-slate-800">
+                    <option value="">-- No Audio (Muted Video) --</option>
+                    {% for track in audio_tracks %}
+                    <option value="{{ track.filename }}">{{ track.filename }}</option>
+                    {% endfor %}
+                </select>
+                <p class="text-[10px] text-slate-400">Audio will be automatically trimmed or looped to match video length with a smooth 2s fade out.</p>
+            </div>
+        </div>
+
+        <!-- Right 5 Cols: Video Player Preview & Video Archive -->
+        <div class="lg:col-span-5 space-y-6">
+            <!-- Active Video Screen Preview -->
+            <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-2xl">
+                <div class="w-full flex items-center justify-between text-xs text-slate-400 pb-3 border-b border-slate-800 mb-4">
+                    <span class="font-mono font-bold flex items-center gap-1.5 text-purple-400">
+                        <i class="fa-solid fa-film"></i>
+                        <span id="playerAspectBadge">9:16 Vertical Reel</span>
+                    </span>
+                    <span class="text-[11px] text-slate-500">1080p H.264</span>
+                </div>
+
+                <!-- HTML5 Video Container -->
+                <div id="videoContainer" class="w-full max-w-[280px] sm:max-w-[300px] aspect-[9/16] rounded-xl overflow-hidden border-2 border-slate-700 shadow-2xl relative flex items-center justify-center bg-slate-900 transition-all">
+                    {% if videos and videos[0].status == 'completed' and videos[0].file_path %}
+                    <video id="mainVideoPlayer" controls class="w-full h-full object-cover">
+                        <source src="{{ videos[0].file_path }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% else %}
+                    <div class="p-6 text-center text-slate-400 space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800 text-purple-400 flex items-center justify-center mx-auto text-xl">
+                            <i class="fa-solid fa-clapperboard"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-200">No Rendered Video Yet</p>
+                        <p class="text-[11px] text-slate-400">Click "Render 1080p MP4 Video" to compile your candidate's promo.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Active Video Details & Download -->
+                {% if videos and videos[0].status == 'completed' and videos[0].file_path %}
+                <div class="mt-4 w-full flex items-center justify-between pt-3 border-t border-slate-800">
+                    <div class="text-left">
+                        <p class="text-xs font-bold text-white truncate max-w-[180px]">{{ videos[0].title }}</p>
+                        <p class="text-[10px] text-slate-400 font-mono">{{ videos[0].resolution }} • {{ videos[0].duration }}s</p>
+                    </div>
+                    <a href="{{ videos[0].file_path }}" download class="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-download"></i> Download MP4
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Video Archive List -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Candidate Video Vault</h3>
+                    <span class="text-xs font-semibold text-slate-400">{{ videos|length }} videos</span>
+                </div>
+
+                {% if videos %}
+                <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto pr-1">
+                    {% for v in videos %}
+                    <div class="py-3 flex items-center justify-between gap-2">
+                        <div>
+                            <p class="text-xs font-bold text-slate-900 truncate max-w-[200px]">{{ v.title }}</p>
+                            <p class="text-[10px] text-slate-400 font-mono">{{ v.aspect_ratio }} • {{ v.status|title }} • {{ v.generated_at.strftime('%b %d') }}</p>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            {% if v.file_path and v.status == 'completed' %}
+                            <a href="{{ v.file_path }}" download class="p-2 rounded-lg text-purple-600 hover:bg-purple-50 text-xs font-bold" title="Download">
+                                <i class="fa-solid fa-download"></i>
+                            </a>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('video.delete_video', video_id=v.id) }}" onsubmit="return confirm('Delete this video?');">
+                                <button type="submit" class="p-2 rounded-lg text-rose-500 hover:bg-rose-50 text-xs" title="Delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="py-6 text-center text-xs text-slate-400">
+                    No videos rendered for this candidate yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Modal -->
+<div id="progressModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto text-2xl font-bold">
+            <i class="fa-solid fa-clapperboard animate-bounce"></i>
+        </div>
+        <div>
+            <h3 class="text-base font-black text-slate-900" id="progressTitle">Rendering Campaign Video</h3>
+            <p class="text-xs text-slate-500 mt-1" id="progressStatusText">Preparing campaign typography cards and assets...</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200">
+            <div id="progressBarFill" class="bg-gradient-to-r from-purple-600 to-indigo-600 h-full rounded-full transition-all duration-300" style="width: 10%;"></div>
+        </div>
+        <p class="text-xs font-mono font-bold text-purple-700" id="progressPercent">10%</p>
+
+        <p class="text-[11px] text-slate-400">Rendering is processing in a background worker thread. You can close this or wait for completion.</p>
+
+        <div class="pt-2">
+            <button type="button" onclick="closeProgressModal()" class="px-5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50">
+                Run in Background
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Generation Modal -->
+<div id="bulkModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-purple-600"></i> Bulk Generate Election Videos
+            </h3>
+            <button onclick="closeBulkModal()" class="text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <p class="text-xs text-slate-500">Compile promo videos in parallel across all candidates in an election who have uploaded field photos.</p>
+
+        <form method="POST" action="{{ url_for('video.bulk_generate') }}" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Select Election</label>
+                <select name="election_id" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-bold">
+                    {% for el in elections %}
+                    <option value="{{ el.id }}">{{ el.name }} ({{ el.candidates|length }} candidates)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Format</label>
+                <select name="aspect_ratio" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-bold">
+                    <option value="9:16">9:16 Vertical Reel (Stories, WhatsApp, TikTok)</option>
+                    <option value="1:1">1:1 Square (Instagram Feed, WhatsApp Chat)</option>
+                </select>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" onclick="closeBulkModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700">Cancel</button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-700">Queue All Videos</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let currentAspectRatio = '9:16';
+let activePollingInterval = null;
+
+function onCandidateSelectChange(candId) {
+    window.location.href = "{{ url_for('video.creator') }}?candidate_id=" + candId;
+}
+
+function onRatioChange(ratio) {
+    currentAspectRatio = ratio;
+    const container = document.getElementById('videoContainer');
+    const badge = document.getElementById('playerAspectBadge');
+    
+    document.getElementById('ratio-9-16-label').className = ratio === '9:16' 
+        ? 'flex items-center justify-center p-2 rounded-xl border-2 border-purple-600 bg-purple-50/50 cursor-pointer text-xs font-bold text-slate-800 transition ratio-label'
+        : 'flex items-center justify-center p-2 rounded-xl border-2 border-slate-200 hover:border-slate-300 cursor-pointer text-xs font-bold text-slate-700 transition ratio-label';
+        
+    document.getElementById('ratio-1-1-label').className = ratio === '1:1'
+        ? 'flex items-center justify-center p-2 rounded-xl border-2 border-purple-600 bg-purple-50/50 cursor-pointer text-xs font-bold text-slate-800 transition ratio-label'
+        : 'flex items-center justify-center p-2 rounded-xl border-2 border-slate-200 hover:border-slate-300 cursor-pointer text-xs font-bold text-slate-700 transition ratio-label';
+
+    if (ratio === '9:16') {
+        container.className = 'w-full max-w-[280px] sm:max-w-[300px] aspect-[9/16] rounded-xl overflow-hidden border-2 border-slate-700 shadow-2xl relative flex items-center justify-center bg-slate-900 transition-all';
+        badge.textContent = '9:16 Vertical Reel';
+    } else {
+        container.className = 'w-full max-w-[280px] sm:max-w-[320px] aspect-square rounded-xl overflow-hidden border-2 border-slate-700 shadow-2xl relative flex items-center justify-center bg-slate-900 transition-all';
+        badge.textContent = '1:1 Square Feed';
+    }
+}
+
+function triggerVideoRender() {
+    const candidateId = document.getElementById('video-candidate-select').value;
+    const audioTrack = document.getElementById('audioTrackSelect').value;
+
+    const captions = {};
+    document.querySelectorAll('.photo-caption-input').forEach(input => {
+        const fn = input.getAttribute('data-filename');
+        if (fn && input.value.trim()) {
+            captions[fn] = input.value.trim();
+        }
+    });
+
+    const formData = new FormData();
+    formData.append('candidate_id', candidateId);
+    formData.append('aspect_ratio', currentAspectRatio);
+    formData.append('audio_track', audioTrack);
+    formData.append('captions_json', JSON.stringify(captions));
+
+    // Show modal
+    document.getElementById('progressModal').classList.remove('hidden');
+    updateProgressBar(10, 'Preparing campaign typography cards and assets...');
+
+    fetch('{{ url_for("video.generate") }}', {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.video_id) {
+            pollVideoProgress(data.video_id);
+        } else {
+            alert('Failed to launch video generation: ' + (data.error || 'Server error'));
+            closeProgressModal();
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        closeProgressModal();
+    });
+}
+
+function pollVideoProgress(videoId) {
+    if (activePollingInterval) clearInterval(activePollingInterval);
+
+    activePollingInterval = setInterval(() => {
+        fetch('{{ url_for("video.status", video_id=0) }}'.replace('0', videoId))
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                updateProgressBar(data.progress || 20, data.status === 'completed' ? 'Video ready!' : 'Rendering video timeline and transitions...');
+
+                if (data.status === 'completed') {
+                    clearInterval(activePollingInterval);
+                    updateProgressBar(100, 'Video ready!');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else if (data.status === 'failed') {
+                    clearInterval(activePollingInterval);
+                    alert('Video rendering failed: ' + (data.error_message || 'Unknown error'));
+                    closeProgressModal();
+                }
+            }
+        })
+        .catch(err => console.error(err));
+    }, 1500);
+}
+
+function updateProgressBar(percent, text) {
+    document.getElementById('progressBarFill').style.width = percent + '%';
+    document.getElementById('progressPercent').textContent = percent + '%';
+    if (text) document.getElementById('progressStatusText').textContent = text;
+}
+
+function closeProgressModal() {
+    document.getElementById('progressModal').classList.add('hidden');
+    if (activePollingInterval) clearInterval(activePollingInterval);
+}
+
+function openBulkModal() {
+    document.getElementById('bulkModal').classList.remove('hidden');
+}
+
+function closeBulkModal() {
+    document.getElementById('bulkModal').classList.add('hidden');
+}
+</script>
+{% endblock %}

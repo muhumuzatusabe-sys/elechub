@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk SMS — ELECHUB{% endblock %}
+{% block header_title %}Bulk SMS Outreach (Module 2 Spec Hook){% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6">
+    <!-- Module Header -->
+    <div class="bg-gradient-to-r from-emerald-900 via-slate-900 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-emerald-900/40">
+        <div class="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30">Build Spec Module 2</span>
+            <span>&bull; Ready for Africa's Talking Integration</span>
+        </div>
+        <h1 class="text-2xl font-extrabold tracking-tight">Bulk SMS Gateway</h1>
+        <p class="text-slate-300 text-sm mt-1 max-w-2xl">
+            Campus voter text blasts via Africa's Talking with Ugandan sender ID, 100-contact chunking, real-time delivery callbacks, and opt-out suppression.
+        </p>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-code-merge text-lg"></i>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900">1. Mail-Merge Variables</h4>
+            <p class="text-xs text-slate-500 mt-1">Compose with <code class="font-mono text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">&#123;&#123; name &#125;&#125;</code>, <code class="font-mono text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">&#123;&#123; candidate_name &#125;&#125;</code>, and <code class="font-mono text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">&#123;&#123; election_name &#125;&#125;</code> with live preview.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-calculator text-lg"></i>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900">2. Segment Calculator</h4>
+            <p class="text-xs text-slate-500 mt-1">Live 160-character segment counter with multi-part split warnings and estimated UGX/USD blast cost calculation.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-shield-halved text-lg"></i>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900">3. Opt-Out & Webhooks</h4>
+            <p class="text-xs text-slate-500 mt-1">Auto-appends "(Reply STOP to opt out)", maintains <code class="font-mono text-slate-700">OptOut</code> suppression list, and processes delivery webhooks.</p>
+        </div>
+    </div>
+
+    <!-- Connected Contact Lists Ready for Blast -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="text-sm font-bold text-slate-900">Available Contact Lists Ready for SMS Dispatch</h3>
+                <p class="text-xs text-slate-500">Contact lists registered in ELECHUB foundation ready to receive blasts:</p>
+            </div>
+            <a href="{{ url_for('contacts.new') }}" class="text-xs font-bold text-emerald-600 hover:text-emerald-800">+ New List</a>
+        </div>
+
+        <div class="divide-y divide-slate-100">
+            {% for cl in contact_lists %}
+            <div class="py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">{{ cl.name }}</div>
+                        <div class="text-[11px] text-slate-500">{{ cl.election.name }}</div>
+                    </div>
+                </div>
+                <span class="text-xs font-mono font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200">
+                    {{ cl.contacts|length }} Recipient{{ 's' if cl.contacts|length != 1 else '' }}
+                </span>
+            </div>
+            {% else %}
+            <p class="text-xs text-slate-500 py-3">No contact lists found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

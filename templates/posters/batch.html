@@ -1,0 +1,1081 @@
+{% extends "base.html" %}
+
+{% block title %}Multiple Fliers & Batch Personalization Studio — ELECHUB{% endblock %}
+{% block header_title %}Multiple Fliers & Batch Personalization Studio{% endblock %}
+
+{% block head %}
+<!-- JSZip & FileSaver for 1-Click ZIP Download of All Batch Flyers -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="h-full flex flex-col space-y-6 pb-16 overflow-y-auto pr-1">
+    <!-- Header Hero Card -->
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-7 rounded-2xl border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-2 border border-indigo-500/30">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Multi-Purpose Batch Generator</span>
+            </div>
+            <h1 class="text-2xl font-black tracking-tight">Multiple Fliers & Batch Personalization Studio</h1>
+            <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                Draft any custom target message — academic exam wishes, official congratulations, event invitations, general notices, or campaign mobilizers — and automatically generate personalized fliers with each individual's photo and name.
+            </p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('posters.studio') }}" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center gap-2 border border-white/10">
+                <i class="fa-solid fa-palette"></i> Single Flyer Studio
+            </a>
+            <button onclick="generateAllBatchFlyers()" id="btn-generate-all" class="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Generate All Fliers</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Purpose Presets -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2.5">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                <i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> Quick Target Message Presets (Zero Hardcoding — Edit Freely)
+            </span>
+            <span class="text-[11px] text-slate-400">Click any preset to prefill fields, or type your own custom message below</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="applyPreset('exam')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Exam Success Wishes
+            </button>
+            <button type="button" onclick="applyPreset('congrats')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-award text-emerald-600"></i> Hearty Congratulations
+            </button>
+            <button type="button" onclick="applyPreset('invitation')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-50 hover:text-amber-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-envelope-open-text text-amber-600"></i> Official Event Invitation
+            </button>
+            <button type="button" onclick="applyPreset('notice')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-sky-50 hover:text-sky-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-bullhorn text-sky-600"></i> General Notice / Faculty
+            </button>
+            <button type="button" onclick="applyPreset('campaign')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-rose-600"></i> Campaign / Supporter Slate
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Target Message, Design Controls & Individuals (5 Cols) -->
+        <div class="lg:col-span-5 space-y-5">
+            
+            <!-- Target Message Drafting Box -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-nib text-indigo-600"></i>
+                    <span>1. Target Message Content (Completely Flexible)</span>
+                </h3>
+
+                <!-- Tagline / Category -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Header Category / Tagline (Optional)</label>
+                    <input type="text" id="target-tagline" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. OFFICIAL ACADEMIC GOODWILL">
+                </div>
+
+                <!-- Target Title -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Main Target Headline / Title</label>
+                    <input type="text" id="target-title" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-extrabold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. SUCCESS IN END OF SEMESTER EXAMINATIONS">
+                </div>
+
+                <!-- Subtitle / Occasion -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Subtitle / Occasion / Department</label>
+                    <input type="text" id="target-subtitle" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. To All Scholars / Department">
+                </div>
+
+                <!-- Target Body Message -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Target Message Body</label>
+                    <textarea id="target-message" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600 leading-relaxed" placeholder="Draft your target message here, or choose one of the quick presets above..."></textarea>
+                </div>
+
+                <!-- Footer / Sender Line -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Footer / Sender / Signature Line</label>
+                    <input type="text" id="target-footer" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. Office of the Guild President • 2026">
+                </div>
+
+                <!-- Optional Candidate Branding Checkbox -->
+                <div class="pt-2 border-t border-slate-100 space-y-3">
+                    <label class="flex items-center space-x-2.5 cursor-pointer">
+                        <input type="checkbox" id="include-candidate-branding" onchange="toggleCandidateBranding(this.checked)" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                        <span class="text-xs font-bold text-slate-800">Include Candidate & Campaign Endorsement Branding</span>
+                    </label>
+
+                    <div id="candidate-picker-box" class="hidden pl-6 space-y-2 pt-1">
+                        <label class="block text-[11px] font-bold text-slate-600">Select Endorsing Candidate</label>
+                        <select id="batch-candidate-select" onchange="onBatchCandidateChange(this.value)"
+                            class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-600">
+                            {% for c in candidates %}
+                            <option value="{{ c.id }}" {% if selected_candidate and selected_candidate.id == c.id %}selected{% endif %}>
+                                {{ c.name }} — {{ c.position }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Theme & Color Styling -->
+                <div class="pt-2 border-t border-slate-100 space-y-3.5">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Visual Theme</label>
+                            <select id="batch-theme" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                                <option value="dark">Dark Studio Slate</option>
+                                <option value="light">Crisp Light Ivory</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Export Format</label>
+                            <select id="batch-fmt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                                <option value="1:1" selected>Square (1:1 Feed)</option>
+                                <option value="9:16">Story / Status (9:16)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Display Layout Style & Text Sizing -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">
+                                <i class="fa-solid fa-shapes text-indigo-600 mr-1"></i> Display Layout
+                            </label>
+                            <select id="batch-layout-style" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                                <option value="executive" selected>Grand Executive (Hero Center)</option>
+                                <option value="magazine">Modern Editorial (Split Layout)</option>
+                                <option value="certificate">Royal Commendation (Crest)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">
+                                <i class="fa-solid fa-text-height text-amber-500 mr-1"></i> Message Typography
+                            </label>
+                            <select id="batch-text-density" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                                <option value="auto" selected>Auto-Balanced (Adaptive Fill)</option>
+                                <option value="large">Large & Bold (Prominent)</option>
+                                <option value="compact">Compact (Long Message)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Curated Color Palette Quick-Picks -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1.5 flex items-center justify-between">
+                            <span><i class="fa-solid fa-palette text-indigo-600 mr-1"></i> Curated Color Choices</span>
+                            <span class="text-[10px] text-slate-400 font-normal">Click to apply palette</span>
+                        </label>
+                        <div class="grid grid-cols-4 gap-1.5">
+                            <button type="button" onclick="applyColorPalette('#064e3b', '#fbbf24', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-emerald-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Emerald & Gold">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#064e3b"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#fbbf24"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Emerald</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#1e3a8a', '#f59e0b', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 flex items-center gap-1.5 transition text-left group ring-2 ring-indigo-600 border-indigo-600 bg-indigo-50/50" title="Royal Navy & Amber">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#1e3a8a"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#f59e0b"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Navy</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#881337', '#fbbf24', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-rose-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Crimson & Gold">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#881337"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#fbbf24"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Crimson</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#0f172a', '#38bdf8', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-sky-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Obsidian & Cyan">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#0f172a"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#38bdf8"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Obsidian</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#312e81', '#ec4899', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-indigo-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Imperial Indigo & Pink">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#312e81"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#ec4899"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Indigo</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#14532d', '#eab308', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-amber-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Forest & Ochre">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#14532d"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#eab308"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Forest</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#1e293b', '#3b82f6', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Corporate Slate & Blue">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#1e293b"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#3b82f6"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Slate</span>
+                            </button>
+                            <button type="button" onclick="applyColorPalette('#7c2d12', '#f59e0b', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-amber-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Warm Sunset & Amber">
+                                <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#7c2d12"></span>
+                                <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#f59e0b"></span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">Sunset</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Color Pickers -->
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Primary Color</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" id="primary-color" value="#1e3a8a" class="w-8 h-8 rounded-lg border border-slate-300 cursor-pointer p-0.5">
+                                <span class="text-xs font-mono font-semibold text-slate-700" id="primary-color-text">#1e3a8a</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Accent Gold</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" id="secondary-color" value="#f59e0b" class="w-8 h-8 rounded-lg border border-slate-300 cursor-pointer p-0.5">
+                                <span class="text-xs font-mono font-semibold text-slate-700" id="secondary-color-text">#f59e0b</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Individuals & Photo Upload Slate -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">
+                            2. Individuals & Uploaded Photos
+                        </h3>
+                        <p class="text-[11px] text-slate-500" id="person-count-text">0 Individuals in slate</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Bulk Upload Photos Button -->
+                        <label class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition shadow-sm" title="Upload multiple individual photos at once">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Bulk Upload Photos</span>
+                            <input type="file" id="bulk-photo-input" multiple accept="image/*" class="hidden" onchange="onBulkPhotoUpload(this)">
+                        </label>
+
+                        <!-- Single Add Person Button -->
+                        <button type="button" onclick="addIndividualRow()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl border border-slate-200 flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-user-plus text-indigo-600"></i>
+                            <span>+ Add Person</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Empty Slate Notice -->
+                <div id="empty-individual-notice" class="p-8 text-center rounded-xl border-2 border-dashed border-slate-200 text-slate-400 text-xs space-y-2">
+                    <i class="fa-solid fa-users text-2xl text-slate-300"></i>
+                    <p class="font-bold text-slate-600">No individuals added to this slate yet.</p>
+                    <p class="text-[11px]">Click <strong class="text-indigo-600">+ Add Person</strong> or <strong class="text-indigo-600">Bulk Upload Photos</strong> above to begin.</p>
+                </div>
+
+                <!-- Individuals List Container (Starts Empty) -->
+                <div id="individual-list" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+
+        <!-- Right: Generated Fliers Gallery & Batch Downloader (7 Cols) -->
+        <div class="lg:col-span-7 space-y-5">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Generated Fliers Gallery</h3>
+                    <p class="text-xs text-slate-500" id="batch-status-text">Configure your target message and click "Generate All Fliers".</p>
+                </div>
+                <div class="flex items-center space-x-2 flex-wrap gap-2">
+                    <div class="relative inline-block text-left">
+                        <button type="button" id="btn-download-all-menu" onclick="toggleBatchExportMenu()" disabled
+                            class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-download text-amber-400"></i>
+                            <span>Export All Fliers</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+                        </button>
+                        <div id="batch-export-dropdown" class="hidden absolute right-0 mt-2 w-56 rounded-2xl bg-white shadow-2xl border border-slate-100 z-30 p-2 space-y-1">
+                            <button type="button" onclick="downloadAllZip('png'); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-zipper text-indigo-600"></i>
+                                <div>
+                                    <div>Download ZIP (PNG HD)</div>
+                                    <span class="text-[10px] text-slate-400 font-normal">Lossless full resolution</span>
+                                </div>
+                            </button>
+                            <button type="button" onclick="downloadAllZip('jpeg'); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-zipper text-emerald-600"></i>
+                                <div>
+                                    <div>Download ZIP (JPG)</div>
+                                    <span class="text-[10px] text-slate-400 font-normal">Compact size for WhatsApp</span>
+                                </div>
+                            </button>
+                            <button type="button" onclick="downloadAllPDFBooklet(); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-pdf text-rose-500"></i>
+                                <div>
+                                    <div>Download PDF Booklet</div>
+                                    <span class="text-[10px] text-slate-400 font-normal">Single multi-page PDF</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Container -->
+            <div id="batch-gallery" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-full py-20 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl bg-white/50">
+                    <i class="fa-solid fa-images text-4xl text-slate-300 mb-3 block"></i>
+                    <p class="text-xs font-semibold text-slate-700">No batch fliers generated yet.</p>
+                    <p class="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
+                        Draft your target message, upload the photos of individuals, and click <strong class="text-indigo-600">"Generate All Fliers"</strong> above.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden Canvas for Offline Batch Rendering -->
+<canvas id="hiddenBatchCanvas" class="hidden"></canvas>
+
+<script src="{{ url_for('static', filename='js/poster-engine.js') }}"></script>
+<script>
+let batchEngine;
+let generatedFlyers = []; // { name, role, dataUrl }
+let candidateData = {
+    name: "{{ selected_candidate.name if selected_candidate else '' }}",
+    position: "{{ selected_candidate.position if selected_candidate else '' }}",
+    primaryColor: "{{ selected_candidate.primary_color if selected_candidate else '#1e3a8a' }}",
+    secondaryColor: "{{ selected_candidate.secondary_color if selected_candidate else '#f59e0b' }}",
+    photoUrl: "{{ selected_candidate.photo_url if selected_candidate else '' }}"
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    batchEngine = new CampaignPosterEngine('hiddenBatchCanvas');
+    batchEngine.setTemplate('endorsement');
+
+    // Color picker synchronizers
+    const pColorInput = document.getElementById('primary-color');
+    const sColorInput = document.getElementById('secondary-color');
+    pColorInput.addEventListener('input', (e) => {
+        document.getElementById('primary-color-text').innerText = e.target.value;
+    });
+    sColorInput.addEventListener('input', (e) => {
+        document.getElementById('secondary-color-text').innerText = e.target.value;
+    });
+
+    updatePersonCount();
+});
+
+function applyColorPalette(p, s) {
+    const pInput = document.getElementById('primary-color');
+    const sInput = document.getElementById('secondary-color');
+    if (pInput) pInput.value = p;
+    if (sInput) sInput.value = s;
+    const pText = document.getElementById('primary-color-text');
+    const sText = document.getElementById('secondary-color-text');
+    if (pText) pText.innerText = p;
+    if (sText) sText.innerText = s;
+}
+
+function applyPreset(type) {
+    const tagline = document.getElementById('target-tagline');
+    const title = document.getElementById('target-title');
+    const subtitle = document.getElementById('target-subtitle');
+    const msg = document.getElementById('target-message');
+    const footer = document.getElementById('target-footer');
+    const branding = document.getElementById('include-candidate-branding');
+    const pColor = document.getElementById('primary-color');
+    const sColor = document.getElementById('secondary-color');
+    const theme = document.getElementById('batch-theme');
+
+    if (type === 'exam') {
+        tagline.value = "OFFICIAL ACADEMIC GOODWILL";
+        title.value = "SUCCESS IN END OF SEMESTER EXAMINATIONS";
+        subtitle.value = "To All College of Computing & Engineering Scholars";
+        msg.value = "May this examination period reward your countless hours of study, dedication, and resilience with outstanding grades and stellar triumphs. Go forth with confidence and excel!";
+        footer.value = "Office of Academic Affairs • Makerere University 2026";
+        branding.checked = false;
+        pColor.value = "#1e3a8a";
+        sColor.value = "#f59e0b";
+        theme.value = "dark";
+    } else if (type === 'congrats') {
+        tagline.value = "OFFICIAL COMMENDATION & MERIT";
+        title.value = "HEARTY CONGRATULATIONS ON YOUR ACHIEVEMENT";
+        subtitle.value = "Distinguished Leadership & Scholarly Excellence";
+        msg.value = "Your exceptional commitment, steadfast discipline, and brilliant dedication have set a new benchmark of victory. We celebrate your outstanding milestones!";
+        footer.value = "Executive Honors Secretariat • 2026";
+        branding.checked = false;
+        pColor.value = "#064e3b";
+        sColor.value = "#fbbf24";
+        theme.value = "dark";
+    } else if (type === 'invitation') {
+        tagline.value = "SPECIAL DELEGATE PASS";
+        title.value = "OFFICIAL INVITATION & DINNER PASS";
+        subtitle.value = "Annual Leadership & Innovation Gala 2026";
+        msg.value = "You are cordially invited to join distinguished scholars, industry leaders, and innovators for an unforgettable evening of vision, celebration, and transformative networks.";
+        footer.value = "Date: Friday, Oct 24 • Freedom Square Grounds • 5:00 PM";
+        branding.checked = false;
+        pColor.value = "#312e81";
+        sColor.value = "#ec4899";
+        theme.value = "dark";
+    } else if (type === 'notice') {
+        tagline.value = "PUBLIC INFORMATION NOTICE";
+        title.value = "GENERAL ANNOUNCEMENT & BRIEFING";
+        subtitle.value = "School of Computing & Information Technology";
+        msg.value = "Notice is hereby given to all students and researchers regarding updated schedules, resource allocation, and academic project submission guidelines for the academic year.";
+        footer.value = "Departmental Communications Directorate";
+        branding.checked = false;
+        pColor.value = "#0f172a";
+        sColor.value = "#38bdf8";
+        theme.value = "light";
+    } else if (type === 'campaign') {
+        tagline.value = "CAMPUS MOBILIZATION STRATEGY";
+        title.value = `I STAND WITH ${candidateData.name.toUpperCase()}`;
+        subtitle.value = `For ${candidateData.position}`;
+        msg.value = `I stand resolute with ${candidateData.name} for ${candidateData.position}. Join the student-centered movement for transparent, accountable governance!`;
+        footer.value = `Endorsed by Action Vanguard Coalition • 2026`;
+        branding.checked = true;
+        pColor.value = candidateData.primaryColor || "#1e3a8a";
+        sColor.value = candidateData.secondaryColor || "#f59e0b";
+        theme.value = "dark";
+    }
+
+    document.getElementById('primary-color-text').innerText = pColor.value;
+    document.getElementById('secondary-color-text').innerText = sColor.value;
+    toggleCandidateBranding(branding.checked);
+}
+
+function toggleCandidateBranding(checked) {
+    const box = document.getElementById('candidate-picker-box');
+    if (checked) {
+        box.classList.remove('hidden');
+    } else {
+        box.classList.add('hidden');
+    }
+}
+
+function onBatchCandidateChange(cid) {
+    fetch('/candidates/api/' + cid)
+        .then(r => r.json())
+        .then(c => {
+            candidateData.name = c.name;
+            candidateData.position = c.position;
+            candidateData.primaryColor = c.primary_color;
+            candidateData.secondaryColor = c.secondary_color;
+            candidateData.photoUrl = c.photo_url;
+            
+            // If user has campaign mode selected, update colors
+            if (document.getElementById('include-candidate-branding').checked) {
+                document.getElementById('primary-color').value = c.primary_color;
+                document.getElementById('secondary-color').value = c.secondary_color;
+                document.getElementById('primary-color-text').innerText = c.primary_color;
+                document.getElementById('secondary-color-text').innerText = c.secondary_color;
+            }
+        });
+}
+
+function updatePersonCount() {
+    const items = document.querySelectorAll('.individual-item');
+    const text = document.getElementById('person-count-text');
+    if (text) {
+        text.innerText = `${items.length} Individual${items.length === 1 ? '' : 's'} in slate`;
+    }
+}
+
+function addIndividualRow(name = '', role = '', photoUrl = null) {
+    const list = document.getElementById('individual-list');
+    const row = document.createElement('div');
+    row.className = 'individual-item p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center gap-3';
+    
+    const defaultThumb = photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'Person')}&background=1e293b&color=fff&size=128`;
+    
+    row.innerHTML = `
+        <div class="w-14 h-14 rounded-xl bg-slate-200 overflow-hidden flex-shrink-0 border border-slate-300 relative group">
+            <img class="ind-thumb w-full h-full object-cover" src="${defaultThumb}">
+            <label class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 text-white text-[10px] font-bold flex flex-col items-center justify-center cursor-pointer transition">
+                <i class="fa-solid fa-camera"></i>
+                <span>Change</span>
+                <input type="file" accept="image/*" class="hidden ind-file" onchange="onIndividualFileChange(this)">
+            </label>
+        </div>
+        <div class="flex-1 space-y-1">
+            <input type="text" class="ind-name w-full px-2.5 py-1 text-xs font-bold text-slate-900 rounded-lg border border-slate-300" value="${name}" placeholder="Individual Full Name">
+            <input type="text" class="ind-role w-full px-2.5 py-1 text-[11px] text-slate-600 rounded-lg border border-slate-300" value="${role}" placeholder="Faculty / Department / Title">
+        </div>
+        <div class="flex flex-col gap-1 items-end">
+            <button type="button" onclick="removeIndividualRow(this)" class="text-rose-500 hover:text-rose-700 text-xs p-1.5 transition" title="Delete Row">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+    `;
+    list.appendChild(row);
+    updatePersonCount();
+}
+
+function removeIndividualRow(btn) {
+    const item = btn.closest('.individual-item');
+    if (item) item.remove();
+    updatePersonCount();
+}
+
+function onIndividualFileChange(input) {
+    const file = input.files[0];
+    if (file) {
+        const item = input.closest('.individual-item');
+        const thumb = item.querySelector('.ind-thumb');
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            thumb.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function applyColorPalette(primary, secondary, el = null) {
+    const pInput = document.getElementById('primary-color');
+    const sInput = document.getElementById('secondary-color');
+    const pText = document.getElementById('primary-color-text');
+    const sText = document.getElementById('secondary-color-text');
+    if (pInput) pInput.value = primary;
+    if (sInput) sInput.value = secondary;
+    if (pText) pText.innerText = primary;
+    if (sText) sText.innerText = secondary;
+
+    // Highlight selected swatch button
+    document.querySelectorAll('.palette-choice-btn').forEach(btn => {
+        btn.classList.remove('ring-2', 'ring-indigo-600', 'border-indigo-600', 'bg-indigo-50/50');
+    });
+    if (el) {
+        el.classList.add('ring-2', 'ring-indigo-600', 'border-indigo-600', 'bg-indigo-50/50');
+    }
+}
+
+// Bulk Upload Multiple Photos at Once
+function onBulkPhotoUpload(input) {
+    const files = input.files;
+    if (!files || !files.length) return;
+
+    const list = document.getElementById('individual-list');
+    let autoIndex = document.querySelectorAll('.individual-item').length;
+    
+    Array.from(files).forEach(file => {
+        autoIndex++;
+        // Derive clean human name from filename: e.g. "first_last.jpg" -> "First Last"
+        let rawName = file.name.replace(/\.[^/.]+$/, ""); // strip extension
+        let cleanName = rawName.replace(/[-_]+/g, " ").trim();
+
+        // Check if filename is an automatic phone camera / WhatsApp / screenshot artifact (e.g. WhatsApp Image 2026-09-11 at 23.08.04)
+        const isAutoSnapshot = /^(whatsapp[\s_-]?image|img[\s_-]?|dsc[\s_-]?|screenshot[\s_-]?|pasted[\s_-]?image|\d{8}[\s_-]?\d{4,})/i.test(cleanName);
+        if (isAutoSnapshot) {
+            cleanName = `Scholar ${autoIndex}`;
+        } else {
+            cleanName = cleanName.replace(/\b\w/g, l => l.toUpperCase()); // title case
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            addIndividualRow(cleanName, '', e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    input.value = ''; // reset so same files can be re-uploaded if needed
+}
+
+async function generateAllBatchFlyers() {
+    const items = document.querySelectorAll('.individual-item');
+    if (!items.length) {
+        alert('Please add at least one individual to generate fliers.');
+        return;
+    }
+
+    const fmt = document.getElementById('batch-fmt').value;
+    const theme = document.getElementById('batch-theme').value;
+    const layoutStyle = document.getElementById('batch-layout-style') ? document.getElementById('batch-layout-style').value : 'executive';
+    const textDensity = document.getElementById('batch-text-density') ? document.getElementById('batch-text-density').value : 'auto';
+    const tagline = document.getElementById('target-tagline').value.trim();
+    const title = document.getElementById('target-title').value.trim();
+    const subtitle = document.getElementById('target-subtitle').value.trim();
+    const targetMsg = document.getElementById('target-message').value.trim();
+    const footer = document.getElementById('target-footer').value.trim();
+    const includeBranding = document.getElementById('include-candidate-branding').checked;
+    const pColor = document.getElementById('primary-color').value;
+    const sColor = document.getElementById('secondary-color').value;
+
+    const statusText = document.getElementById('batch-status-text');
+    const gallery = document.getElementById('batch-gallery');
+    const generateBtn = document.getElementById('btn-generate-all');
+
+    statusText.innerText = 'Rendering personalized fliers...';
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Rendering Fliers...';
+    gallery.innerHTML = '';
+    generatedFlyers = [];
+
+    // Configure Engine
+    batchEngine.setFormat(fmt);
+    batchEngine.setTemplate('endorsement');
+    batchEngine.data.customTexts = [];
+    batchEngine.data.extraPhotos = [];
+    batchEngine.data.customRibbons = [];
+    batchEngine.data.showBoundaries = false;
+    batchEngine.data.primaryColor = pColor;
+    batchEngine.data.secondaryColor = sColor;
+    batchEngine.data.batchTheme = theme;
+    batchEngine.data.layoutStyle = layoutStyle;
+    batchEngine.data.textDensity = textDensity;
+    batchEngine.data.tagline = tagline;
+    batchEngine.data.batchTagline = tagline;
+    batchEngine.data.batchTitle = title;
+    batchEngine.data.greetingTitle = title;
+    batchEngine.data.batchSubtitle = subtitle;
+    batchEngine.data.subPosition = subtitle;
+    batchEngine.data.slogan = targetMsg;
+    batchEngine.data.goodwillMessage = targetMsg;
+    batchEngine.data.batchFooter = footer;
+    batchEngine.data.includeCandidateBranding = includeBranding;
+
+    if (includeBranding) {
+        batchEngine.data.candidateName = candidateData.name;
+        batchEngine.data.position = candidateData.position;
+    } else {
+        batchEngine.data.candidateName = '';
+        batchEngine.data.position = '';
+    }
+
+    let index = 0;
+    for (const item of items) {
+        index++;
+        const name = item.querySelector('.ind-name').value.trim() || `Individual ${index}`;
+        const role = item.querySelector('.ind-role').value.trim() || '';
+        const thumb = item.querySelector('.ind-thumb');
+
+        batchEngine.data.mobilizerName = name;
+        batchEngine.data.mobilizerRole = role;
+
+        // Render with individual's photo
+        await new Promise((resolve) => {
+            batchEngine.loadMobilizerPhoto(thumb.src, () => {
+                batchEngine.render();
+                resolve();
+            });
+        });
+
+        const dataUrl = batchEngine.toDataURL();
+        const idx = generatedFlyers.length;
+        generatedFlyers.push({ name, role, dataUrl });
+
+        // Append to gallery
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col transition hover:shadow-md';
+        card.innerHTML = `
+            <div class="relative bg-slate-900 p-2.5 flex items-center justify-center cursor-pointer group" onclick="openFlyerLightbox(${idx})">
+                <img src="${dataUrl}" class="max-h-72 object-contain rounded-xl shadow-inner group-hover:scale-[1.01] transition">
+                <span class="absolute top-4 left-4 bg-slate-900/85 text-amber-300 font-mono text-[10px] px-2.5 py-0.5 rounded-full border border-white/10 font-bold">#${index}</span>
+                <span class="absolute top-4 right-4 bg-slate-950/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-expand"></i> Preview
+                </span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                <div>
+                    <h4 class="text-xs font-black text-slate-900">${name}</h4>
+                    <p class="text-[11px] text-slate-500">${role || 'Recipient'}</p>
+                </div>
+                <div class="flex items-center space-x-1.5 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="openBatchFlyerDownloadModal(${idx})" class="flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm" title="Download PNG, JPG or PDF">
+                        <i class="fa-solid fa-download"></i> Save / Export
+                    </button>
+                    <button type="button" onclick="shareBatchFlyerWhatsApp(${idx})" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white text-xs font-bold transition shadow-sm" title="Share via WhatsApp">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                    </button>
+                    <button type="button" onclick="openBatchFlyerEmailModal(${idx})" class="p-2 rounded-xl bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white text-xs font-bold transition shadow-sm" title="Share via Email">
+                        <i class="fa-solid fa-envelope text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        gallery.appendChild(card);
+    }
+
+    statusText.innerText = `Generated ${generatedFlyers.length} personalized fliers successfully!`;
+    const btnAll = document.getElementById('btn-download-all-menu');
+    if (btnAll) btnAll.disabled = false;
+    generateBtn.disabled = false;
+    generateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Generate All Fliers</span>';
+}
+
+/* -------------------------------------------------------------
+   BATCH MULTI-FORMAT EXPORT & SHARING CONTROLS
+   ------------------------------------------------------------- */
+let activeBatchFlyerIndex = null;
+let activeBatchFlyerFormat = 'png';
+
+function toggleBatchExportMenu(forceState = null) {
+    const dd = document.getElementById('batch-export-dropdown');
+    if (!dd) return;
+    if (forceState !== null) {
+        dd.classList.toggle('hidden', !forceState);
+    } else {
+        dd.classList.toggle('hidden');
+    }
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('batch-export-dropdown');
+    const btn = document.getElementById('btn-download-all-menu');
+    if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+        menu.classList.add('hidden');
+    }
+});
+
+function openBatchFlyerDownloadModal(idx) {
+    activeBatchFlyerIndex = idx;
+    const item = generatedFlyers[idx];
+    if (!item) return;
+
+    const thumb = document.getElementById('batchModalPreviewThumb');
+    if (thumb) thumb.src = item.dataUrl;
+
+    const titleEl = document.getElementById('batchDownloadFlyerTitle');
+    if (titleEl) titleEl.innerText = `${item.name} — Campaign Flyer`;
+
+    selectBatchSingleFormat('png');
+    const modal = document.getElementById('batchFlyerDownloadModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeBatchFlyerDownloadModal() {
+    const modal = document.getElementById('batchFlyerDownloadModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function selectBatchSingleFormat(fmt) {
+    activeBatchFlyerFormat = fmt;
+    ['png', 'jpeg', 'pdf'].forEach(f => {
+        const btn = document.getElementById('btn-batch-exp-' + f);
+        if (btn) {
+            if (f === fmt) {
+                btn.className = 'p-2.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-indigo-900 text-center transition flex flex-col items-center gap-0.5';
+            } else {
+                btn.className = 'p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5';
+            }
+        }
+    });
+    const lbl = document.getElementById('lbl-batch-export-btn');
+    if (lbl) lbl.innerText = `Download ${fmt.toUpperCase()}`;
+}
+
+async function executeBatchSingleDownload() {
+    if (activeBatchFlyerIndex === null || !generatedFlyers[activeBatchFlyerIndex]) return;
+    const item = generatedFlyers[activeBatchFlyerIndex];
+    const safeName = item.name.replace(/\s+/g, '-').toLowerCase();
+
+    if (activeBatchFlyerFormat === 'pdf') {
+        if (window.jspdf && window.jspdf.jsPDF) {
+            const pdf = new window.jspdf.jsPDF({
+                orientation: 'portrait',
+                unit: 'pt',
+                format: [1200 * 0.75, 1200 * 0.75]
+            });
+            pdf.addImage(item.dataUrl, 'JPEG', 0, 0, 1200 * 0.75, 1200 * 0.75, undefined, 'FAST');
+            pdf.save(`${safeName}-flier.pdf`);
+            closeBatchFlyerDownloadModal();
+            return;
+        }
+    }
+
+    if (activeBatchFlyerFormat === 'jpeg') {
+        // Convert PNG dataUrl to JPEG
+        const img = new Image();
+        img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = img.width;
+            c.height = img.height;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(img, 0, 0);
+            const jpgUrl = c.toDataURL('image/jpeg', 0.95);
+            const a = document.createElement('a');
+            a.href = jpgUrl;
+            a.download = `${safeName}-flier.jpg`;
+            a.click();
+            closeBatchFlyerDownloadModal();
+        };
+        img.src = item.dataUrl;
+        return;
+    }
+
+    // Default PNG
+    const a = document.createElement('a');
+    a.href = item.dataUrl;
+    a.download = `${safeName}-flier.png`;
+    a.click();
+    closeBatchFlyerDownloadModal();
+}
+
+async function shareBatchFlyerWhatsApp(idx) {
+    const item = generatedFlyers[idx];
+    if (!item) return;
+
+    const title = document.getElementById('target-title')?.value || 'Official Campaign Update';
+    const cName = candidateData.name || 'Candidate';
+    const cPos = candidateData.position || 'Guild Office';
+    const caption = `*Special Campaign Release for ${item.name.toUpperCase()}*\n\n"${title}"\n\nSupporting ${cName} for ${cPos} 2026. Stand with student leadership with integrity!`;
+
+    if (navigator.canShare) {
+        try {
+            const resp = await fetch(item.dataUrl);
+            const blob = await resp.blob();
+            const file = new File([blob], `${item.name.replace(/\s+/g, '-').toLowerCase()}-flier.png`, { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: `${item.name} — Campaign Flyer`,
+                    text: caption,
+                    files: [file]
+                });
+                return;
+            }
+        } catch(e) {
+            // fallback
+        }
+    }
+    const text = encodeURIComponent(caption);
+    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+}
+
+function openBatchFlyerEmailModal(idx) {
+    activeBatchFlyerIndex = idx;
+    const item = generatedFlyers[idx];
+    if (!item) return;
+
+    const title = document.getElementById('target-title')?.value || 'Official Campaign Flyer';
+    const cName = candidateData.name || 'Candidate';
+    const cPos = candidateData.position || 'Guild Office';
+
+    document.getElementById('batch-email-subject').value = `Official Campaign Release for ${item.name}: ${title}`;
+    document.getElementById('batch-email-body').value = `Dear ${item.name},\n\nWe are delighted to share your official personalized campaign flyer for ${title}.\n\nSupporting ${cName.toUpperCase()} for ${cPos.toUpperCase()}.\n\nTogether we lead with integrity!\n\nIn solidarity,\nCampaign Team`;
+
+    const modal = document.getElementById('batchFlyerEmailModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeBatchFlyerEmailModal() {
+    const modal = document.getElementById('batchFlyerEmailModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function launchBatchNativeEmail() {
+    const recipients = (document.getElementById('batch-email-recipients')?.value || '').trim();
+    const subject = encodeURIComponent(document.getElementById('batch-email-subject').value);
+    const body = encodeURIComponent(document.getElementById('batch-email-body').value);
+    window.location.href = `mailto:${encodeURIComponent(recipients)}?subject=${subject}&body=${body}`;
+    closeBatchFlyerEmailModal();
+}
+
+function launchBatchBroadcastStudio() {
+    const cid = candidateSelect ? candidateSelect.value : '';
+    window.location.href = `/email/compose?candidate_id=${cid}&attach_poster=1`;
+}
+
+function openFlyerLightbox(idx) {
+    const item = generatedFlyers[idx];
+    if (!item) return;
+    const modal = document.getElementById('flyerLightboxModal');
+    const img = document.getElementById('flyerLightboxImg');
+    const cap = document.getElementById('flyerLightboxCaption');
+    if (img) img.src = item.dataUrl;
+    if (cap) cap.innerText = `${item.name} (${item.role || 'Recipient'})`;
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeFlyerLightbox() {
+    const modal = document.getElementById('flyerLightboxModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function downloadAllZip(format = 'png') {
+    if (!generatedFlyers.length) return;
+    const zip = new JSZip();
+    const folder = zip.folder("personalized-fliers");
+
+    if (format === 'jpeg') {
+        let processed = 0;
+        generatedFlyers.forEach((item, idx) => {
+            const img = new Image();
+            img.onload = () => {
+                const c = document.createElement('canvas');
+                c.width = img.width;
+                c.height = img.height;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.drawImage(img, 0, 0);
+                const jpgBase64 = c.toDataURL('image/jpeg', 0.92).replace(/^data:image\/jpeg;base64,/, "");
+                const filename = `${idx + 1}-${item.name.replace(/\s+/g, '-').toLowerCase()}-flier.jpg`;
+                folder.file(filename, jpgBase64, { base64: true });
+                processed++;
+                if (processed === generatedFlyers.length) {
+                    zip.generateAsync({ type: "blob" }).then(function(content) {
+                        saveAs(content, `ELECHUB-Personalized-Fliers-JPG.zip`);
+                    });
+                }
+            };
+            img.src = item.dataUrl;
+        });
+        return;
+    }
+
+    // Default PNG
+    generatedFlyers.forEach((item, idx) => {
+        const base64Data = item.dataUrl.replace(/^data:image\/png;base64,/, "");
+        const filename = `${idx + 1}-${item.name.replace(/\s+/g, '-').toLowerCase()}-flier.png`;
+        folder.file(filename, base64Data, { base64: true });
+    });
+
+    zip.generateAsync({ type: "blob" }).then(function(content) {
+        saveAs(content, `ELECHUB-Personalized-Fliers-Batch.zip`);
+    });
+}
+
+function downloadAllPDFBooklet() {
+    if (!generatedFlyers.length) return;
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert('PDF generator is loading. Please try again in a moment.');
+        return;
+    }
+
+    const pdf = new window.jspdf.jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: [1200 * 0.75, 1200 * 0.75]
+    });
+
+    generatedFlyers.forEach((item, idx) => {
+        if (idx > 0) pdf.addPage([1200 * 0.75, 1200 * 0.75], 'portrait');
+        pdf.addImage(item.dataUrl, 'JPEG', 0, 0, 1200 * 0.75, 1200 * 0.75, undefined, 'FAST');
+    });
+
+    const title = (document.getElementById('target-title')?.value || 'Campaign-Fliers').replace(/\s+/g, '-').toLowerCase();
+    pdf.save(`ELECHUB-${title}-Booklet.pdf`);
+}
+</script>
+
+<!-- Batch Single Flyer Download Modal -->
+<div id="batchFlyerDownloadModal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-200">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                    <i class="fa-solid fa-download"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900" id="batchDownloadFlyerTitle">Export Finished Flyer</h3>
+                    <p class="text-[11px] text-slate-500">Choose your preferred export format.</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeBatchFlyerDownloadModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="bg-slate-950 p-2 rounded-2xl flex items-center justify-center max-h-48 overflow-hidden shadow-inner border border-slate-800">
+            <img id="batchModalPreviewThumb" src="" alt="Flyer Preview" class="max-h-44 object-contain rounded-xl shadow-md">
+        </div>
+
+        <div class="space-y-1.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Choose Format</label>
+            <div class="grid grid-cols-3 gap-2">
+                <button type="button" id="btn-batch-exp-png" onclick="selectBatchSingleFormat('png')" class="p-2.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-indigo-900 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-file-image text-indigo-600 text-base"></i>
+                    <span class="text-xs font-extrabold">PNG</span>
+                    <span class="text-[9px] text-indigo-600 font-semibold">Lossless HD</span>
+                </button>
+                <button type="button" id="btn-batch-exp-jpeg" onclick="selectBatchSingleFormat('jpeg')" class="p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-regular fa-file-image text-slate-500 text-base"></i>
+                    <span class="text-xs font-extrabold">JPEG</span>
+                    <span class="text-[9px] text-slate-400 font-semibold">Fast Share</span>
+                </button>
+                <button type="button" id="btn-batch-exp-pdf" onclick="selectBatchSingleFormat('pdf')" class="p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-file-pdf text-rose-500 text-base"></i>
+                    <span class="text-xs font-extrabold">PDF</span>
+                    <span class="text-[9px] text-slate-400 font-semibold">Print 300 DPI</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+            <button type="button" onclick="closeBatchFlyerDownloadModal()" class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                Cancel
+            </button>
+            <button type="button" onclick="executeBatchSingleDownload()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-download"></i>
+                <span id="lbl-batch-export-btn">Download PNG</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Batch Single Flyer Email Share Modal -->
+<div id="batchFlyerEmailModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-200">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Share Flyer via Email</h3>
+                    <p class="text-[11px] text-slate-400">Send this personalized flyer directly to the recipient or team.</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeBatchFlyerEmailModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+            <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Recipient Email Address(es) <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" id="batch-email-recipients" 
+                    placeholder="e.g. scholar@campus.ac.ug, team@guild.org" 
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-semibold text-xs text-slate-900 focus:ring-2 focus:ring-sky-600 focus:border-sky-600">
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Email Subject</label>
+                <input type="text" id="batch-email-subject" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-medium text-xs text-slate-900">
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Email Body Message</label>
+                <textarea id="batch-email-body" rows="4" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-sans text-xs text-slate-900 leading-relaxed"></textarea>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+            <button type="button" onclick="launchBatchNativeEmail()" class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs font-bold text-slate-800 flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-arrow-up-right-from-square text-sky-600"></i>
+                <span>Open Mail Client</span>
+            </button>
+
+            <button type="button" onclick="launchBatchBroadcastStudio()" class="py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow transition">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Campus Broadcast Studio</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Fullscreen Lightbox Modal -->
+<div id="flyerLightboxModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeFlyerLightbox()">
+    <div class="relative max-w-2xl max-h-[90vh] flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+        <button type="button" onclick="closeFlyerLightbox()" class="absolute -top-10 right-0 w-8 h-8 rounded-full bg-white/20 hover:bg-white text-white hover:text-slate-900 flex items-center justify-center text-sm transition">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img id="flyerLightboxImg" src="" alt="Fullscreen Flyer" class="max-h-[80vh] w-auto object-contain rounded-2xl shadow-2xl border border-white/10">
+        <p id="flyerLightboxCaption" class="text-white text-xs font-bold mt-3 tracking-wide"></p>
+    </div>
+</div>
+{% endblock %}

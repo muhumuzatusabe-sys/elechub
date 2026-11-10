@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk SMS Mobilization Studio — ELECHUB{% endblock %}
+{% block header_title %}Bulk SMS Voter Outreach Engine{% endblock %}
+
+{% block content %}
+<div class="space-y-6 pb-12">
+    <!-- Top Action & Gateway Status Bar -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-extrabold text-slate-900">Bulk SMS Mobilization Dispatcher</h1>
+                {% if at_mode == 'live' %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Africa's Talking: Production Live
+                    </span>
+                {% elif at_mode == 'sandbox' %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        Africa's Talking: Sandbox Mode
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Smart Simulation Mode
+                    </span>
+                {% endif %}
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Direct SMS delivery to student voter phones across Halls of Residence and Colleges with Africa's Talking gateway.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5">
+            <a href="{{ url_for('sms.opt_outs') }}" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-rose-600"></i> Opt-Outs ({{ total_opt_outs }})
+            </a>
+            <a href="{{ url_for('sms.settings') }}" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-indigo-600"></i> Gateway Settings
+            </a>
+            <a href="{{ url_for('sms.compose') }}" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Compose Campaign</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Metrics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Campaigns</p>
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mt-2">{{ campaigns|length }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Dispatched blasts</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Sent</p>
+                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mt-2">{{ total_sent }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Outgoing messages</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Delivered</p>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-emerald-600 mt-2">{{ total_delivered }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Carrier confirmed</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Failed / Skipped</p>
+                <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-rose-600 mt-2">{{ total_failed }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Failed carriers</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm col-span-2 md:col-span-1">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Est. Cost</p>
+                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+            </div>
+            <h3 class="text-xl font-black text-slate-900 mt-2 truncate">{{ total_cost_str }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Based on carrier rate</p>
+        </div>
+    </div>
+
+    <!-- Campaigns Log Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Campaign Blast History</h3>
+                <p class="text-[11px] text-slate-400">Detailed delivery records, candidate tagging, and audit logs.</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 rounded-full text-slate-600">{{ campaigns|length }} campaigns</span>
+        </div>
+
+        {% if campaigns %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3.5 px-6">Campaign Title</th>
+                        <th class="py-3.5 px-6">Candidate</th>
+                        <th class="py-3.5 px-6">Target Voter Group</th>
+                        <th class="py-3.5 px-6 text-center">Sent / Target</th>
+                        <th class="py-3.5 px-6 text-center">Delivered</th>
+                        <th class="py-3.5 px-6">Cost</th>
+                        <th class="py-3.5 px-6">Dispatched At</th>
+                        <th class="py-3.5 px-6 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for c in campaigns %}
+                    <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-4 px-6 font-bold text-slate-900">
+                            <a href="{{ url_for('sms.campaign_detail', campaign_id=c.id) }}" class="hover:text-indigo-600 transition flex items-center gap-2">
+                                <span>{{ c.title }}</span>
+                            </a>
+                            <p class="text-[11px] text-slate-400 font-normal line-clamp-1 mt-0.5">{{ c.message }}</p>
+                        </td>
+                        <td class="py-4 px-6 text-slate-700 font-medium">
+                            {{ c.candidate_rel.name if c.candidate_rel else 'General Announcement' }}
+                        </td>
+                        <td class="py-4 px-6 text-slate-600">
+                            {{ c.contact_list_rel.name if c.contact_list_rel else 'Direct / Manual Numbers' }}
+                        </td>
+                        <td class="py-4 px-6 text-center font-mono font-bold text-slate-800">
+                            {{ c.sent_count or c.recipient_count }} / {{ c.recipient_count }}
+                        </td>
+                        <td class="py-4 px-6 text-center font-mono font-bold text-emerald-600">
+                            {{ c.delivered_count or 0 }}
+                        </td>
+                        <td class="py-4 px-6 font-mono text-slate-600">
+                            {{ c.total_cost or 'UGX 0.00' }}
+                        </td>
+                        <td class="py-4 px-6 text-slate-500 font-mono text-[11px]">
+                            {{ c.created_at.strftime('%b %d, %Y • %I:%M %p') }}
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <a href="{{ url_for('sms.campaign_detail', campaign_id=c.id) }}" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition inline-flex items-center gap-1">
+                                <i class="fa-solid fa-list-check"></i> Audit Log
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="py-16 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-4">
+                <i class="fa-solid fa-comment-sms"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800">No Bulk SMS Campaigns Yet</h4>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1 mb-6">Launch personalized SMS blasts to notify student voters of upcoming debates, rallies, and polling stations.</p>
+            <a href="{{ url_for('sms.compose') }}" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition inline-flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i> Compose First SMS Blast
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Individual Delivery Audit Records -->
+    {% if recent_logs %}
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Real-Time Delivery Feed (Latest 10 Recipient Dispatches)</h3>
+                <p class="text-[11px] text-slate-400">Direct carrier callbacks from Africa's Talking API.</p>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3 px-6">Recipient</th>
+                        <th class="py-3 px-6">Phone Number</th>
+                        <th class="py-3 px-6">Rendered Message Preview</th>
+                        <th class="py-3 px-6">Status</th>
+                        <th class="py-3 px-6">AT Message ID</th>
+                        <th class="py-3 px-6">Dispatched</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono">
+                    {% for log in recent_logs %}
+                    <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-3 px-6 font-sans font-bold text-slate-800">
+                            {{ log.recipient_name or 'Student Voter' }}
+                        </td>
+                        <td class="py-3 px-6 text-slate-700">
+                            {{ log.recipient }}
+                        </td>
+                        <td class="py-3 px-6 font-sans text-slate-600 max-w-xs truncate">
+                            {{ log.rendered_message }}
+                        </td>
+                        <td class="py-3 px-6">
+                            {% if log.status == 'delivered' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Delivered
+                                </span>
+                            {% elif log.status == 'sent' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Sent
+                                </span>
+                            {% elif log.status == 'failed' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Failed
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                    {{ log.status|title }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-6 text-[11px] text-slate-500">
+                            {{ log.at_message_id or '—' }}
+                        </td>
+                        <td class="py-3 px-6 text-[11px] text-slate-500">
+                            {{ log.sent_at.strftime('%H:%M:%S') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

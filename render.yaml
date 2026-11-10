@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: elechub
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ADMIN_PASSWORD
+        value: "@Tusabe001"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: AFRICA_TALKING_USERNAME
+        value: "ELECHUBS"
+      - key: AFRICA_TALKING_API_KEY
+        value: "atsk_53558bcd43ba2c44f64533122a363e6a89bdfb25158606907bc20d024536917e141bf413"
+      - key: MAIL_SERVER
+        value: "smtp.gmail.com"
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "True"
+      - key: MAIL_USE_SSL
+        value: "False"
+      - key: MAIL_USERNAME
+        value: "elechub8@gmail.com"
+      - key: MAIL_PASSWORD
+        value: "colmxicbarytjoig"
+      - key: MAIL_DEFAULT_SENDER
+        value: "ELECHUB Campaign Command <elechub8@gmail.com>"

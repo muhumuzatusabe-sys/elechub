@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block title %}Saved Poster Projects — ELECHUB{% endblock %}
+{% block header_title %}Saved Poster Projects & Vault{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-xl font-extrabold text-slate-900">Saved Campaign Projects</h1>
+            <p class="text-xs text-slate-500">Reopen, fine-tune, download, or share your saved poster designs anytime.</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('posters.studio') }}" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Open Poster Studio</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Projects Grid -->
+    {% if projects %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for p in projects %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+            <!-- Thumbnail Preview with Aspect Ratio & Badges -->
+            <div class="relative bg-slate-950 flex items-center justify-center overflow-hidden aspect-square">
+                {% if p.thumbnail_url %}
+                <img src="{{ p.thumbnail_url }}" alt="{{ p.title }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+                {% else %}
+                <div class="flex flex-col items-center justify-center text-slate-600 space-y-2 p-6 text-center">
+                    <i class="fa-solid fa-palette text-3xl"></i>
+                    <span class="text-xs font-mono">No Preview Rendered</span>
+                </div>
+                {% endif %}
+
+                <!-- Format Pill -->
+                <span class="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-sm text-white font-mono text-[10px] font-bold border border-white/10">
+                    {{ p.format }}
+                </span>
+
+                <!-- Template Pill -->
+                <span class="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-indigo-600/90 backdrop-blur-sm text-white text-[10px] font-bold capitalize shadow">
+                    {{ p.template.replace('_', ' ') }}
+                </span>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900 line-clamp-1 group-hover:text-indigo-600 transition" title="{{ p.title }}">{{ p.title }}</h3>
+                    <p class="text-xs font-semibold text-slate-600 mt-0.5">{{ p.candidate_name or (p.candidate.name if p.candidate else 'General Candidate') }}</p>
+                    <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                        <i class="fa-regular fa-clock text-[10px]"></i>
+                        <span>Updated {{ p.updated_at.strftime('%b %d, %Y • %I:%M %p') }}</span>
+                    </p>
+                </div>
+
+                <!-- Card Actions -->
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                    <a href="{{ url_for('posters.studio', project_id=p.id) }}" class="flex-1 py-2 px-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white text-xs font-extrabold text-center transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-pen-to-square"></i> Open
+                    </a>
+
+                    <!-- Direct Download Button with Format Choice -->
+                    <button type="button" onclick="openVaultDownloadModal('{{ p.id }}', '{{ p.title|e }}', '{{ p.thumbnail_url or '' }}')"
+                        class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition shadow-sm" title="Download Poster (PNG, JPG, PDF)">
+                        <i class="fa-solid fa-download text-xs"></i>
+                    </button>
+
+                    <!-- Direct WhatsApp Share Button -->
+                    <button type="button" onclick="shareSavedProjectWhatsApp('{{ p.title|e }}', '{{ p.candidate_name|e or (p.candidate.name|e if p.candidate else '') }}', '{{ p.position|e or (p.candidate.position|e if p.candidate else '') }}', '{{ p.slogan|e or '' }}', '{{ p.thumbnail_url or '' }}')"
+                        class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white transition shadow-sm" title="Share via WhatsApp">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                    </button>
+
+                    <!-- Direct Email Share Button -->
+                    <button type="button" onclick="openVaultEmailModal('{{ p.id }}', '{{ p.title|e }}', '{{ p.candidate_name|e or (p.candidate.name|e if p.candidate else '') }}', '{{ p.position|e or (p.candidate.position|e if p.candidate else '') }}', '{{ p.slogan|e or '' }}', '{{ p.candidate_id or '' }}')"
+                        class="p-2 rounded-xl bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white transition shadow-sm" title="Share via Email">
+                        <i class="fa-solid fa-envelope text-xs"></i>
+                    </button>
+
+                    <form action="{{ url_for('posters.delete_project', id=p.id) }}" method="POST" class="inline" onsubmit="return confirm('Delete project &quot;{{ p.title }}&quot;?')">
+                        <button type="submit" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete project">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-16 text-center space-y-4 shadow-sm">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl mx-auto shadow-inner">
+            <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <div class="max-w-md mx-auto">
+            <h3 class="text-base font-extrabold text-slate-900">No Saved Poster Projects Yet</h3>
+            <p class="text-xs text-slate-500 mt-1">Open the Poster Studio, choose your favorite template, adjust your candidate's framing, and click "Save Project" to keep your work stored here forever.</p>
+        </div>
+        <a href="{{ url_for('posters.studio') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-md shadow-indigo-600/30 transition">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Design Your First Poster
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Email Share Modal for Saved Projects -->
+<div id="vaultEmailModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-5 animate-in fade-in zoom-in duration-200">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Share Project via Email</h3>
+                    <p class="text-[11px] text-slate-400">Send directly to target voters, mobilizers, or campus leadership.</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeVaultEmailModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="space-y-3.5 text-xs">
+            <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Recipient Email Address(es) <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" id="vault-email-recipients" 
+                    placeholder="e.g. voter@campus.ac.ug, mobilizer@guild.org" 
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-semibold text-xs text-slate-900 focus:ring-2 focus:ring-sky-600 focus:border-sky-600">
+                <p class="text-[10px] text-slate-400 mt-1">Separate multiple email addresses with commas.</p>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Email Subject</label>
+                <input type="text" id="vault-email-subject" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-medium text-xs text-slate-900">
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Email Body Message</label>
+                <textarea id="vault-email-body" rows="4" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-sans text-xs text-slate-900 leading-relaxed"></textarea>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+            <button type="button" onclick="launchVaultNativeEmail()" class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs font-bold text-slate-800 flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-arrow-up-right-from-square text-sky-600"></i>
+                <span>Open Mail Client</span>
+            </button>
+
+            <button type="button" onclick="launchVaultBroadcastStudio()" class="py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow transition">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Campus Broadcast Studio</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Multi-Format Download Modal for Saved Projects -->
+<div id="vaultDownloadModal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-200">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                    <i class="fa-solid fa-download"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900" id="vaultDownloadTitle">Download Campaign Poster</h3>
+                    <p class="text-[11px] text-slate-500">Choose PNG, JPG, or Print-ready PDF.</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeVaultDownloadModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="bg-slate-950 p-2 rounded-2xl flex items-center justify-center max-h-48 overflow-hidden shadow-inner border border-slate-800">
+            <img id="vaultDownloadPreviewThumb" src="" alt="Poster Preview" class="max-h-44 object-contain rounded-xl shadow-md">
+        </div>
+
+        <div class="space-y-1.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Choose Format</label>
+            <div class="grid grid-cols-3 gap-2">
+                <button type="button" id="btn-vault-exp-png" onclick="selectVaultFormat('png')" class="p-2.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-indigo-900 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-file-image text-indigo-600 text-base"></i>
+                    <span class="text-xs font-extrabold">PNG</span>
+                    <span class="text-[9px] text-indigo-600 font-semibold">Lossless HD</span>
+                </button>
+                <button type="button" id="btn-vault-exp-jpeg" onclick="selectVaultFormat('jpeg')" class="p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-regular fa-file-image text-slate-500 text-base"></i>
+                    <span class="text-xs font-extrabold">JPEG</span>
+                    <span class="text-[9px] text-slate-400 font-semibold">Fast Share</span>
+                </button>
+                <button type="button" id="btn-vault-exp-pdf" onclick="selectVaultFormat('pdf')" class="p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-file-pdf text-rose-500 text-base"></i>
+                    <span class="text-xs font-extrabold">PDF</span>
+                    <span class="text-[9px] text-slate-400 font-semibold">Print 300 DPI</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+            <button type="button" onclick="closeVaultDownloadModal()" class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                Cancel
+            </button>
+            <button type="button" onclick="executeVaultDownload()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-download"></i>
+                <span id="lbl-vault-export-btn">Download PNG</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Feedback Container -->
+<div id="vaultToastNotification" class="fixed bottom-6 right-6 z-50 hidden bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center space-x-3 text-xs font-bold transition-all">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+    <span id="vault-toast-message">Action completed successfully!</span>
+</div>
+
+<script>
+let activeVaultCandidateId = '';
+let activeVaultDownloadUrl = '';
+let activeVaultDownloadTitle = 'poster';
+let activeVaultFormat = 'png';
+
+function openVaultDownloadModal(id, title, thumbnailUrl) {
+    activeVaultDownloadTitle = title || 'campaign-poster';
+    activeVaultDownloadUrl = thumbnailUrl || '';
+    
+    const titleEl = document.getElementById('vaultDownloadTitle');
+    if (titleEl) titleEl.innerText = title;
+    
+    const thumb = document.getElementById('vaultDownloadPreviewThumb');
+    if (thumb) thumb.src = thumbnailUrl || '';
+    
+    selectVaultFormat('png');
+    const modal = document.getElementById('vaultDownloadModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeVaultDownloadModal() {
+    const modal = document.getElementById('vaultDownloadModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function selectVaultFormat(fmt) {
+    activeVaultFormat = fmt;
+    ['png', 'jpeg', 'pdf'].forEach(f => {
+        const btn = document.getElementById('btn-vault-exp-' + f);
+        if (btn) {
+            if (f === fmt) {
+                btn.className = 'p-2.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-indigo-900 text-center transition flex flex-col items-center gap-0.5';
+            } else {
+                btn.className = 'p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5';
+            }
+        }
+    });
+    const lbl = document.getElementById('lbl-vault-export-btn');
+    if (lbl) lbl.innerText = `Download ${fmt.toUpperCase()}`;
+}
+
+function executeVaultDownload() {
+    if (!activeVaultDownloadUrl) {
+        showVaultToast('Poster preview image not available.');
+        return;
+    }
+    const safeName = activeVaultDownloadTitle.replace(/\s+/g, '-').toLowerCase();
+
+    if (activeVaultFormat === 'pdf') {
+        if (window.jspdf && window.jspdf.jsPDF) {
+            const pdf = new window.jspdf.jsPDF({
+                orientation: 'portrait',
+                unit: 'pt',
+                format: [1200 * 0.75, 1200 * 0.75]
+            });
+            pdf.addImage(activeVaultDownloadUrl, 'JPEG', 0, 0, 1200 * 0.75, 1200 * 0.75, undefined, 'FAST');
+            pdf.save(`${safeName}.pdf`);
+            closeVaultDownloadModal();
+            showVaultToast('PDF downloaded successfully!');
+            return;
+        }
+    }
+
+    if (activeVaultFormat === 'jpeg') {
+        const img = new Image();
+        img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = img.width;
+            c.height = img.height;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(img, 0, 0);
+            const jpgUrl = c.toDataURL('image/jpeg', 0.95);
+            const a = document.createElement('a');
+            a.href = jpgUrl;
+            a.download = `${safeName}.jpg`;
+            a.click();
+            closeVaultDownloadModal();
+            showVaultToast('JPEG downloaded successfully!');
+        };
+        img.src = activeVaultDownloadUrl;
+        return;
+    }
+
+    // Default PNG
+    const a = document.createElement('a');
+    a.href = activeVaultDownloadUrl;
+    a.download = `${safeName}.png`;
+    a.click();
+    closeVaultDownloadModal();
+    showVaultToast('PNG downloaded successfully!');
+}
+
+async function shareSavedProjectWhatsApp(title, name, position, slogan, thumbnailUrl) {
+    const cName = name || 'Candidate';
+    const cPos = position || 'Guild Office';
+    const cSlogan = slogan || 'Leadership With Integrity';
+    const caption = `*Official Campaign Poster: ${cName.toUpperCase()} for ${cPos.toUpperCase()}*\n\n“${cSlogan}”\n\nStand with our movement for authentic student leadership!`;
+
+    // Try Web Share API with thumbnail image if accessible
+    if (navigator.canShare && thumbnailUrl) {
+        try {
+            const resp = await fetch(thumbnailUrl);
+            const blob = await resp.blob();
+            const file = new File([blob], `${cName.replace(/\s+/g, '-').toLowerCase()}-poster.png`, { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: `${cName} for ${cPos}`,
+                    text: caption,
+                    files: [file]
+                });
+                showVaultToast('Shared to WhatsApp successfully!');
+                return;
+            }
+        } catch(e) {
+            // fallback to direct link
+        }
+    }
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(caption)}`;
+    window.open(url, '_blank');
+}
+
+function openVaultEmailModal(id, title, name, position, slogan, candidateId) {
+    activeVaultCandidateId = candidateId || '';
+    const cName = name || 'Candidate';
+    const cPos = position || 'Guild Office';
+    const cSlogan = slogan || 'Leadership With Integrity';
+
+    document.getElementById('vault-email-subject').value = `Official Campaign Release: ${cName} for ${cPos} 2026`;
+    document.getElementById('vault-email-body').value = `Dear Students & Mobilizers,\n\nWe are proud to share the campaign design for ${cName.toUpperCase()} for ${cPos.toUpperCase()}.\n\n“${cSlogan}”\n\nJoin our movement today for transparent, student-centered campus leadership!\n\nIn solidarity,\nTeam ${cName}`;
+    document.getElementById('vaultEmailModal').classList.remove('hidden');
+}
+
+function closeVaultEmailModal() {
+    document.getElementById('vaultEmailModal').classList.add('hidden');
+}
+
+function launchVaultNativeEmail() {
+    const recipients = (document.getElementById('vault-email-recipients')?.value || '').trim();
+    const subject = encodeURIComponent(document.getElementById('vault-email-subject').value);
+    const body = encodeURIComponent(document.getElementById('vault-email-body').value);
+    window.location.href = `mailto:${encodeURIComponent(recipients)}?subject=${subject}&body=${body}`;
+    closeVaultEmailModal();
+}
+
+function launchVaultBroadcastStudio() {
+    const cid = activeVaultCandidateId || '';
+    window.location.href = `/email/compose?candidate_id=${cid}&attach_poster=1`;
+}
+
+function showVaultToast(msg) {
+    const toast = document.getElementById('vaultToastNotification');
+    document.getElementById('vault-toast-message').innerText = msg;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 3500);
+}
+</script>
+{% endblock %}

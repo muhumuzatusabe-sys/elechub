@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Candidate' if candidate else 'Add Candidate to Vault' }} — ELECHUB{% endblock %}
+{% block header_title %}{{ 'Edit Candidate Profile & Brand Kit' if candidate else 'Add New Candidate to Vault' }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 pb-12">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">{{ 'Edit Candidate Profile' if candidate else 'Add New Candidate to Vault' }}</h1>
+            <p class="text-xs text-slate-500 mt-1">Save full candidate profile and Brand Kit once, so you can instantly generate flyers, SMS, emails, and video reels whenever they need them.</p>
+        </div>
+        <a href="{{ url_for('candidates.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 transition">
+            <i class="fa-solid fa-arrow-left"></i> Back to Vault
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm">
+        <form method="POST" enctype="multipart/form-data" class="space-y-8">
+            <!-- Campaign Race Selection -->
+            <div>
+                <label for="election_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                    Campaign Season / Race <span class="text-rose-500">*</span>
+                </label>
+                <select name="election_id" id="election_id" required
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                    <option value="">-- Select Campaign Season --</option>
+                    {% for el in elections %}
+                    <option value="{{ el.id }}" {% if (candidate and candidate.election_id == el.id) or (selected_election_id == el.id) %}selected{% endif %}>
+                        {{ el.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Identity: Name & Position -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Candidate Full Name <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="name" id="name" required
+                        value="{{ candidate.name if candidate else '' }}"
+                        placeholder="e.g. Candidate Full Name"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+                <div>
+                    <label for="position" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Office Contested <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="position" id="position" required
+                        value="{{ candidate.position if candidate else '' }}"
+                        placeholder="e.g. Guild President"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+            </div>
+
+            <!-- Faculty / Hall & Slate -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="faculty_or_hall" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Faculty / College / Hall of Residence
+                    </label>
+                    <input type="text" name="faculty_or_hall" id="faculty_or_hall"
+                        value="{{ candidate.faculty_or_hall if candidate and candidate.faculty_or_hall else '' }}"
+                        placeholder="e.g. CEDAT / Livingstone Hall"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+                <div>
+                    <label for="party_or_slate" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Alliance / Coalition / Slate
+                    </label>
+                    <input type="text" name="party_or_slate" id="party_or_slate"
+                        value="{{ candidate.party_or_slate if candidate and candidate.party_or_slate else '' }}"
+                        placeholder="e.g. Action Vanguard, Independent"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+            </div>
+
+            <!-- Brand Kit Colors -->
+            <div class="p-6 rounded-2xl bg-slate-50/80 border border-slate-200 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Candidate Brand Kit (Colors & Palette)</h3>
+                        <p class="text-[11px] text-slate-400">These colors automatically style their flyers, SMS cards, and video reels.</p>
+                    </div>
+                    <span class="text-xs font-mono text-indigo-600 font-semibold bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">Live Applied</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-slate-600 mb-2">Primary Color</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" name="primary_color" id="primary_color"
+                                value="{{ candidate.primary_color if candidate and candidate.primary_color else '#2563eb' }}"
+                                class="w-10 h-10 rounded-xl border border-slate-300 cursor-pointer p-0.5">
+                            <input type="text" id="primary_hex"
+                                value="{{ candidate.primary_color if candidate and candidate.primary_color else '#2563eb' }}"
+                                class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-300 uppercase">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-slate-600 mb-2">Secondary / Accent Color</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" name="secondary_color" id="secondary_color"
+                                value="{{ candidate.secondary_color if candidate and candidate.secondary_color else '#f59e0b' }}"
+                                class="w-10 h-10 rounded-xl border border-slate-300 cursor-pointer p-0.5">
+                            <input type="text" id="secondary_hex"
+                                value="{{ candidate.secondary_color if candidate and candidate.secondary_color else '#f59e0b' }}"
+                                class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-300 uppercase">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-slate-600 mb-2">Tertiary / Badge Color</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" name="accent_color" id="accent_color"
+                                value="{{ candidate.accent_color if candidate and candidate.accent_color else '#10b981' }}"
+                                class="w-10 h-10 rounded-xl border border-slate-300 cursor-pointer p-0.5">
+                            <input type="text" id="accent_hex"
+                                value="{{ candidate.accent_color if candidate and candidate.accent_color else '#10b981' }}"
+                                class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-300 uppercase">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaign Slogans & Taglines -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="slogan" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Official Campaign Slogan
+                    </label>
+                    <input type="text" name="slogan" id="slogan"
+                        value="{{ candidate.slogan if candidate and candidate.slogan else '' }}"
+                        placeholder="e.g. Action Over Rhetoric — Student Welfare First!"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                    <p class="text-[11px] text-slate-400 mt-1">Short and memorable banner headline.</p>
+                </div>
+                <div>
+                    <label for="campaign_tagline" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Campaign Tagline / Subtitle
+                    </label>
+                    <input type="text" name="campaign_tagline" id="campaign_tagline"
+                        value="{{ candidate.campaign_tagline if candidate and candidate.campaign_tagline else '' }}"
+                        placeholder="e.g. The Voice That Truly Listens & Delivers"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                    <p class="text-[11px] text-slate-400 mt-1">Secondary subtitle for flyer footer ribbons.</p>
+                </div>
+            </div>
+
+            <!-- Manifesto Points -->
+            <div>
+                <label for="manifesto_points" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                    Key Manifesto Pillars (One per line)
+                </label>
+                <textarea name="manifesto_points" id="manifesto_points" rows="3"
+                    placeholder="Transparent & Accountable Representation&#10;Accessible Campus Wi-Fi & Library Extensions&#10;24/7 Security Patrols & Health Center Support"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-mono text-slate-800 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">{{ candidate.manifesto_points if candidate and candidate.manifesto_points else '' }}</textarea>
+                <p class="text-[11px] text-slate-400 mt-1">These bullet points will be auto-formatted on the Manifesto Flyer template.</p>
+            </div>
+
+            <!-- Portrait Photo Upload -->
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                    Candidate Portrait Photo
+                </label>
+                <div class="flex items-center space-x-6 p-5 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
+                    <div class="w-24 h-24 rounded-2xl overflow-hidden bg-slate-200 border-2 border-slate-300 flex-shrink-0 flex items-center justify-center shadow-inner">
+                        <img id="preview-image" src="{{ candidate.photo_url if candidate else 'https://ui-avatars.com/api/?name=Candidate&background=1e293b&color=ffffff&size=256' }}"
+                            alt="Preview" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-2 flex-1">
+                        <input type="file" name="photo" id="photo-input" accept="image/png, image/jpeg, image/jpg, image/webp"
+                            onchange="previewPhoto(event)"
+                            class="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                        <p class="text-[11px] text-slate-400">
+                            High-resolution portrait (plain or campus background works best). Transparent PNGs or clean JPEGs produce stunning posters.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information & Socials -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                <div>
+                    <label for="phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Official Contact Phone
+                    </label>
+                    <input type="text" name="phone" id="phone"
+                        value="{{ candidate.phone if candidate and candidate.phone else '' }}"
+                        placeholder="+256701122334"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+                <div>
+                    <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Official Campaign Email
+                    </label>
+                    <input type="email" name="email" id="email"
+                        value="{{ candidate.email if candidate and candidate.email else '' }}"
+                        placeholder="candidate@campus.ac.ug"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+                <div>
+                    <label for="social_handles" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                        Social Handles (X / IG / TikTok)
+                    </label>
+                    <input type="text" name="social_handles" id="social_handles"
+                        value="{{ candidate.social_handles if candidate and candidate.social_handles else '' }}"
+                        placeholder="@campaign_handle"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-6 border-t border-slate-200 flex items-center justify-end space-x-3">
+                <a href="{{ url_for('candidates.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                    Cancel
+                </a>
+                <button type="submit" class="px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i>
+                    <span>{{ 'Update Candidate Profile' if candidate else 'Save Candidate to Vault' }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function previewPhoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-image').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+// Sync color pickers with hex text inputs
+function bindColorSync(pickerId, hexId) {
+    const picker = document.getElementById(pickerId);
+    const hex = document.getElementById(hexId);
+    if (!picker || !hex) return;
+    picker.addEventListener('input', (e) => hex.value = e.target.value);
+    hex.addEventListener('input', (e) => {
+        if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+            picker.value = e.target.value;
+        }
+    });
+}
+bindColorSync('primary_color', 'primary_hex');
+bindColorSync('secondary_color', 'secondary_hex');
+bindColorSync('accent_color', 'accent_hex');
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Candidates — ELECHUB{% endblock %}
+{% block header_title %}Candidate Directory{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header & Election Filter -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-xl font-extrabold text-slate-900">Campaign Candidates</h1>
+            <p class="text-xs text-slate-500">Manage candidates, positions, brand colors, and campaign profiles.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <!-- Filter Dropdown -->
+            <form method="GET" action="{{ url_for('candidates.index') }}" class="flex items-center gap-2">
+                <select name="election_id" onchange="this.form.submit()" class="text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    <option value="">All Elections ({{ candidates|length }})</option>
+                    {% for el in elections %}
+                    <option value="{{ el.id }}" {% if selected_election_id == el.id %}selected{% endif %}>
+                        {{ el.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+            <a href="{{ url_for('candidates.new', election_id=selected_election_id or '') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+                <i class="fa-solid fa-plus"></i> New Candidate
+            </a>
+        </div>
+    </div>
+
+    <!-- Candidate Cards Grid -->
+    {% if candidates %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for c in candidates %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col justify-between group">
+            <div>
+                <!-- Top Color Strip -->
+                <div class="h-2.5 w-full" style="background-color: {{ c.color_theme or '#4f46e5' }};"></div>
+                
+                <div class="p-6">
+                    <!-- Photo & Core Meta -->
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img src="{{ c.photo_url }}" alt="{{ c.name }}"
+                                class="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
+                            <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white" style="background-color: {{ c.color_theme or '#4f46e5' }};" title="Brand theme color"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 mb-1 truncate max-w-full">
+                                {{ c.party_or_slate or 'Independent' }}
+                            </span>
+                            <h3 class="text-base font-bold text-slate-900 truncate">{{ c.name }}</h3>
+                            <p class="text-xs font-semibold text-indigo-600 truncate">{{ c.position }}</p>
+                            <p class="text-[11px] text-slate-400 truncate mt-0.5">{{ c.election.name }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Slogan -->
+                    {% if c.slogan %}
+                    <div class="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <p class="text-xs italic text-slate-600 line-clamp-2">"{{ c.slogan }}"</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Contact details -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 space-y-1 text-xs text-slate-500">
+                        {% if c.phone %}
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-phone text-slate-400 text-[10px] w-4"></i>
+                            <span class="font-mono text-[11px]">{{ c.phone }}</span>
+                        </div>
+                        {% endif %}
+                        {% if c.email %}
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-envelope text-slate-400 text-[10px] w-4"></i>
+                            <span class="truncate">{{ c.email }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="px-6 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+                <a href="{{ url_for('candidates.view', id=c.id) }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                    Full Profile <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+                <div class="flex items-center space-x-2">
+                    <a href="{{ url_for('candidates.edit', id=c.id) }}" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/60 rounded-lg transition" title="Edit candidate">
+                        <i class="fa-regular fa-pen-to-square text-xs"></i>
+                    </a>
+                    <form action="{{ url_for('candidates.delete', id=c.id) }}" method="POST" class="inline" onsubmit="return confirm('Delete candidate {{ c.name }}?')">
+                        <button type="submit" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Delete candidate">
+                            <i class="fa-regular fa-trash-can text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-user-plus text-2xl"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-800">No candidates found</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            {% if selected_election_id %}
+            There are no candidates registered under this election yet.
+            {% else %}
+            Get started by registering candidates with their campus positions, slogans, and campaign photos.
+            {% endif %}
+        </p>
+        <a href="{{ url_for('candidates.new', election_id=selected_election_id or '') }}" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition">
+            <i class="fa-solid fa-plus"></i> Add Candidate
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

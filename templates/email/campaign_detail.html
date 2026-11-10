@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}{{ campaign.subject }} — Email Campaign Detail — ELECHUB{% endblock %}
+{% block header_title %}Email Campaign Blast Detail{% endblock %}
+
+{% block content %}
+<div class="space-y-6 pb-12 max-w-6xl mx-auto">
+    <!-- Top Action & Navigation Bar -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('email_campaigns.index') }}" class="w-9 h-9 rounded-xl border border-slate-300 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-extrabold text-slate-900">{{ campaign.subject }}</h1>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {% if campaign.status == 'Completed' %}bg-emerald-100 text-emerald-800{% elif campaign.status == 'Sending' %}bg-blue-100 text-blue-800 animate-pulse{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        {{ campaign.status }}
+                    </span>
+                    {% if campaign.attach_poster %}
+                    <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-xs font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-paperclip"></i> Poster Attached
+                    </span>
+                    {% endif %}
+                </div>
+                <p class="text-xs text-slate-400">
+                    Dispatched on {{ campaign.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+                    {% if campaign.candidate_rel %} • Candidate: <span class="font-bold text-slate-700">{{ campaign.candidate_rel.name }} ({{ campaign.candidate_rel.position }})</span>{% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            {% if is_simulated and smtp_active %}
+            <form method="POST" action="{{ url_for('email_campaigns.resend_live', campaign_id=campaign.id) }}" class="inline">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-paper-plane"></i> Send Live via SMTP
+                </button>
+            </form>
+            {% elif campaign.failed_count and campaign.failed_count > 0 %}
+            <form method="POST" action="{{ url_for('email_campaigns.resend_failed', campaign_id=campaign.id) }}" class="inline">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right"></i> Resend Failed ({{ campaign.failed_count }})
+                </button>
+            </form>
+            {% endif %}
+            <a href="{{ url_for('email_campaigns.compose') }}" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> New Email Blast
+            </a>
+        </div>
+    </div>
+
+    {% if is_simulated %}
+    <!-- Simulation Mode Alert Banner -->
+    <div class="p-5 rounded-2xl bg-amber-50/90 border border-amber-200/80 flex items-start gap-4 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="space-y-1.5 flex-1">
+            <div class="flex items-center gap-2">
+                <h4 class="text-xs font-black uppercase tracking-wider text-amber-800">Simulated Dispatch (No Physical Emails Sent)</h4>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-200/70 text-amber-900 font-mono">SIMULATION ONLY</span>
+            </div>
+            <p class="text-xs text-amber-800 leading-relaxed">
+                These email dispatches were executed in local <strong>Simulation Mode</strong> because outgoing SMTP mail credentials were not configured at dispatch time. <strong>No emails reached recipient inboxes</strong>.
+            </p>
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+                {% if smtp_active %}
+                <form method="POST" action="{{ url_for('email_campaigns.resend_live', campaign_id=campaign.id) }}" class="inline">
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-paper-plane"></i> Dispatch Now to {{ campaign.recipient_count }} Inboxes via Live SMTP
+                    </button>
+                </form>
+                <span class="text-[11px] text-emerald-700 font-medium"><i class="fa-solid fa-circle-check"></i> Outgoing mail server is connected and ready!</span>
+                {% else %}
+                <a href="{{ url_for('email_campaigns.settings') }}" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-gear"></i> Configure Live Mail Server in Settings
+                </a>
+                <span class="text-[11px] text-amber-700">Enter your Gmail App Password or SMTP credentials to deliver real emails.</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Summary Metrics Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Inboxes</p>
+            <h3 class="text-2xl font-black text-slate-900 mt-1">{{ campaign.recipient_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Attempted addresses</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Delivered / Sent</p>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1">{{ campaign.sent_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Dispatched via SMTP</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Failed</p>
+            <h3 class="text-2xl font-black {% if campaign.failed_count %}text-rose-600{% else %}text-slate-400{% endif %} mt-1">{{ campaign.failed_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">SMTP failure or bounce</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Template Type</p>
+            <h3 class="text-xl font-black text-slate-900 mt-1 truncate">{{ campaign.template_type }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Campaign format</p>
+        </div>
+    </div>
+
+    <!-- Rendered Email Body Preview -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Email Body Dispatched</h4>
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-800 prose max-w-none">
+            {{ campaign.body_html|safe }}
+        </div>
+    </div>
+
+    <!-- Recipient Delivery Log Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Per-Recipient Delivery Audit Log</h3>
+                <p class="text-[11px] text-slate-400">Individual delivery status, SMTP transaction logs, and poster attachments.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="text" id="emailLogSearchInput" onkeyup="filterEmailLogTable()" placeholder="Search voter or email..."
+                    class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 rounded-full text-slate-600">{{ logs|length }} logs</span>
+            </div>
+        </div>
+
+        {% if logs %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs" id="emailLogsTable">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3.5 px-6">Recipient</th>
+                        <th class="py-3.5 px-6">Email Address</th>
+                        <th class="py-3.5 px-6">Personalized Subject</th>
+                        <th class="py-3.5 px-6">Status</th>
+                        <th class="py-3.5 px-6">Attachment</th>
+                        <th class="py-3.5 px-6">Sent At</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono">
+                    {% for log in logs %}
+                    <tr class="hover:bg-slate-50/60 transition log-row">
+                        <td class="py-3.5 px-6 font-sans font-bold text-slate-900 search-target">
+                            {{ log.recipient_name or 'Voter' }}
+                        </td>
+                        <td class="py-3.5 px-6 text-slate-700 search-target">
+                            {{ log.recipient }}
+                        </td>
+                        <td class="py-3.5 px-6 font-sans text-slate-600 max-w-sm truncate" title="{{ log.subject }}">
+                            {{ log.subject }}
+                        </td>
+                        <td class="py-3.5 px-6">
+                            {% if log.status == 'sent' %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Sent
+                                </span>
+                            {% elif log.status == 'simulated' %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800" title="Simulated: No external email was delivered">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Simulated (Unsent)
+                                </span>
+                            {% elif log.status == 'failed' %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800" title="{{ log.error_message or '' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Failed: {{ log.error_message or 'SMTP Error' }}
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                    {{ log.status|title }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-6 text-slate-500 font-sans">
+                            {% if log.attached_poster_path %}
+                                <span class="text-indigo-600 font-bold text-[11px]"><i class="fa-solid fa-paperclip"></i> Poster</span>
+                            {% else %}
+                                <span class="text-slate-300">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-6 text-[11px] text-slate-400">
+                            {{ log.sent_at.strftime('%H:%M:%S') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="py-12 text-center text-xs text-slate-400">
+            No recipient logs found for this email campaign.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function filterEmailLogTable() {
+    const input = document.getElementById('emailLogSearchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.log-row');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,434 @@
+[
+  {
+    "id": "call_to_serve",
+    "title": "A Call to Serve (Slanted Chevron)",
+    "category": "Elections & Leadership",
+    "description": "Diagonal split with bold SERVE headline, agenda badges, and dark green candidate chevron.",
+    "tags": [
+      "Campaign",
+      "Election",
+      "Chairman",
+      "Executive"
+    ],
+    "filename": "call_to_serve_joshua.jpg",
+    "url": "/static/templates/library/call_to_serve_joshua.jpg",
+    "width": 721,
+    "height": 1024,
+    "aspectRatio": "1:1.42",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "manifesto_pillars",
+    "title": "Biometric Manifesto Pillars",
+    "category": "Campus & GRC",
+    "description": "Fingerprint curve textures with 4 stacked rounded bullet cards for initiatives and manifesto points.",
+    "tags": [
+      "Alumni",
+      "Secretary",
+      "Manifesto",
+      "Campus"
+    ],
+    "filename": "manifesto_pillars_akande.jpg",
+    "url": "/static/templates/library/manifesto_pillars_akande.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "vote_3d_emerald",
+    "title": "Giant 3D VOTE & Biometric Glow",
+    "category": "Campus & GRC",
+    "description": "Massive 3D extruded VOTE typography with glowing green verification badge and dual-tone footer.",
+    "tags": [
+      "Director of Socials",
+      "Student Union",
+      "3D Typography",
+      "Verified"
+    ],
+    "filename": "vote_3d_adinye_peace.jpg",
+    "url": "/static/templates/library/vote_3d_adinye_peace.jpg",
+    "width": 735,
+    "height": 862,
+    "aspectRatio": "1:1.17",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "geometric_prestige",
+    "title": "Prestige Geometric Angles (JCR President)",
+    "category": "Campus & GRC",
+    "description": "Dynamic red and navy blue angular polygon wedges on crisp white backdrop with signature script.",
+    "tags": [
+      "Hall President",
+      "University",
+      "Prestige",
+      "Modern"
+    ],
+    "filename": "geometric_prestige_alexis.jpg",
+    "url": "/static/templates/library/geometric_prestige_alexis.jpg",
+    "width": 735,
+    "height": 873,
+    "aspectRatio": "1:1.19",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "ribbon_national_ndc",
+    "title": "National Ribbon & Angled Chevron",
+    "category": "Elections & Leadership",
+    "description": "Bold party/national ribbon geometry with circular role badge, clean typography, and hopeful slogan.",
+    "tags": [
+      "Constituency",
+      "Parliamentary",
+      "National Party",
+      "Executive"
+    ],
+    "filename": "ribbon_ndc_kwasi_james.jpg",
+    "url": "/static/templates/library/ribbon_ndc_kwasi_james.jpg",
+    "width": 736,
+    "height": 922,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "studio_noir_portrait",
+    "title": "Moody Noir Studio Portrait",
+    "category": "Campus & GRC",
+    "description": "Deep charcoal studio lighting with colored directional arrows, minimalist dots, and twin slogans.",
+    "tags": [
+      "President",
+      "SRC",
+      "Minimalist",
+      "Dramatic Portrait"
+    ],
+    "filename": "studio_portrait_tomi.jpg",
+    "url": "/static/templates/library/studio_portrait_tomi.jpg",
+    "width": 723,
+    "height": 1024,
+    "aspectRatio": "1:1.42",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "sunshine_victory",
+    "title": "Sunshine Victory & Flag Ribbon",
+    "category": "Elections & Leadership",
+    "description": "High-energy radiant yellow backdrop with presidential header, national flag stripes, and bold contrast footer.",
+    "tags": [
+      "Presidential",
+      "National",
+      "Yellow",
+      "Protecting The Gains"
+    ],
+    "filename": "sunshine_victory_museveni.jpg",
+    "url": "/static/templates/library/sunshine_victory_museveni.jpg",
+    "width": 723,
+    "height": 1024,
+    "aspectRatio": "1:1.42",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "emerald_halftone_angles",
+    "title": "Emerald Angles & Halftone Stencil",
+    "category": "Campus & GRC",
+    "description": "Diagonal textures with biometric watermark, tape badges, and punchy hashtags.",
+    "tags": [
+      "PRO",
+      "Public Relations",
+      "Emerald",
+      "Halftone"
+    ],
+    "filename": "emerald_angles_enoch_abe.jpg",
+    "url": "/static/templates/library/emerald_angles_enoch_abe.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "standout_crowd_contrast",
+    "title": "Brand Standout in the Crowd",
+    "category": "Corporate & Business",
+    "description": "High-concept monochrome crowd montage with single striking color pop and punchy branding message.",
+    "tags": [
+      "Brand",
+      "Corporate",
+      "Marketing",
+      "Monochrome"
+    ],
+    "filename": "creative_contrast_avertis.jpg",
+    "url": "/static/templates/library/creative_contrast_avertis.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "badge"
+  },
+  {
+    "id": "popart_rally_bonanza",
+    "title": "Pop-Art Rally Megaphone & Speed Lines",
+    "category": "Campus & GRC",
+    "description": "Retro pop-art halftone megaphone graphic with caution tape banners and 3D extruded title.",
+    "tags": [
+      "Rally",
+      "Anticipate",
+      "Bonanza",
+      "Pop Art"
+    ],
+    "filename": "halftone_bonanza_napss.jpg",
+    "url": "/static/templates/library/halftone_bonanza_napss.jpg",
+    "width": 736,
+    "height": 736,
+    "aspectRatio": "1.0:1",
+    "defaultPhotoShape": "badge"
+  },
+  {
+    "id": "infographic_timeline",
+    "title": "Twisted Ribbon Event Schedule",
+    "category": "Programs & Schedules",
+    "description": "Infinity loop connecting calendar dates with colorful event cards and descriptions.",
+    "tags": [
+      "Timeline",
+      "Schedule",
+      "Calendar",
+      "Infographic"
+    ],
+    "filename": "infographic_event_schedule.jpg",
+    "url": "/static/templates/library/infographic_event_schedule.jpg",
+    "width": 388,
+    "height": 691,
+    "aspectRatio": "1:1.78",
+    "defaultPhotoShape": "none"
+  },
+  {
+    "id": "mega_conference_hierarchy",
+    "title": "Grand Conference Multi-Speaker Layout",
+    "category": "Conferences & Summits",
+    "description": "Multi-tiered speaker hierarchy with main host, keynote ministers, and guest speaker grid.",
+    "tags": [
+      "Church",
+      "Conference",
+      "Speakers",
+      "Glory & Power"
+    ],
+    "filename": "rehoboth_mega_conference.jpg",
+    "url": "/static/templates/library/rehoboth_mega_conference.jpg",
+    "width": 736,
+    "height": 981,
+    "aspectRatio": "1:1.33",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "guest_of_honor_expo",
+    "title": "Special Guest of Honor (Expo & Fair)",
+    "category": "Corporate & Business",
+    "description": "High-end rounded container card in deep forest green with partner logo strip and theme pill.",
+    "tags": [
+      "Guest of Honor",
+      "Expo",
+      "Fair",
+      "Corporate"
+    ],
+    "filename": "ghatfair_transport_expo.jpg",
+    "url": "/static/templates/library/ghatfair_transport_expo.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "african_ankara_violet",
+    "title": "African Ankara Pattern & Royal Violet",
+    "category": "Campus & GRC",
+    "description": "Royal purple / violet theme with subtle African geometric tribal watermark and bold typography.",
+    "tags": [
+      "Director of Socials",
+      "African Pattern",
+      "Violet",
+      "Purple"
+    ],
+    "filename": "african_pattern_olamide.jpg",
+    "url": "/static/templates/library/african_pattern_olamide.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "availing_power_night",
+    "title": "Availing Power Spotlight Night",
+    "category": "Church & Faith",
+    "description": "Electric cobalt blue spotlight gradient with condensed typography, scripture badge, and orange time pills.",
+    "tags": [
+      "Church",
+      "Power Night",
+      "Spotlight",
+      "Faith"
+    ],
+    "filename": "availing_power_night.jpg",
+    "url": "/static/templates/library/availing_power_night.jpg",
+    "width": 735,
+    "height": 788,
+    "aspectRatio": "1:1.07",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "festival_of_glory",
+    "title": "Chrome 3D Festival & Ministers Lineup",
+    "category": "Church & Faith",
+    "description": "Magnificent metallic chrome 3D typography with aligned ministers row and multi-session schedule.",
+    "tags": [
+      "Festival",
+      "Glory",
+      "Chrome 3D",
+      "Ministers"
+    ],
+    "filename": "festival_of_glory_rcn.jpg",
+    "url": "/static/templates/library/festival_of_glory_rcn.jpg",
+    "width": 706,
+    "height": 719,
+    "aspectRatio": "1:1.02",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "three_pillars_gathering",
+    "title": "Three Windows of Glory Triptych",
+    "category": "Church & Faith",
+    "description": "Three vertical architectural window frames showcasing keynote ministers with golden aura and emblem.",
+    "tags": [
+      "Triptych",
+      "Pillars",
+      "Haggai",
+      "Gathering"
+    ],
+    "filename": "three_pillars_glory.jpg",
+    "url": "/static/templates/library/three_pillars_glory.jpg",
+    "width": 736,
+    "height": 1021,
+    "aspectRatio": "1:1.39",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "formal_program_outline",
+    "title": "Retirement & Milestone Program Outline",
+    "category": "Programs & Schedules",
+    "description": "Formal navy blue program outline with timed schedule pins, official crests, and circular photo montage.",
+    "tags": [
+      "Retirement",
+      "Birthday",
+      "Program Outline",
+      "Order of Events"
+    ],
+    "filename": "retirement_60th_program.jpg",
+    "url": "/static/templates/library/retirement_60th_program.jpg",
+    "width": 631,
+    "height": 1024,
+    "aspectRatio": "1:1.62",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "ceos_panel_forum",
+    "title": "Tales of a Start-Up (CEOs Panel)",
+    "category": "Corporate & Business",
+    "description": "Asymmetric vertical column montage with monochrome speaker portraits and colorful vertical name tags.",
+    "tags": [
+      "Biz Forum",
+      "Panel",
+      "CEOs",
+      "Start-up"
+    ],
+    "filename": "ceos_panel_startups.jpg",
+    "url": "/static/templates/library/ceos_panel_startups.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "academic_order_of_program",
+    "title": "Order of Program (Academic Timetable)",
+    "category": "Programs & Schedules",
+    "description": "Clean two-column numbered timeline schedule with deep blue header and cyan time badges.",
+    "tags": [
+      "Academic",
+      "Program",
+      "Induction",
+      "Timetable"
+    ],
+    "filename": "order_of_program_timeline.jpg",
+    "url": "/static/templates/library/order_of_program_timeline.jpg",
+    "width": 723,
+    "height": 1024,
+    "aspectRatio": "1:1.42",
+    "defaultPhotoShape": "none"
+  },
+  {
+    "id": "legacy_agenda_orange",
+    "title": "Legacy Agenda & Floating 3D Coins",
+    "category": "Campus & GRC",
+    "description": "Warm sunset orange and white theme with giant 3D yellow checkmark coins and repetitive VOTE typography.",
+    "tags": [
+      "Legacy Agenda",
+      "President",
+      "Orange",
+      "3D Coins"
+    ],
+    "filename": "legacy_agenda_ileriayo.jpg",
+    "url": "/static/templates/library/legacy_agenda_ileriayo.jpg",
+    "width": 736,
+    "height": 920,
+    "aspectRatio": "1:1.25",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "swoosh_constituency_secretary",
+    "title": "Curved Swoosh & Biometric Ring",
+    "category": "Elections & Leadership",
+    "description": "Curved national red and green swooshes with fingerprint motif, clean corporate layout, and split badges.",
+    "tags": [
+      "Secretary",
+      "Constituency",
+      "Swoosh",
+      "Service"
+    ],
+    "filename": "swoosh_ndc_lord_kwamese.jpg",
+    "url": "/static/templates/library/swoosh_ndc_lord_kwamese.jpg",
+    "width": 736,
+    "height": 874,
+    "aspectRatio": "1:1.19",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "triptych_arches_gaem",
+    "title": "Three Arched Panels (Evangelism)",
+    "category": "Church & Faith",
+    "description": "Three rounded arched color panels (Yellow, Beige, Red) with dual monochrome and color speaker portraits.",
+    "tags": [
+      "Arches",
+      "Evangelism",
+      "Theme",
+      "Church"
+    ],
+    "filename": "gaem_three_arches.jpg",
+    "url": "/static/templates/library/gaem_three_arches.jpg",
+    "width": 723,
+    "height": 1024,
+    "aspectRatio": "1:1.42",
+    "defaultPhotoShape": "cutout"
+  },
+  {
+    "id": "split_summit_card",
+    "title": "Split Host & Guest Summit Card",
+    "category": "Conferences & Summits",
+    "description": "Dual-portrait card separated by a clean vertical split, teal gradient, QR code registration box, and date pill.",
+    "tags": [
+      "Summit",
+      "Host & Guest",
+      "Split Portrait",
+      "QR Code"
+    ],
+    "filename": "relationship_summit_split.jpg",
+    "url": "/static/templates/library/relationship_summit_split.jpg",
+    "width": 736,
+    "height": 942,
+    "aspectRatio": "1:1.28",
+    "defaultPhotoShape": "cutout"
+  }
+]

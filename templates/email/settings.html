@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk Email Gateway Settings — ELECHUB{% endblock %}
+{% block header_title %}Email Gateway & SMTP Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6 pb-16">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('email_campaigns.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Email Studio
+                </a>
+            </div>
+            <h1 class="text-xl font-black text-slate-900 mt-1">Bulk Email SMTP Configuration</h1>
+            <p class="text-xs text-slate-500">Configure your outgoing mail server (Gmail, Zoho, SendGrid, or Mailgun) to broadcast student campaigns directly to inboxes.</p>
+        </div>
+    </div>
+
+    <!-- Gateway Status Banner -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl {% if smtp_active %}bg-emerald-50 text-emerald-600 border border-emerald-200{% else %}bg-blue-50 text-blue-600 border border-blue-200{% endif %} flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid {% if smtp_active %}fa-envelope-circle-check{% else %}fa-shield-halved{% endif %}"></i>
+        </div>
+        <div class="flex-1">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Current Gateway Mode</h4>
+            <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-sm font-black text-slate-900">
+                    {% if smtp_active %}Live SMTP Active{% else %}Smart Simulation Mode{% endif %}
+                </span>
+                <span class="text-xs text-slate-500">• Server: <code class="font-mono text-indigo-600">{{ mail_server }}:{{ mail_port }}</code></span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">
+                {% if smtp_active %}
+                Live credentials are active (User: <strong class="text-slate-700">{{ mail_username }}</strong>). Outgoing manifesto broadcasts and campaign notices will be dispatched to real student recipient mailboxes.
+                {% else %}
+                Smart Simulation Mode is currently active. Dispatches will succeed in the UI and write to campaign logs without connecting to an external mail server. Add credentials below to go live.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Provider Quick-Select Presets -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                <i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> Provider Quick Presets
+            </span>
+            <span class="text-[11px] text-slate-400">Click to autofill host, port, and encryption</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <button type="button" onclick="applyPreset('gmail')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+                    <i class="fa-brands fa-google text-red-500"></i> Gmail / Workspace
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Port 587 (TLS)</p>
+            </button>
+            <button type="button" onclick="applyPreset('zoho')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+                    <i class="fa-solid fa-briefcase text-blue-600"></i> Zoho Mail
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Port 465 (SSL)</p>
+            </button>
+            <button type="button" onclick="applyPreset('sendgrid')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+                    <i class="fa-solid fa-paper-plane text-sky-500"></i> SendGrid
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">High volume bulk</p>
+            </button>
+            <button type="button" onclick="applyPreset('mailgun')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+                    <i class="fa-solid fa-gun text-emerald-600"></i> Mailgun
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Dedicated SMTP</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- Instructional Guidance for Gmail & Zoho -->
+    <div class="p-4 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-900 space-y-1.5">
+        <h5 class="font-bold flex items-center gap-1.5 text-amber-950">
+            <i class="fa-solid fa-lightbulb text-amber-600"></i> Important Note for Personal Gmail Accounts:
+        </h5>
+        <p class="leading-relaxed text-amber-900 text-[11px]">
+            Google blocks standard account passwords for third-party SMTP. To use Gmail:
+        </p>
+        <ol class="list-decimal list-inside text-[11px] text-amber-950 space-y-0.5 font-medium pl-1">
+            <li>Ensure <strong>2-Step Verification</strong> is enabled on your Google account.</li>
+            <li>Visit <a href="https://myaccount.google.com/apppasswords" target="_blank" class="underline text-indigo-700 font-bold">myaccount.google.com/apppasswords</a>.</li>
+            <li>Create an app named <strong>ELECHUB</strong> and copy the generated <strong>16-character App Password</strong> (e.g. <code class="bg-amber-100 px-1 py-0.5 rounded font-mono">abcd efgh ijkl mnop</code>).</li>
+            <li>Paste this 16-character code into the <strong>Mail Password</strong> field below.</li>
+        </ol>
+    </div>
+
+    <!-- Main Configuration Form -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <form method="POST" action="{{ url_for('email_campaigns.settings') }}" class="space-y-5" id="emailSettingsForm">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">SMTP Mail Server Host *</label>
+                    <input type="text" name="mail_server" id="mailServerInput" value="{{ mail_server }}" placeholder="e.g. smtp.gmail.com" required
+                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Port *</label>
+                    <input type="number" name="mail_port" id="mailPortInput" value="{{ mail_port }}" placeholder="587" required
+                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                </div>
+            </div>
+
+            <!-- Encryption Options -->
+            <div class="flex flex-wrap items-center gap-6 pt-1">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" name="mail_use_tls" id="mailUseTlsInput" {% if mail_use_tls %}checked{% endif %} class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                    <span class="text-xs font-bold text-slate-700">Use TLS (STARTTLS — Recommended for Port 587)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" name="mail_use_ssl" id="mailUseSslInput" {% if mail_use_ssl %}checked{% endif %} class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                    <span class="text-xs font-bold text-slate-700">Use SSL (Port 465)</span>
+                </label>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Account Username / Email Address *</label>
+                <input type="text" name="mail_username" id="mailUsernameInput" value="{{ mail_username }}" placeholder="e.g. campus.campaign@gmail.com"
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                <p class="text-[11px] text-slate-400 mt-1">The email address associated with your outgoing SMTP mailbox.</p>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-xs font-bold text-slate-700">Account Password or App Password *</label>
+                    <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] text-indigo-600 hover:text-indigo-700 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-eye" id="pwdEyeIcon"></i> <span id="pwdToggleText">Show</span>
+                    </button>
+                </div>
+                <input type="password" name="mail_password" id="mailPasswordInput" placeholder="{% if has_password %}••••••••••••••••••••••••••••••••{% else %}Paste your 16-character App Password{% endif %}"
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                <p class="text-[11px] text-slate-400 mt-1">For Gmail, enter your Google App Password without spaces. Leave blank to keep existing password.</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Default From Sender Display Header (Optional)</label>
+                <input type="text" name="mail_default_sender" id="mailSenderInput" value="{{ mail_default_sender }}" placeholder="e.g. ELECHUB Campaign Command &lt;noreply@elechub.campus.ac.ug&gt;"
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                <p class="text-[11px] text-slate-400 mt-1">Friendly sender name shown in student mail apps (e.g. Gmail/Outlook).</p>
+            </div>
+
+            <!-- Live Test Connection Feedback Box -->
+            <div id="testConnectionFeedback" class="hidden p-3.5 rounded-xl text-xs font-medium border"></div>
+
+            <div class="pt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
+                <div>
+                    <button type="submit" name="action" value="reset_simulation" class="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 text-xs font-bold transition flex items-center gap-1.5" title="Clear SMTP credentials and use local test simulation">
+                        <i class="fa-solid fa-rotate-left"></i> Reset to Safe Simulation Mode
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="testSmtpConnection()" id="testConnBtn" class="px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plug"></i> Test Connection
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Save & Activate
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Live Test Email Send Box -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+        <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane text-indigo-600"></i> Send a Real Test Email to Your Inbox
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">Verify that your mail server credentials actually deliver an email to your physical inbox before launching student campaign broadcasts.</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+            <input type="email" id="quickTestEmailInput" placeholder="Enter recipient email (e.g. your_email@gmail.com)"
+                class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+            <button type="button" onclick="sendQuickTestEmail()" id="quickTestEmailBtn"
+                class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center justify-center gap-2 shrink-0">
+                <i class="fa-solid fa-paper-plane"></i> Send Test Email
+            </button>
+        </div>
+        <div id="quickTestEmailFeedback" class="hidden p-3.5 rounded-xl text-xs font-medium border"></div>
+    </div>
+</div>
+
+<script>
+function applyPreset(provider) {
+    const serverInput = document.getElementById('mailServerInput');
+    const portInput = document.getElementById('mailPortInput');
+    const tlsInput = document.getElementById('mailUseTlsInput');
+    const sslInput = document.getElementById('mailUseSslInput');
+
+    if (provider === 'gmail') {
+        serverInput.value = 'smtp.gmail.com';
+        portInput.value = '587';
+        tlsInput.checked = true;
+        sslInput.checked = false;
+    } else if (provider === 'zoho') {
+        serverInput.value = 'smtp.zoho.com';
+        portInput.value = '465';
+        tlsInput.checked = false;
+        sslInput.checked = true;
+    } else if (provider === 'sendgrid') {
+        serverInput.value = 'smtp.sendgrid.net';
+        portInput.value = '587';
+        tlsInput.checked = true;
+        sslInput.checked = false;
+    } else if (provider === 'mailgun') {
+        serverInput.value = 'smtp.mailgun.org';
+        portInput.value = '587';
+        tlsInput.checked = true;
+        sslInput.checked = false;
+    }
+}
+
+function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('mailPasswordInput');
+    const eyeIcon = document.getElementById('pwdEyeIcon');
+    const toggleText = document.getElementById('pwdToggleText');
+
+    if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeIcon.className = 'fa-solid fa-eye-slash';
+        toggleText.innerText = 'Hide';
+    } else {
+        pwdInput.type = 'password';
+        eyeIcon.className = 'fa-solid fa-eye';
+        toggleText.innerText = 'Show';
+    }
+}
+
+function testSmtpConnection() {
+    const btn = document.getElementById('testConnBtn');
+    const feedback = document.getElementById('testConnectionFeedback');
+    const server = document.getElementById('mailServerInput').value.trim();
+    const port = document.getElementById('mailPortInput').value.trim();
+    const useTls = document.getElementById('mailUseTlsInput').checked;
+    const useSsl = document.getElementById('mailUseSslInput').checked;
+    const username = document.getElementById('mailUsernameInput').value.trim();
+    const password = document.getElementById('mailPasswordInput').value.trim();
+
+    if (!server || !username) {
+        feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-amber-50 text-amber-800 border-amber-200 block';
+        feedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Please enter both the SMTP Mail Server and Account Username before testing.';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Testing Handshake...';
+    feedback.className = 'hidden';
+
+    fetch('{{ url_for("email_campaigns.api_test_connection") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mail_server: server,
+            mail_port: port,
+            mail_use_tls: useTls,
+            mail_use_ssl: useSsl,
+            mail_username: username,
+            mail_password: password
+        })
+    })
+    .then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ status, data }) => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-plug"></i> Test Connection';
+        feedback.classList.remove('hidden');
+
+        if (status === 200 && data.success) {
+            feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-emerald-50 text-emerald-800 border-emerald-200 block';
+            feedback.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5 text-emerald-600"></i> ' + data.message;
+        } else {
+            feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 text-rose-800 border-rose-200 block';
+            feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5 text-rose-600"></i> ' + (data.message || data.error || 'Connection failed.');
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-plug"></i> Test Connection';
+        feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 text-rose-800 border-rose-200 block';
+        feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5 text-rose-600"></i> Network error while testing SMTP connection: ' + err.message;
+    });
+}
+
+function sendQuickTestEmail() {
+    const input = document.getElementById('quickTestEmailInput');
+    const btn = document.getElementById('quickTestEmailBtn');
+    const feedback = document.getElementById('quickTestEmailFeedback');
+    const targetEmail = input.value.trim();
+
+    if (!targetEmail || !targetEmail.includes('@')) {
+        feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-amber-50 text-amber-800 border-amber-200 block';
+        feedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Please enter a valid recipient email address.';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending...';
+    feedback.className = 'hidden';
+
+    fetch('{{ url_for("email_campaigns.api_send_test") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: targetEmail,
+            subject: 'ELECHUB Test Campaign Connection Check',
+            body_html: '<div style="font-family: sans-serif; padding: 20px; line-height: 1.6;"><h2>SMTP Test Successful!</h2><p>This test email confirms that your outgoing mail server is functioning and connected to ELECHUB. Campaign broadcasts will now reach student inboxes reliably.</p></div>'
+        })
+    })
+    .then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ status, data }) => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Test Email';
+        feedback.classList.remove('hidden');
+
+        if (status === 200 && data.success) {
+            const isSim = data.details && data.details.mode === 'simulation';
+            if (isSim) {
+                feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-amber-50 text-amber-800 border-amber-200 block';
+                feedback.innerHTML = '<i class="fa-solid fa-flask mr-1.5 text-amber-600"></i> <strong>Simulation Mode Dispatch:</strong> Test logged locally, but SMTP credentials are unconfigured so no actual email reached ' + targetEmail + '. Save your SMTP password above to go live.';
+            } else {
+                feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-emerald-50 text-emerald-800 border-emerald-200 block';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5 text-emerald-600"></i> <strong>Delivered via Live SMTP!</strong> Real test message dispatched to <strong>' + targetEmail + '</strong>. Check your inbox (and spam folder) to verify.';
+            }
+        } else {
+            feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 text-rose-800 border-rose-200 block';
+            feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5 text-rose-600"></i> ' + (data.error || 'Failed to dispatch test email.');
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Test Email';
+        feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 text-rose-800 border-rose-200 block';
+        feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5 text-rose-600"></i> Request error: ' + err.message;
+    });
+}
+</script>
+{% endblock %}

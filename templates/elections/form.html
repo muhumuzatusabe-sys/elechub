@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Election' if election else 'New Election' }} — ELECHUB{% endblock %}
+{% block header_title %}{{ 'Edit Election' if election else 'Create New Election' }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-extrabold text-slate-900">{{ 'Edit Election' if election else 'Create New Election' }}</h1>
+            <p class="text-xs text-slate-500">Define the overarching race, campus, or election term.</p>
+        </div>
+        <a href="{{ url_for('elections.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Back to Elections
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
+        <form method="POST" class="space-y-6">
+            <div>
+                <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                    Election / Campaign Name <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" name="name" id="name" required
+                    value="{{ election.name if election else '' }}"
+                    placeholder="e.g. MUACR Guild Elections 2026 or College Rep Elections"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition">
+                <p class="text-xs text-slate-400 mt-1.5">This name will appear on official campaign posters, SMS blast headers, and email newsletters.</p>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+                <a href="{{ url_for('elections.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                    Cancel
+                </a>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i>
+                    <span>{{ 'Update Election' if election else 'Save Election' }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

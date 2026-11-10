@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Elections — ELECHUB{% endblock %}
+{% block header_title %}Campus Elections Directory{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6">
+    <!-- Header with Action -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-xl font-extrabold text-slate-900">Elections & Campaign Races</h1>
+            <p class="text-xs text-slate-500">Manage campaign seasons and representative races.</p>
+        </div>
+        <a href="{{ url_for('elections.new') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+            <i class="fa-solid fa-plus"></i> New Election
+        </a>
+    </div>
+
+    <!-- Elections Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        {% if elections %}
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Election Name</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Candidates</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Contact Lists</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Created</th>
+                    <th scope="col" class="px-6 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white">
+                {% for el in elections %}
+                <tr class="hover:bg-slate-50/70 transition">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                                <i class="fa-solid fa-flag"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-slate-900">{{ el.name }}</div>
+                                <div class="text-xs text-slate-400">ID #{{ el.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <a href="{{ url_for('candidates.index', election_id=el.id) }}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition">
+                            <i class="fa-solid fa-users mr-1.5 text-[10px]"></i>
+                            {{ el.candidates|length }} Candidate{{ 's' if el.candidates|length != 1 else '' }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <a href="{{ url_for('contacts.index', election_id=el.id) }}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition">
+                            <i class="fa-solid fa-address-book mr-1.5 text-[10px]"></i>
+                            {{ el.contact_lists|length }} List{{ 's' if el.contact_lists|length != 1 else '' }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-500">
+                        {{ el.created_at.strftime('%b %d, %Y') if el.created_at else '—' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium space-x-2">
+                        <a href="{{ url_for('elections.edit', id=el.id) }}" class="text-slate-600 hover:text-indigo-600 px-2 py-1 rounded hover:bg-slate-100 transition">
+                            <i class="fa-regular fa-pen-to-square"></i> Edit
+                        </a>
+                        <form action="{{ url_for('elections.delete', id=el.id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this election? All candidates and contact lists in it will be permanently deleted.')">
+                            <button type="submit" class="text-rose-600 hover:text-rose-800 px-2 py-1 rounded hover:bg-rose-50 transition">
+                                <i class="fa-regular fa-trash-can"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-12 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-box-archive text-xl"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">No elections yet</h3>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Create your first campus election campaign to begin registering candidates and voter lists.</p>
+            <a href="{{ url_for('elections.new') }}" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow hover:bg-indigo-700 transition">
+                <i class="fa-solid fa-plus text-[10px]"></i> Create Election
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

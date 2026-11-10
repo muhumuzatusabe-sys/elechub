@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Lists — ELECHUB{% endblock %}
+{% block header_title %}Voter Contact Lists{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6">
+    <!-- Header with Action -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-xl font-extrabold text-slate-900">Voter Contact Lists</h1>
+            <p class="text-xs text-slate-500">Audience segments, hall rosters, faculty registries, and year groups for SMS/Email campaigns.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('contacts.sample_csv') }}" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl shadow-sm transition">
+                <i class="fa-solid fa-download text-emerald-600"></i> Sample CSV
+            </a>
+            <a href="{{ url_for('contacts.new') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+                <i class="fa-solid fa-plus"></i> New Contact List
+            </a>
+        </div>
+    </div>
+
+    <!-- Contact Lists Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        {% if contact_lists %}
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">List Name</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Election</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Verified Contacts</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Created</th>
+                    <th scope="col" class="px-6 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white">
+                {% for cl in contact_lists %}
+                <tr class="hover:bg-slate-50/70 transition">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                                <i class="fa-solid fa-address-book"></i>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('contacts.view', id=cl.id) }}" class="text-sm font-bold text-slate-900 hover:text-indigo-600 transition">
+                                    {{ cl.name }}
+                                </a>
+                                <div class="text-xs text-slate-400">ID #{{ cl.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-600 font-medium">
+                        {{ cl.election.name }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <i class="fa-solid fa-phone-volume mr-1.5 text-[10px]"></i>
+                            {{ cl.contacts|length }} recipient{{ 's' if cl.contacts|length != 1 else '' }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-500">
+                        {{ cl.created_at.strftime('%b %d, %Y') if cl.created_at else '—' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium space-x-2">
+                        <a href="{{ url_for('contacts.upload_csv', id=cl.id) }}" class="text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-lg border border-emerald-200 transition inline-flex items-center gap-1">
+                            <i class="fa-solid fa-file-arrow-up"></i> Upload CSV
+                        </a>
+                        <a href="{{ url_for('contacts.view', id=cl.id) }}" class="text-slate-600 hover:text-indigo-600 px-2 py-1 rounded hover:bg-slate-100 transition">
+                            <i class="fa-regular fa-eye"></i> View
+                        </a>
+                        <form action="{{ url_for('contacts.delete', id=cl.id) }}" method="POST" class="inline" onsubmit="return confirm('Delete contact list {{ cl.name }}?')">
+                            <button type="submit" class="text-rose-600 hover:text-rose-800 px-2 py-1 rounded hover:bg-rose-50 transition">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-12 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-users-rectangle text-xl"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">No contact lists yet</h3>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Create a contact list for halls, faculties, or voter groups to upload CSV phone registers.</p>
+            <a href="{{ url_for('contacts.new') }}" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow hover:bg-indigo-700 transition">
+                <i class="fa-solid fa-plus text-[10px]"></i> Create Contact List
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

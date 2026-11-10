@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ candidate.name }} — ELECHUB{% endblock %}
+{% block header_title %}Candidate Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-6">
+    <!-- Breadcrumb & Back -->
+    <div class="flex items-center justify-between">
+        <a href="{{ url_for('candidates.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Back to Candidates
+        </a>
+        <div class="flex items-center space-x-2">
+            <a href="{{ url_for('candidates.edit', id=candidate.id) }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                <i class="fa-regular fa-pen-to-square"></i> Edit Profile
+            </a>
+            <form action="{{ url_for('candidates.delete', id=candidate.id) }}" method="POST" class="inline" onsubmit="return confirm('Delete this candidate?')">
+                <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-rose-200 text-xs font-bold text-rose-600 hover:bg-rose-50 transition">
+                    <i class="fa-regular fa-trash-can"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Candidate Hero Header -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <!-- Top Colored Banner -->
+        <div class="h-28 w-full relative" style="background: linear-gradient(135deg, {{ candidate.color_theme or '#2563eb' }}, #0f172a);">
+            <div class="absolute bottom-3 right-6 text-white/40 font-extrabold text-sm tracking-widest uppercase">
+                {{ candidate.party_or_slate or 'Independent' }}
+            </div>
+        </div>
+
+        <div class="px-8 pb-8 pt-0">
+            <div class="flex flex-col sm:flex-row sm:items-end -mt-14 sm:space-x-6">
+                <!-- Avatar -->
+                <div class="relative inline-block">
+                    <img src="{{ candidate.photo_url }}" alt="{{ candidate.name }}"
+                        class="w-28 h-28 rounded-2xl object-cover border-4 border-white shadow-lg bg-white">
+                    <span class="absolute bottom-2 right-2 w-5 h-5 rounded-full border-2 border-white shadow" style="background-color: {{ candidate.color_theme or '#2563eb' }};" title="Theme Color"></span>
+                </div>
+
+                <!-- Titles -->
+                <div class="mt-4 sm:mt-0 flex-1">
+                    <div class="flex items-center space-x-2">
+                        <h1 class="text-2xl font-extrabold text-slate-900">{{ candidate.name }}</h1>
+                        <span class="text-xs px-2.5 py-0.5 rounded-full font-bold uppercase" style="background-color: {{ candidate.color_theme }}15; color: {{ candidate.color_theme }};">
+                            {{ candidate.position }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">{{ candidate.election.name }}</p>
+                </div>
+            </div>
+
+            <!-- Slogan Card -->
+            {% if candidate.slogan %}
+            <div class="mt-6 p-4 rounded-xl border border-slate-200/60 bg-slate-50/50 flex items-start space-x-3">
+                <i class="fa-solid fa-quote-left text-slate-400 text-lg mt-0.5"></i>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Official Slogan</span>
+                    <p class="text-sm font-semibold text-slate-800 italic">"{{ candidate.slogan }}"</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Metadata Details Grid -->
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-100 text-xs">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-slate-400 font-bold uppercase text-[10px] block mb-1">Phone Contact</span>
+                    <span class="font-mono text-slate-800 font-semibold">{{ candidate.phone or 'Not provided' }}</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-slate-400 font-bold uppercase text-[10px] block mb-1">Email Address</span>
+                    <span class="text-slate-800 font-semibold truncate block">{{ candidate.email or 'Not provided' }}</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-slate-400 font-bold uppercase text-[10px] block mb-1">Brand Theme Code</span>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-4 h-4 rounded-md border border-slate-300" style="background-color: {{ candidate.color_theme or '#2563eb' }};"></span>
+                        <span class="font-mono text-slate-800 font-bold">{{ candidate.color_theme or '#2563eb' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ready Campaign Actions Grid (Plugs directly into subsequent modules) -->
+    <div>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3">Campaign Pipeline Actions for {{ candidate.name }}</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="{{ url_for('posters.studio', candidate_id=candidate.id) }}" class="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-rose-400 hover:bg-rose-50/30 transition block group">
+                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-3 text-base shadow-sm">
+                    <i class="fa-solid fa-palette"></i>
+                </div>
+                <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-rose-600">Create Campaign Posters</h4>
+                <p class="text-[11px] text-slate-400 mt-1">Render 300 DPI high-res posters with {{ candidate.name }}'s Brand Kit.</p>
+            </a>
+
+            <a href="{{ url_for('posters.batch', candidate_id=candidate.id) }}" class="p-5 bg-white rounded-2xl border-2 border-amber-300 hover:border-amber-400 bg-amber-50/30 hover:bg-amber-50/60 transition block group">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center mb-3 text-base shadow-sm font-bold">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h4 class="font-extrabold text-xs text-slate-950 group-hover:text-amber-700">Batch Mobilizer Flyers</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Generate personalized flyers for supporters with a generic endorsement message.</p>
+            </a>
+
+            <a href="{{ url_for('sms.compose', candidate_id=candidate.id) }}" class="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-400 hover:bg-emerald-50/30 transition block group">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 text-base shadow-sm">
+                    <i class="fa-solid fa-comment-sms"></i>
+                </div>
+                <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-emerald-600">SMS Broadcast</h4>
+                <p class="text-[11px] text-slate-400 mt-1">Send personalized campaign SMS blasts to supporter contact lists.</p>
+            </a>
+
+            <a href="{{ url_for('video.creator', candidate_id=candidate.id) }}" class="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-purple-400 hover:bg-purple-50/30 transition block group">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 text-base shadow-sm">
+                    <i class="fa-solid fa-film"></i>
+                </div>
+                <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-purple-600">Field Video Reel (9:16)</h4>
+                <p class="text-[11px] text-slate-400 mt-1">Ken-Burns video reel from {{ candidate.name }}'s campaign trail photos.</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}{{ campaign.title }} — SMS Campaign Detail — ELECHUB{% endblock %}
+{% block header_title %}SMS Campaign Blast Detail{% endblock %}
+
+{% block content %}
+<div class="space-y-6 pb-12 max-w-6xl mx-auto">
+    <!-- Top Action & Navigation Bar -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('sms.index') }}" class="w-9 h-9 rounded-xl border border-slate-300 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-extrabold text-slate-900">{{ campaign.title }}</h1>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {% if campaign.status == 'Completed' %}bg-emerald-100 text-emerald-800{% elif campaign.status == 'Sending' %}bg-blue-100 text-blue-800 animate-pulse{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        {{ campaign.status }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-400">
+                    Dispatched on {{ campaign.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+                    {% if campaign.candidate_rel %} • Tagged: <span class="font-bold text-slate-700">{{ campaign.candidate_rel.name }} ({{ campaign.candidate_rel.position }})</span>{% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            {% if failed_count and failed_count > 0 %}
+            <form method="POST" action="{{ url_for('sms.resend_failed', campaign_id=campaign.id) }}" class="inline">
+                <input type="hidden" name="use_default_sender" value="true">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5" title="Resends failed messages using Africa's Talking default verified shortcode">
+                    <i class="fa-solid fa-rotate-right"></i> Resend {{ failed_count }} with Default Sender ID
+                </button>
+            </form>
+            {% endif %}
+            <a href="{{ url_for('sms.compose') }}" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> New Blast
+            </a>
+        </div>
+    </div>
+
+    {% if is_simulated %}
+    <!-- Simulation Mode Alert Banner -->
+    <div class="p-5 rounded-2xl bg-amber-50/90 border border-amber-200/80 flex items-start gap-4 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="space-y-1">
+            <div class="flex items-center gap-2">
+                <h4 class="text-xs font-black uppercase tracking-wider text-amber-800">Simulated Dispatch (No Physical SMS Sent)</h4>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-200/70 text-amber-900 font-mono">SIMULATION ONLY</span>
+            </div>
+            <p class="text-xs text-amber-800 leading-relaxed">
+                These message dispatches were executed in local <strong>Simulation Mode</strong> because Africa's Talking live API credentials are not yet configured. Simulated IDs starting with <code class="font-bold font-mono text-amber-900 bg-amber-100 px-1 py-0.5 rounded">AT_SIM_</code> were generated, but <strong>no network requests reached physical cellular handsets</strong>.
+            </p>
+            <div class="pt-2 flex items-center gap-3">
+                <a href="{{ url_for('sms.settings') }}" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-gear"></i> Connect Africa's Talking for Real Delivery
+                </a>
+                <span class="text-[11px] text-amber-700">Enter your live username & API key to deliver SMS to MTN, Airtel, etc.</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if failed_count and failed_count > 0 %}
+    <!-- Failed Dispatches Banner -->
+    <div class="p-5 rounded-2xl bg-rose-50/90 border border-rose-200/80 flex items-start gap-4 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+        <div class="space-y-2 flex-1">
+            <div class="flex items-center gap-2">
+                <h4 class="text-xs font-black uppercase tracking-wider text-rose-800">Dispatch Failure: {{ failed_count }} Message(s) Rejected by Carrier</h4>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-200/70 text-rose-900 font-mono">DELIVERY REJECTED</span>
+            </div>
+
+            {% if has_invalid_sender_id %}
+            <div class="p-3.5 rounded-xl bg-white border border-rose-200 space-y-1.5 text-xs text-slate-700">
+                <div class="font-bold text-rose-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Cause of Failure: Unapproved Custom Sender ID
+                </div>
+                <p class="text-[11px] text-slate-600 leading-relaxed">
+                    Ugandan telecom carriers (MTN & Airtel) rejected these messages because custom sender name <code class="font-mono font-bold bg-slate-100 text-rose-700 px-1 py-0.5 rounded">{{ campaign.sender_id }}</code> is not registered and approved on your Africa's Talking account.
+                </p>
+                <div class="pt-2 flex flex-wrap items-center gap-3">
+                    <form method="POST" action="{{ url_for('sms.resend_failed', campaign_id=campaign.id) }}" class="inline">
+                        <input type="hidden" name="use_default_sender" value="true">
+                        <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-paper-plane"></i> 1-Click Fix: Resend {{ failed_count }} SMS with Verified Default Sender
+                        </button>
+                    </form>
+                    <span class="text-[11px] text-slate-500">Omitting the custom name uses Africa's Talking default verified route that works immediately.</span>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-xs text-rose-800 leading-relaxed">
+                Carrier error: <code class="font-bold font-mono text-rose-900 bg-rose-100 px-1.5 py-0.5 rounded">{{ error_sample or 'The carrier rejected this delivery' }}</code>.
+                {% if 'balance' in (error_sample or '').lower() %}
+                <br><span class="mt-1 block font-semibold text-rose-900">Your Africa's Talking airtime credit is low or depleted. Current balance: <strong class="font-mono">{{ at_balance or 'UGX 0.00' }}</strong>. Top up your account at <a href="https://account.africastalking.com" target="_blank" class="underline font-bold">africastalking.com</a> to send to handsets.</span>
+                {% elif 'authentication' in (error_sample or '').lower() %}
+                <br><span class="mt-1 block">Africa's Talking rejected your credentials because <strong class="text-rose-950">@Tusabe001</strong> is your local ELECHUB login password, not an Africa's Talking API Key. Africa's Talking requires an API Key generated from <a href="https://account.africastalking.com" target="_blank" class="underline font-bold text-rose-900">africastalking.com</a>.</span>
+                {% endif %}
+            </p>
+            <div class="pt-2 flex items-center gap-3">
+                <a href="{{ url_for('sms.settings') }}" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-key"></i> Correct Gateway Credentials in Settings
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Summary Metrics Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Voters</p>
+            <h3 class="text-2xl font-black text-slate-900 mt-1">{{ campaign.recipient_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Attempted numbers</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Dispatched</p>
+            <h3 class="text-2xl font-black text-blue-600 mt-1">{{ campaign.sent_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Sent to carrier</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Delivered</p>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1">{{ campaign.delivered_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Handset confirmed</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Opt-Out Skipped</p>
+            <h3 class="text-2xl font-black text-slate-500 mt-1">{{ campaign.opt_out_count }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Blocked by registry</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Billed</p>
+            <h3 class="text-xl font-black text-slate-900 mt-1 truncate">{{ campaign.total_cost }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Carrier estimate</p>
+        </div>
+    </div>
+
+    <!-- Base Template Message Card -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Base Message Template Dispatched</h4>
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/80 text-xs font-mono text-slate-800 whitespace-pre-wrap leading-relaxed">
+            {{ campaign.message }}
+        </div>
+    </div>
+
+    <!-- Recipient Delivery Log Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Per-Voter Delivery Audit Log</h3>
+                <p class="text-[11px] text-slate-400">Complete carrier transaction records, rendered messages, and delivery receipts.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="text" id="logSearchInput" onkeyup="filterLogTable()" placeholder="Search voter or phone..."
+                    class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 rounded-full text-slate-600">{{ logs|length }} logs</span>
+            </div>
+        </div>
+
+        {% if logs %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs" id="logsTable">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3.5 px-6">Recipient Name</th>
+                        <th class="py-3.5 px-6">Phone Number</th>
+                        <th class="py-3.5 px-6">Rendered Message (Voter View)</th>
+                        <th class="py-3.5 px-6">Status</th>
+                        <th class="py-3.5 px-6">Cost</th>
+                        <th class="py-3.5 px-6">Africa's Talking ID</th>
+                        <th class="py-3.5 px-6">Sent At</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono">
+                    {% for log in logs %}
+                    <tr class="hover:bg-slate-50/60 transition log-row">
+                        <td class="py-3.5 px-6 font-sans font-bold text-slate-900 search-target">
+                            {{ log.recipient_name or 'Voter' }}
+                        </td>
+                        <td class="py-3.5 px-6 text-slate-700 search-target">
+                            {{ log.recipient }}
+                        </td>
+                        <td class="py-3.5 px-6 font-sans text-slate-600 max-w-sm truncate" title="{{ log.rendered_message }}">
+                            {{ log.rendered_message }}
+                        </td>
+                        <td class="py-3.5 px-6">
+                            {% if log.status == 'delivered' %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Delivered
+                                </span>
+                            {% elif log.status == 'sent' %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Sent
+                                </span>
+                            {% elif log.status == 'failed' %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800" title="{{ log.error_message or '' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Failed
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                    {{ log.status|title }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-6 text-slate-600">
+                            {{ log.cost }}
+                        </td>
+                        <td class="py-3.5 px-6 text-[11px] text-slate-500">
+                            {% if log.at_message_id and log.at_message_id.startswith('AT_SIM_') %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 font-mono text-[10px] border border-amber-200" title="Local Simulation: No cellular SMS was dispatched">
+                                    <i class="fa-solid fa-flask"></i> {{ log.at_message_id }}
+                                </span>
+                            {% else %}
+                                {{ log.at_message_id or '—' }}
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-6 text-[11px] text-slate-400">
+                            {{ log.sent_at.strftime('%H:%M:%S') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="py-12 text-center text-xs text-slate-400">
+            No recipient logs found for this campaign.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function filterLogTable() {
+    const input = document.getElementById('logSearchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.log-row');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

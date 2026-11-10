@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk Email Campaign Studio — ELECHUB{% endblock %}
+{% block header_title %}Bulk Email Voter Outreach Studio{% endblock %}
+
+{% block content %}
+<div class="space-y-6 pb-12">
+    <!-- Top Action & Gateway Status Bar -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-extrabold text-slate-900">Campus Email Outreach Studio</h1>
+                {% if smtp_active %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        SMTP Connected ({{ mail_server }})
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Smart Simulation Mode
+                    </span>
+                {% endif %}
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Send formatted manifesto launches, policy agendas, and rally turnout notices directly to student inboxes.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5">
+            <a href="{{ url_for('email_campaigns.settings') }}" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-gear text-slate-500"></i> Gateway Settings
+            </a>
+            <a href="{{ url_for('contacts.index') }}" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-address-book text-indigo-600"></i> Voter Contact Lists
+            </a>
+            <a href="{{ url_for('email_campaigns.compose') }}" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <span>Compose Campaign Email</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Metrics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Email Blasts</p>
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mt-2">{{ campaigns|length }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Campaign broadcasts</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Inboxes Reached</p>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-envelope-circle-check"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-emerald-600 mt-2">{{ total_sent }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Successfully sent</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Failed / Bounced</p>
+                <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-rose-600 mt-2">{{ total_failed }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Delivery failures</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Contact Lists</p>
+                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mt-2">{{ contact_lists|length }}</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Registered groups</p>
+        </div>
+    </div>
+
+    <!-- Campaigns Log Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Email Campaign History & Delivery Log</h3>
+                <p class="text-[11px] text-slate-400">Dispatched broadcasts, candidate tagging, and recipient counts.</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 rounded-full text-slate-600">{{ campaigns|length }} campaigns</span>
+        </div>
+
+        {% if campaigns %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3.5 px-6">Subject & Campaign</th>
+                        <th class="py-3.5 px-6">Candidate</th>
+                        <th class="py-3.5 px-6">Target Voter Group</th>
+                        <th class="py-3.5 px-6 text-center">Sent / Target</th>
+                        <th class="py-3.5 px-6 text-center">Failed</th>
+                        <th class="py-3.5 px-6">Dispatched At</th>
+                        <th class="py-3.5 px-6 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for c in campaigns %}
+                    <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-4 px-6 font-bold text-slate-900">
+                            <a href="{{ url_for('email_campaigns.campaign_detail', campaign_id=c.id) }}" class="hover:text-indigo-600 transition flex items-center gap-2">
+                                <span>{{ c.subject }}</span>
+                                {% if c.attach_poster %}
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold" title="Poster Attached">
+                                        <i class="fa-solid fa-paperclip"></i> Poster
+                                    </span>
+                                {% endif %}
+                            </a>
+                            <p class="text-[11px] text-slate-400 font-normal line-clamp-1 mt-0.5">Template: {{ c.template_type }}</p>
+                        </td>
+                        <td class="py-4 px-6 text-slate-700 font-medium">
+                            {{ c.candidate_rel.name if c.candidate_rel else 'General Broadcast' }}
+                        </td>
+                        <td class="py-4 px-6 text-slate-600">
+                            {{ c.contact_list_rel.name if c.contact_list_rel else 'All Voters / Manual Inboxes' }}
+                        </td>
+                        <td class="py-4 px-6 text-center font-mono font-bold text-slate-800">
+                            {{ c.sent_count or c.recipient_count }} / {{ c.recipient_count }}
+                        </td>
+                        <td class="py-4 px-6 text-center font-mono font-bold {% if c.failed_count %}text-rose-600{% else %}text-slate-400{% endif %}">
+                            {{ c.failed_count or 0 }}
+                        </td>
+                        <td class="py-4 px-6 text-slate-500 font-mono text-[11px]">
+                            {{ c.created_at.strftime('%b %d, %Y • %I:%M %p') }}
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <a href="{{ url_for('email_campaigns.campaign_detail', campaign_id=c.id) }}" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition inline-flex items-center gap-1">
+                                <i class="fa-solid fa-list-check"></i> Audit Log
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="py-16 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-4">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800">No Bulk Email Campaigns Yet</h4>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1 mb-6">Dispatch formatted manifesto letters, debate notices, and polling alerts to student voter emails.</p>
+            <a href="{{ url_for('email_campaigns.compose') }}" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition inline-flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i> Compose First Email Blast
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Individual Email Delivery Audit Records -->
+    {% if recent_logs %}
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Real-Time Email Delivery Feed (Latest 10 Inboxes)</h3>
+                <p class="text-[11px] text-slate-400">Direct SMTP transaction logs and delivery receipts.</p>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3 px-6">Recipient</th>
+                        <th class="py-3 px-6">Email Address</th>
+                        <th class="py-3 px-6">Subject</th>
+                        <th class="py-3 px-6">Status</th>
+                        <th class="py-3 px-6">Attachment</th>
+                        <th class="py-3 px-6">Dispatched</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono">
+                    {% for log in recent_logs %}
+                    <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-3 px-6 font-sans font-bold text-slate-800">
+                            {{ log.recipient_name or 'Voter' }}
+                        </td>
+                        <td class="py-3 px-6 text-slate-700">
+                            {{ log.recipient }}
+                        </td>
+                        <td class="py-3 px-6 font-sans text-slate-600 max-w-xs truncate">
+                            {{ log.subject }}
+                        </td>
+                        <td class="py-3 px-6">
+                            {% if log.status == 'sent' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sent
+                                </span>
+                            {% elif log.status == 'failed' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800" title="{{ log.error_message or '' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Failed
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                    {{ log.status|title }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-6 text-slate-500 font-sans">
+                            {% if log.attached_poster_path %}
+                                <span class="text-indigo-600 font-bold text-[11px]"><i class="fa-solid fa-image"></i> Poster</span>
+                            {% else %}
+                                <span class="text-slate-300">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-6 text-[11px] text-slate-500">
+                            {{ log.sent_at.strftime('%H:%M:%S') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

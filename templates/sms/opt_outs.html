@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}SMS Opt-Out Compliance Registry — ELECHUB{% endblock %}
+{% block header_title %}SMS Opt-Out Compliance Registry{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 pb-16">
+    <!-- Top Action & Navigation Bar -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('sms.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Back to SMS Studio
+                </a>
+            </div>
+            <h1 class="text-xl font-black text-slate-900 mt-1">SMS Opt-Out Compliance Registry</h1>
+            <p class="text-xs text-slate-500">Students and contacts in this registry are automatically skipped during campaign broadcasts to guarantee compliance.</p>
+        </div>
+    </div>
+
+    <!-- Add Opt-Out Number Card -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-user-slash text-rose-600"></i> Register Student Number for Opt-Out
+        </h3>
+        <form method="POST" action="{{ url_for('sms.opt_outs') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Phone Number *</label>
+                <input type="text" name="phone" required placeholder="0701122334 or +256..."
+                    class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Reason / Note (Optional)</label>
+                <input type="text" name="reason" placeholder="e.g. Student requested STOP"
+                    class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="w-full py-2 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-ban"></i> Block Number
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Opt-Out Records Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Blocked Phone Numbers</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 rounded-full text-slate-600">{{ records|length }} records</span>
+        </div>
+
+        {% if records %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200/80">
+                    <tr>
+                        <th class="py-3.5 px-6">Phone Number</th>
+                        <th class="py-3.5 px-6">Reason Recorded</th>
+                        <th class="py-3.5 px-6">Registered At</th>
+                        <th class="py-3.5 px-6 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-mono">
+                    {% for rec in records %}
+                    <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-3.5 px-6 font-bold text-slate-900">
+                            {{ rec.phone }}
+                        </td>
+                        <td class="py-3.5 px-6 font-sans text-slate-600">
+                            {{ rec.reason or 'STOP request' }}
+                        </td>
+                        <td class="py-3.5 px-6 text-slate-400 text-[11px]">
+                            {{ rec.created_at.strftime('%b %d, %Y • %I:%M %p') }}
+                        </td>
+                        <td class="py-3.5 px-6 text-right">
+                            <form method="POST" action="{{ url_for('sms.delete_opt_out', record_id=rec.id) }}" onsubmit="return confirm('Remove {{ rec.phone }} from opt-out list?');" class="inline">
+                                <button type="submit" class="px-2.5 py-1 rounded-lg text-rose-600 hover:bg-rose-50 font-bold text-xs transition">
+                                    <i class="fa-solid fa-trash-can"></i> Unblock
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="py-12 text-center text-xs text-slate-400">
+            <i class="fa-solid fa-shield text-2xl text-slate-300 mb-2 block"></i>
+            No opt-out records currently registered. All uploaded contacts will receive broadcasts.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

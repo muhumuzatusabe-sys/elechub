@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}SMS Gateway Settings — ELECHUB{% endblock %}
+{% block header_title %}Africa's Talking SMS Gateway Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6 pb-16">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('sms.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Back to SMS Studio
+                </a>
+            </div>
+            <h1 class="text-xl font-black text-slate-900 mt-1">Africa's Talking API Configuration</h1>
+            <p class="text-xs text-slate-500">Configure your Africa's Talking credentials, Uganda sender ID, and check connection health.</p>
+        </div>
+    </div>
+
+    <!-- Status Banner -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl {% if at_mode == 'live' %}bg-emerald-50 text-emerald-600{% elif at_mode == 'sandbox' %}bg-amber-50 text-amber-600{% else %}bg-blue-50 text-blue-600{% endif %} flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-tower-broadcast"></i>
+        </div>
+        <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Current Gateway Status</h4>
+            <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-sm font-black text-slate-900 capitalize">{{ at_mode }} Mode</span>
+                {% if at_balance %}
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 font-mono">Balance: {{ at_balance }}</span>
+                {% endif %}
+                <span class="text-xs text-slate-500">• {{ at_msg }}</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">
+                {% if at_mode == 'live' %}
+                Real airtime and SMS credits are active (Current Balance: <strong class="text-slate-700 font-mono">{{ at_balance or 'Active' }}</strong>). Messages will reach real Ugandan telecom networks (MTN, Airtel, etc.).
+                {% elif at_mode == 'sandbox' %}
+                Connected to Africa's Talking sandbox. You can simulate dispatches with test numbers (e.g. +256700000000) using AT Simulator.
+                {% else %}
+                Smart Simulation Mode is currently active. You can safely draft and test bulk dispatches without consuming external API credits.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+        <!-- How to Pay / Top-Up Guide Box -->
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/40 border border-amber-200/80 text-xs text-amber-950 space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+                <h5 class="font-black flex items-center gap-2 text-amber-950 text-sm">
+                    <i class="fa-solid fa-wallet text-amber-600 text-base"></i> How to Pay / Top Up SMS Credits on Africa's Talking
+                </h5>
+                <a href="https://account.africastalking.com" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition">
+                    <span>Open AT Billing</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+            </div>
+
+            <p class="leading-relaxed text-amber-900 text-xs">
+                Your ELECHUB account is currently connected to Africa's Talking in <span class="font-bold text-emerald-700 uppercase">Live Mode</span> (Username: <code class="bg-amber-100/80 px-1 py-0.5 rounded font-mono font-bold">{{ username }}</code>). Current balance is <strong class="font-mono text-amber-950">{{ at_balance or 'UGX 0.00' }}</strong>.
+                Follow these 4 simple steps to add airtime credit using <strong>MTN MoMo, Airtel Money, or Card</strong>:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                <div class="bg-white/80 p-3.5 rounded-xl border border-amber-200/60 space-y-1.5">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-black">1</span>
+                    <span class="font-bold text-slate-800 ml-1">Log in to Africa's Talking</span>
+                    <p class="text-[11px] text-slate-600 leading-normal">
+                        Go to <a href="https://account.africastalking.com" target="_blank" class="underline font-bold text-indigo-700">account.africastalking.com</a> and sign in with the email linked to your <code class="font-bold text-slate-800">{{ username }}</code> app.
+                    </p>
+                </div>
+
+                <div class="bg-white/80 p-3.5 rounded-xl border border-amber-200/60 space-y-1.5">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-black">2</span>
+                    <span class="font-bold text-slate-800 ml-1">Go to Billing & Top Up</span>
+                    <p class="text-[11px] text-slate-600 leading-normal">
+                        On your dashboard, click <strong>Billing</strong> in the left sidebar or click the <strong>Top Up</strong> button next to your wallet balance.
+                    </p>
+                </div>
+
+                <div class="bg-white/80 p-3.5 rounded-xl border border-amber-200/60 space-y-1.5">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-black">3</span>
+                    <span class="font-bold text-slate-800 ml-1">Select Mobile Money / Card</span>
+                    <p class="text-[11px] text-slate-600 leading-normal">
+                        Select <strong>Uganda (UGX)</strong>. Choose <strong>MTN Mobile Money</strong>, <strong>Airtel Money</strong>, or <strong>Credit/Debit Card</strong>. Enter your phone number and the amount (e.g. 5,000, 10,000, or 20,000 UGX).
+                    </p>
+                </div>
+
+                <div class="bg-white/80 p-3.5 rounded-xl border border-amber-200/60 space-y-1.5">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-black">4</span>
+                    <span class="font-bold text-slate-800 ml-1">Approve USSD Push on Phone</span>
+                    <p class="text-[11px] text-slate-600 leading-normal">
+                        A prompt will pop up on your mobile handset. Enter your <strong>Mobile Money PIN</strong> to authorize payment. The credit reflects instantly!
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-3 bg-amber-100/60 rounded-xl border border-amber-200 text-[11px] text-amber-950 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-amber-700"></i>
+                    <span><strong>Estimated Rate:</strong> ~35 to 45 UGX per standard SMS (160 characters). UGX 10,000 covers ~220-280 messages.</span>
+                </div>
+                <span class="font-mono font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">No Monthly Fee</span>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('sms.settings') }}" class="space-y-5" id="settingsForm">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Africa's Talking Username *</label>
+                <input type="text" name="africastalking_username" id="atUsernameInput" value="{{ username }}" placeholder="e.g. your_at_username or sandbox"
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                <p class="text-[11px] text-amber-600 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Do NOT type "ELECHUB" here unless that is your exact Africa's Talking account username. Look at the top-right corner of your Africa's Talking dashboard (<a href="https://account.africastalking.com" target="_blank" class="underline font-bold">account.africastalking.com</a>) to find your real username.</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Africa's Talking API Key *</label>
+                <input type="password" name="africastalking_api_key" id="atApiKeyInput" placeholder="{% if has_api_key %}••••••••••••••••••••••••••••••••{% else %}Paste your Africa's Talking API Key{% endif %}"
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                <p class="text-[11px] text-slate-400 mt-1">Found in your Africa's Talking portal under <span class="font-semibold">Settings &gt; API Key</span>. Starts with <code>atsk_...</code>. Leave blank to retain existing key.</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Default Alphanumeric Sender ID / Short Code (Optional)</label>
+                <input type="text" name="africastalking_sender_id" value="{{ sender_id }}" placeholder="Leave blank to use Africa's Talking default" maxlength="11"
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                <p class="text-[11px] text-slate-400 mt-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> <span class="font-bold text-slate-600">Tip:</span> Leave this blank unless you have an approved Alphanumeric Sender ID from UCC / Africa's Talking. Entering an unapproved sender ID like "VOTE" will cause carriers to reject messages.</p>
+            </div>
+
+            <!-- Connection Test Result Box -->
+            <div id="testConnectionFeedback" class="hidden p-3.5 rounded-xl text-xs font-medium border"></div>
+
+            <!-- Delivery Webhook Info -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1 text-xs">
+                <h5 class="font-bold text-slate-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-link text-indigo-600"></i> Africa's Talking Delivery Callback Webhook URL
+                </h5>
+                <p class="text-slate-500 text-[11px]">Configure this URL in your Africa's Talking SMS settings under <span class="font-semibold">Delivery Reports Callback URL</span>:</p>
+                <div class="p-2 rounded-lg bg-white border border-slate-200 font-mono text-[11px] text-indigo-700 break-all select-all font-semibold">
+                    {{ request.url_root }}webhooks/at-delivery
+                </div>
+            </div>
+
+            <div class="pt-3 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <button type="submit" name="action" value="reset_simulation" class="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 text-xs font-bold transition flex items-center gap-1.5" title="Clear credentials and use local test simulation">
+                        <i class="fa-solid fa-rotate-left"></i> Reset to Safe Simulation Mode
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="testGatewayConnection()" id="testConnBtn" class="px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plug"></i> Test Connection
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Gateway Settings
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+async function testGatewayConnection() {
+    const btn = document.getElementById('testConnBtn');
+    const feedback = document.getElementById('testConnectionFeedback');
+    const username = document.getElementById('atUsernameInput').value.trim();
+    const apiKey = document.getElementById('atApiKeyInput').value.trim();
+
+    feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-slate-50 border-slate-200 text-slate-700 flex items-center gap-2';
+    feedback.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-indigo-600"></i> Testing connection to Africa\'s Talking gateway...';
+    feedback.classList.remove('hidden');
+    btn.disabled = true;
+
+    try {
+        const res = await fetch('{{ url_for("sms.api_test_connection") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, api_key: apiKey })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 flex items-start gap-2.5';
+            feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-base shrink-0 mt-0.5"></i> <div><strong>${data.message}</strong><br><span class="text-[11px] text-emerald-700">Gateway is ready to send live SMS to recipient handsets!</span></div>`;
+        } else {
+            feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 border-rose-200 text-rose-800 flex items-start gap-2.5';
+            feedback.innerHTML = `<i class="fa-solid fa-circle-exclamation text-rose-600 text-base shrink-0 mt-0.5"></i> <div><strong>Connection Rejected:</strong> ${data.error}<br><span class="text-[11px] text-rose-700 mt-1 block">Make sure you are using an API Key generated from <a href="https://account.africastalking.com" target="_blank" class="underline font-bold">africastalking.com</a>, not your local ELECHUB password.</span></div>`;
+        }
+    } catch (err) {
+        feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 border-rose-200 text-rose-800';
+        feedback.textContent = 'Failed to communicate with local server: ' + err.message;
+    } finally {
+        btn.disabled = false;
+    }
+}
+</script>
+{% endblock %}
