@@ -23,25 +23,25 @@
 </style>
 <div id="studio-main-wrapper" class="flex flex-col space-y-4 min-h-0">
     <!-- Studio Header Bar -->
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-white px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl border border-slate-200/80 shadow-sm">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-cyan-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-cyan-600/30 flex-shrink-0">
-                <i class="fa-solid fa-palette"></i>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white px-3 sm:px-6 py-2.5 sm:py-4 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center space-x-2.5 sm:space-x-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-cyan-600 text-white flex items-center justify-center font-bold text-base sm:text-lg shadow-md shadow-cyan-600/30 flex-shrink-0">
+                <i class="fa-solid fa-palette text-sm sm:text-base"></i>
             </div>
             <div class="min-w-0">
                 <div class="flex items-center space-x-2 flex-wrap">
-                    <h1 class="text-base sm:text-lg font-extrabold text-slate-900">Campaign Creative Studio</h1>
+                    <h1 class="text-sm sm:text-lg font-extrabold text-slate-900 truncate">Campaign Creative Studio</h1>
                     {% if selected_project %}
-                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-[10px] font-bold">
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-[9px] sm:text-[10px] font-bold">
                         Editing: {{ selected_project.title }}
                     </span>
                     {% endif %}
                 </div>
-                <p class="text-xs text-slate-500 truncate">Pick any Pinterest or campus layout — candidate photo & text are 100% replaceable.</p>
+                <p class="text-[11px] sm:text-xs text-slate-500 truncate hidden xs:block">Pick any Pinterest or campus layout — candidate photo & text are 100% replaceable.</p>
             </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-full pb-0.5 sm:pb-0 no-scrollbar select-none flex-nowrap sm:flex-wrap">
             <!-- Format Toggle -->
             <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
                 <button type="button" id="btn-fmt-square" onclick="switchFormat('1:1')"
@@ -280,10 +280,10 @@
                             <span id="quick-zoom-val" class="font-mono text-cyan-600 font-extrabold">{{ '%.0f'|format((selected_project.photo_scale if selected_project else 1.0) * 100) }}%</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="adjustPhotoZoomDirect(-0.05)" class="w-7 h-6 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition" title="Zoom Out (-5%)">-</button>
+                            <button type="button" onclick="adjustPhotoZoomDirect(-0.05)" class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-sm flex items-center justify-center transition active:scale-95 shadow-2xs" title="Zoom Out (-5%)">-</button>
                             <input type="range" id="photo-scale-quick" min="0.2" max="3.0" step="0.05" value="{{ selected_project.photo_scale if selected_project else 1.0 }}" oninput="onPhotoScaleInput(this.value)"
-                                class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600">
-                            <button type="button" onclick="adjustPhotoZoomDirect(0.05)" class="w-7 h-6 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition" title="Zoom In (+5%)">+</button>
+                                class="w-full h-2.5 sm:h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600">
+                            <button type="button" onclick="adjustPhotoZoomDirect(0.05)" class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-sm flex items-center justify-center transition active:scale-95 shadow-2xs" title="Zoom In (+5%)">+</button>
                         </div>
                     </div>
 
@@ -294,10 +294,10 @@
                             <span id="quick-pos-y-val" class="font-mono text-cyan-600 font-extrabold">{{ selected_project.photo_y_offset if selected_project else 0 }}px</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="adjustPhotoYDirect(-10)" class="w-7 h-6 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition" title="Move Up (10px)">▲</button>
+                            <button type="button" onclick="adjustPhotoYDirect(-10)" class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition active:scale-95 shadow-2xs" title="Move Up (10px)">▲</button>
                             <input type="range" id="photo-y-offset-quick" min="-800" max="800" step="10" value="{{ selected_project.photo_y_offset if selected_project else 0 }}" oninput="onPhotoYInput(this.value)"
-                                class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600">
-                            <button type="button" onclick="adjustPhotoYDirect(10)" class="w-7 h-6 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition" title="Move Down (10px)">▼</button>
+                                class="w-full h-2.5 sm:h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600">
+                            <button type="button" onclick="adjustPhotoYDirect(10)" class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition active:scale-95 shadow-2xs" title="Move Down (10px)">▼</button>
                         </div>
                     </div>
 
@@ -1702,16 +1702,19 @@
 
         <!-- Live Canvas Preview Column (Right 7 Cols — Pinned Sticky Preview on Mobile) -->
         <div id="studio-canvas-col" class="order-1 lg:order-2 lg:col-span-7 sticky top-0 z-40 lg:static lg:z-auto bg-slate-900/98 backdrop-blur-md rounded-2xl border-2 border-cyan-500/40 lg:border-slate-800 p-1 sm:p-4 flex flex-col relative shadow-2xl lg:shadow-inner lg:h-full min-h-0 self-stretch transition-all duration-200">
-            <!-- Mobile Sticky Header Strip (Hidden to maximize editing space below on mobile) -->
-            <div class="hidden items-center justify-between px-1 pb-1.5 mb-1.5 border-b border-slate-800 text-[11px] font-bold">
+            <!-- Mobile Sticky Header Pill (Ultra-compact, gives full control to user) -->
+            <div class="flex lg:hidden items-center justify-between px-2 py-1 bg-slate-950/80 rounded-xl border border-slate-800/80 mb-1 text-[10px] font-bold">
                 <div class="flex items-center gap-1.5 text-cyan-400">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span class="uppercase tracking-wider text-[10px] font-black">Pinned Live Preview</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span id="mobile-canvas-state-label" class="uppercase tracking-wider font-extrabold text-[9px]">Live Preview</span>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button type="button" onclick="toggleMobileCanvasExpand()" id="btn-mobile-canvas-expand" class="px-2.5 py-1 rounded-lg bg-cyan-950 text-cyan-300 border border-cyan-700/60 text-[10px] font-bold hover:bg-cyan-900 transition flex items-center gap-1 shadow-xs">
-                        <i class="fa-solid fa-up-down text-[9px]"></i>
-                        <span id="mobile-expand-text">Expand View</span>
+                    <button type="button" onclick="cycleMobilePreviewSize()" id="btn-mobile-size-cycle" class="px-2 py-0.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/50 text-[10px] font-bold transition flex items-center gap-1">
+                        <i class="fa-solid fa-up-down text-[8px]"></i>
+                        <span id="mobile-size-text">Expand</span>
+                    </button>
+                    <button type="button" onclick="toggleMobilePreviewCollapse()" id="btn-mobile-collapse-preview" class="px-1.5 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold transition" title="Toggle hide/show preview">
+                        <i class="fa-solid fa-eye-slash text-[9px]" id="mobile-collapse-icon"></i>
                     </button>
                 </div>
             </div>
@@ -1768,8 +1771,8 @@
             </div>
 
             <!-- Canvas Container with Direct On-Canvas Controls (Independently Scrolled) -->
-            <div id="canvas-container-wrap" class="relative flex items-center justify-center w-full flex-1 min-h-[140px] max-h-[28vh] sm:max-h-[30vh] lg:min-h-[400px] lg:max-h-none overflow-hidden lg:overflow-auto p-1 sm:p-4 select-none custom-scrollbar transition-all duration-300">
-                <canvas id="posterCanvas" class="max-w-full rounded-xl shadow-2xl border border-slate-700/60 object-contain cursor-grab active:cursor-grabbing transition-transform duration-150 max-h-[25vh] sm:max-h-[28vh] lg:max-h-[75vh]" title="Click text to edit sizing/color, drag to reposition, or double-click to type directly"></canvas>
+            <div id="canvas-container-wrap" class="relative flex items-center justify-center w-full flex-1 min-h-[120px] max-h-[20vh] sm:max-h-[26vh] lg:min-h-[400px] lg:max-h-none overflow-hidden lg:overflow-auto p-1 sm:p-4 select-none custom-scrollbar transition-all duration-300">
+                <canvas id="posterCanvas" class="max-w-full rounded-xl shadow-2xl border border-slate-700/60 object-contain cursor-grab active:cursor-grabbing transition-transform duration-150 max-h-[18vh] sm:max-h-[24vh] lg:max-h-[75vh]" title="Click text to edit sizing/color, drag to reposition, or double-click to type directly"></canvas>
 
                 <!-- On-Canvas Floating Quick Toolbar (Draggable & Dockable Anywhere) -->
                 <div id="canvas-floating-toolbar" class="hidden fixed z-[9000] bg-slate-900/95 backdrop-blur-md border border-cyan-500/50 shadow-2xl rounded-2xl p-2 text-white text-xs flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150 flex-wrap max-w-[calc(100vw-32px)] overflow-x-auto select-none">
@@ -2075,31 +2078,31 @@
 </div>
 
 <!-- Sticky Floating Bottom Quick-Action Bar (Draggable Anywhere on Screen to Prevent Obstruction) -->
-<div id="studio-sticky-bottom-bar" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 shadow-2xl rounded-2xl px-3 py-2 flex items-center gap-2 text-white max-w-[96vw] overflow-x-auto select-none transition-shadow duration-150">
+<div id="studio-sticky-bottom-bar" class="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 shadow-2xl rounded-2xl px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 text-white max-w-[96vw] overflow-x-auto select-none no-scrollbar transition-all duration-150 safe-bottom-dock">
     <!-- Dedicated Tactile Drag Handle -->
     <div id="sticky-bar-drag-handle" class="cursor-grab active:cursor-grabbing px-1.5 py-1 text-slate-400 hover:text-amber-400 flex items-center gap-1 border-r border-slate-700 pr-2 select-none flex-shrink-0" title="Click and drag editor bar anywhere on screen to eliminate obstruction">
         <i class="fa-solid fa-grip-vertical text-xs"></i>
     </div>
 
     <!-- Candidate Selector / Avatar -->
-    <div class="flex items-center gap-2 pr-2 border-r border-slate-700 flex-shrink-0">
-        <div id="sticky-candidate-avatar" class="w-7 h-7 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden border border-cyan-400">
-            <i class="fa-solid fa-user text-[10px]"></i>
+    <div class="flex items-center gap-1.5 sm:gap-2 pr-2 border-r border-slate-700 flex-shrink-0">
+        <div id="sticky-candidate-avatar" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold text-[10px] sm:text-xs overflow-hidden border border-cyan-400">
+            <i class="fa-solid fa-user text-[9px] sm:text-[10px]"></i>
         </div>
-        <span id="sticky-candidate-name" class="text-xs font-bold text-slate-200 truncate max-w-[110px]">{{ selected_candidate.name if selected_candidate else 'Select Candidate' }}</span>
-        <button type="button" onclick="document.getElementById('candidate-select').focus(); document.getElementById('candidate-select').scrollIntoView({behavior: 'smooth'});" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold underline ml-1">Change</button>
+        <span id="sticky-candidate-name" class="text-[11px] sm:text-xs font-bold text-slate-200 truncate max-w-[85px] sm:max-w-[110px]">{{ selected_candidate.name if selected_candidate else 'Candidate' }}</span>
+        <button type="button" onclick="document.getElementById('candidate-select').focus(); document.getElementById('candidate-select').scrollIntoView({behavior: 'smooth'});" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold underline ml-0.5">Edit</button>
     </div>
 
     <!-- Upload Photo Button -->
     <button type="button" onclick="document.getElementById('poster-photo-file').click()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 flex-shrink-0" title="Upload new candidate headshot or photo">
         <i class="fa-solid fa-camera text-cyan-400 text-xs"></i>
-        <span class="hidden sm:inline">Photo</span>
+        <span>Photo</span>
     </button>
 
     <!-- Quick Photo Framing: Fill Frame (Zoom) vs Fit Whole -->
     <button type="button" onclick="toggleQuickPhotoFitMode()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-amber-500/30 flex-shrink-0" title="Toggle Full Frame (Zoom) vs Fit Whole Portrait">
         <i class="fa-solid fa-maximize text-xs text-amber-400"></i>
-        <span id="sticky-photo-fit-label">{{ 'Fill (Zoom)' if selected_project and selected_project.photo_fit_mode == 'cover' else 'Fit Whole' }}</span>
+        <span id="sticky-photo-fit-label">{{ 'Fill' if selected_project and selected_project.photo_fit_mode == 'cover' else 'Fit' }}</span>
     </button>
 
     <!-- Add Extra Photo / Multi-Person Button -->
@@ -2124,7 +2127,7 @@
     <!-- Define Boundaries & Crop Modal Trigger -->
     <button type="button" onclick="toggleBoundaryModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-cyan-500/30 flex-shrink-0" title="Define active boundaries & eliminate unwanted poster regions">
         <i class="fa-solid fa-crop-simple text-xs text-cyan-400"></i>
-        <span>Crop Bounds</span>
+        <span>Crop</span>
     </button>
 
     <!-- Save Project -->
@@ -2136,7 +2139,7 @@
     <!-- Save PNG -->
     <button type="button" onclick="downloadPoster()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black transition flex items-center gap-1.5 shadow-md flex-shrink-0">
         <i class="fa-solid fa-download text-xs"></i>
-        <span>Save PNG</span>
+        <span>PNG</span>
     </button>
 
     <!-- Minimize / Collapse Button -->
@@ -2146,9 +2149,9 @@
 </div>
 
 <!-- Minimized Floating Pill Button (Visible when user minimizes bar to eliminate obstruction) -->
-<button type="button" id="studio-sticky-bar-pill" onclick="toggleStickyBarMinimize()" class="hidden fixed bottom-4 right-4 z-40 bg-slate-900/95 backdrop-blur-md border-2 border-cyan-500 shadow-2xl rounded-full px-4 py-2.5 text-white text-xs font-extrabold flex items-center gap-2 hover:bg-slate-800 transition active:scale-95 animate-in fade-in">
+<button type="button" id="studio-sticky-bar-pill" onclick="toggleStickyBarMinimize()" class="hidden fixed bottom-3 right-3 z-40 bg-slate-900/95 backdrop-blur-md border-2 border-cyan-500 shadow-2xl rounded-full px-3.5 py-2 text-white text-xs font-extrabold flex items-center gap-1.5 hover:bg-slate-800 transition active:scale-95 animate-in fade-in">
     <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-sm"></i>
-    <span>Editor Tools</span>
+    <span>Tools</span>
     <i class="fa-solid fa-chevron-up text-[11px] text-cyan-300"></i>
 </button>
 
@@ -9539,24 +9542,64 @@ function setStudioSecondaryColor(col) {
 function onPrimaryColorInput(col) { setStudioPrimaryColor(col); }
 function onSecondaryColorInput(col) { setStudioSecondaryColor(col); }
 
-function toggleMobileCanvasExpand() {
+let mobilePreviewState = 'compact'; // 'compact', 'expanded', 'collapsed'
+
+function cycleMobilePreviewSize() {
     const wrap = document.getElementById('canvas-container-wrap');
     const canvas = document.getElementById('posterCanvas');
-    const text = document.getElementById('mobile-expand-text');
+    const label = document.getElementById('mobile-canvas-state-label');
+    const btnText = document.getElementById('mobile-size-text');
     if (!wrap || !canvas) return;
-    if (wrap.classList.contains('max-h-[30vh]')) {
-        wrap.classList.remove('max-h-[30vh]', 'min-h-[160px]');
-        wrap.classList.add('max-h-[55vh]', 'min-h-[280px]');
-        canvas.classList.remove('max-h-[26vh]', 'sm:max-h-[30vh]');
-        canvas.classList.add('max-h-[50vh]');
-        if (text) text.innerText = 'Compact View';
-    } else {
-        wrap.classList.remove('max-h-[55vh]', 'min-h-[280px]');
-        wrap.classList.add('max-h-[30vh]', 'min-h-[160px]');
-        canvas.classList.remove('max-h-[50vh]');
-        canvas.classList.add('max-h-[26vh]', 'sm:max-h-[30vh]');
-        if (text) text.innerText = 'Expand View';
+
+    if (wrap.classList.contains('hidden')) {
+        toggleMobilePreviewCollapse(false);
+        return;
     }
+
+    if (mobilePreviewState === 'compact') {
+        wrap.classList.remove('max-h-[20vh]', 'min-h-[120px]');
+        wrap.classList.add('max-h-[46vh]', 'min-h-[240px]');
+        canvas.classList.remove('max-h-[18vh]', 'sm:max-h-[24vh]');
+        canvas.classList.add('max-h-[42vh]');
+        mobilePreviewState = 'expanded';
+        if (btnText) btnText.innerText = 'Compact';
+        if (label) label.innerText = 'Large Preview';
+        showToast('Expanded preview active');
+    } else {
+        wrap.classList.remove('max-h-[46vh]', 'min-h-[240px]');
+        wrap.classList.add('max-h-[20vh]', 'min-h-[120px]');
+        canvas.classList.remove('max-h-[42vh]');
+        canvas.classList.add('max-h-[18vh]', 'sm:max-h-[24vh]');
+        mobilePreviewState = 'compact';
+        if (btnText) btnText.innerText = 'Expand';
+        if (label) label.innerText = 'Live Preview';
+    }
+}
+
+function toggleMobilePreviewCollapse(forceState) {
+    const wrap = document.getElementById('canvas-container-wrap');
+    const icon = document.getElementById('mobile-collapse-icon');
+    const label = document.getElementById('mobile-canvas-state-label');
+    const btnText = document.getElementById('mobile-size-text');
+    if (!wrap) return;
+
+    const shouldCollapse = forceState !== undefined ? forceState : !wrap.classList.contains('hidden');
+    if (shouldCollapse) {
+        wrap.classList.add('hidden');
+        if (icon) icon.className = 'fa-solid fa-eye text-[9px] text-cyan-400';
+        if (label) label.innerText = 'Preview Hidden';
+        if (btnText) btnText.innerText = 'Show';
+        showToast('Preview hidden — full screen for form editing');
+    } else {
+        wrap.classList.remove('hidden');
+        if (icon) icon.className = 'fa-solid fa-eye-slash text-[9px]';
+        if (label) label.innerText = mobilePreviewState === 'expanded' ? 'Large Preview' : 'Live Preview';
+        if (btnText) btnText.innerText = mobilePreviewState === 'expanded' ? 'Compact' : 'Expand';
+    }
+}
+
+function toggleMobileCanvasExpand() {
+    cycleMobilePreviewSize();
 }
 
 function showToast(msg) {
