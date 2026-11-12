@@ -1702,77 +1702,94 @@
 
         <!-- Live Canvas Preview Column (Right 7 Cols — Pinned Sticky Preview on Mobile) -->
         <div id="studio-canvas-col" class="order-1 lg:order-2 lg:col-span-7 sticky top-0 z-40 lg:static lg:z-auto bg-slate-900/98 backdrop-blur-md rounded-2xl border-2 border-cyan-500/40 lg:border-slate-800 p-1 sm:p-4 flex flex-col relative shadow-2xl lg:shadow-inner lg:h-full min-h-0 self-stretch transition-all duration-200">
-            <!-- Mobile Sticky Header Pill (Ultra-compact, gives full control to user) -->
-            <div class="flex lg:hidden items-center justify-between px-2 py-1 bg-slate-950/80 rounded-xl border border-slate-800/80 mb-1 text-[10px] font-bold">
-                <div class="flex items-center gap-1.5 text-cyan-400">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span id="mobile-canvas-state-label" class="uppercase tracking-wider font-extrabold text-[9px]">Live Preview</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <button type="button" onclick="cycleMobilePreviewSize()" id="btn-mobile-size-cycle" class="px-2 py-0.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/50 text-[10px] font-bold transition flex items-center gap-1">
-                        <i class="fa-solid fa-up-down text-[8px]"></i>
-                        <span id="mobile-size-text">Expand</span>
-                    </button>
-                    <button type="button" onclick="toggleMobilePreviewCollapse()" id="btn-mobile-collapse-preview" class="px-1.5 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold transition" title="Toggle hide/show preview">
-                        <i class="fa-solid fa-eye-slash text-[9px]" id="mobile-collapse-icon"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Top Action & Resizing Strip (Desktop Only - hidden on mobile to maximize workspace below) -->
-            <div class="hidden lg:flex w-full items-center justify-between gap-2 pb-2 sm:pb-3 mb-1 border-b border-slate-800/80 z-20 flex-shrink-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span class="hidden lg:inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="hidden lg:inline-block text-xs font-mono font-bold text-slate-300">Live Canvas</span>
+            <!-- Categorized Horizontally Scrollable Action Strip (Restored & Grouped by Category to Maximize Space) -->
+            <div class="w-full overflow-x-auto no-scrollbar py-1 px-1 mb-1 border-b border-slate-800/80 z-20 flex-shrink-0 select-none">
+                <div class="inline-flex items-center gap-2 min-w-max">
                     
-                    <!-- Format / Aspect Ratio Selector -->
-                    <div class="flex items-center bg-slate-800 rounded-xl p-0.5 border border-slate-700 sm:ml-1">
-                        <button type="button" onclick="changePosterFormat('1:1')" id="fmt-btn-1-1" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-cyan-600 text-white transition" title="1:1 Square (2000x2000)">1:1</button>
-                        <button type="button" onclick="changePosterFormat('4:5')" id="fmt-btn-4-5" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition" title="4:5 Portrait (1600x2000)">4:5</button>
-                        <button type="button" onclick="changePosterFormat('9:16')" id="fmt-btn-9-16" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition" title="9:16 Story/Status (1080x1920)">9:16</button>
-                        <button type="button" onclick="changePosterFormat('16:9')" id="fmt-btn-16-9" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition" title="16:9 Landscape Banner (1920x1080)">16:9</button>
-                        <button type="button" onclick="changePosterFormat('a4')" id="fmt-btn-a4" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition" title="A4 Print Flier (2480x3508)">A4</button>
+                    <!-- Category 1: Status & Size Mode -->
+                    <div class="flex items-center gap-1.5 px-2 py-1 rounded-xl bg-slate-950/80 border border-slate-800 text-[10px] font-bold text-cyan-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <span id="mobile-canvas-state-label" class="uppercase tracking-wider font-extrabold text-[9px]">Live Canvas</span>
+                        <button type="button" onclick="cycleMobilePreviewSize()" id="btn-mobile-size-cycle" class="ml-1 px-2 py-0.5 rounded-md bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/60 text-[9px] font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-up-down text-[8px]"></i>
+                            <span id="mobile-size-text">Expand</span>
+                        </button>
+                        <button type="button" onclick="toggleMobilePreviewCollapse()" id="btn-mobile-collapse-preview" class="px-1.5 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-[9px] font-bold transition" title="Toggle hide/show preview">
+                            <i class="fa-solid fa-eye-slash text-[8px]" id="mobile-collapse-icon"></i>
+                        </button>
                     </div>
 
-                    <!-- Boundary & Crop Tool Button -->
-                    <button type="button" onclick="toggleBoundaryModal()" id="btn-open-bounds-modal" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-cyan-300 hover:text-white hover:bg-slate-700 transition flex items-center gap-1 border border-cyan-500/40 ml-1 shadow-sm" title="Define active boundaries & crop unwanted regions">
-                        <i class="fa-solid fa-crop-simple text-[10px] text-cyan-400"></i>
-                        <span>Bounds & Crop</span>
-                    </button>
+                    <div class="h-4 w-px bg-slate-800"></div>
 
-                    <!-- Canvas Zoom & View Controls -->
-                    <div class="flex items-center bg-slate-800 rounded-xl p-0.5 border border-slate-700 ml-1">
-                        <button type="button" onclick="zoomCanvas(-0.15)" class="w-7 h-7 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center text-xs font-bold transition" title="Zoom Out (-)">
-                            <i class="fa-solid fa-minus text-[10px]"></i>
+                    <!-- Category 2: Formats & Aspect Ratios -->
+                    <div class="flex items-center gap-1 bg-slate-950/80 rounded-xl p-1 border border-slate-800 text-[10px]">
+                        <span class="text-[9px] font-extrabold uppercase text-slate-400 px-1 flex items-center gap-1">
+                            <i class="fa-regular fa-square text-cyan-400"></i> Format:
+                        </span>
+                        <button type="button" onclick="changePosterFormat('1:1')" id="fmt-btn-1-1" class="px-2 py-1 rounded-lg font-bold bg-cyan-600 text-white transition text-[11px]" title="1:1 Square (2000x2000)">1:1</button>
+                        <button type="button" onclick="changePosterFormat('4:5')" id="fmt-btn-4-5" class="px-2 py-1 rounded-lg font-bold text-slate-400 hover:text-white transition text-[11px]" title="4:5 Portrait (1600x2000)">4:5</button>
+                        <button type="button" onclick="changePosterFormat('9:16')" id="fmt-btn-9-16" class="px-2 py-1 rounded-lg font-bold text-slate-400 hover:text-white transition text-[11px]" title="9:16 Story/Status (1080x1920)">9:16</button>
+                        <button type="button" onclick="changePosterFormat('16:9')" id="fmt-btn-16-9" class="px-2 py-1 rounded-lg font-bold text-slate-400 hover:text-white transition text-[11px]" title="16:9 Landscape Banner (1920x1080)">16:9</button>
+                        <button type="button" onclick="changePosterFormat('a4')" id="fmt-btn-a4" class="px-2 py-1 rounded-lg font-bold text-slate-400 hover:text-white transition text-[11px]" title="A4 Print Flier (2480x3508)">A4</button>
+                    </div>
+
+                    <div class="h-4 w-px bg-slate-800"></div>
+
+                    <!-- Category 3: Crop & Boundaries -->
+                    <div class="flex items-center gap-1 bg-slate-950/80 rounded-xl p-1 border border-slate-800 text-[10px]">
+                        <span class="text-[9px] font-extrabold uppercase text-slate-400 px-1 flex items-center gap-1">
+                            <i class="fa-solid fa-crop-simple text-cyan-400"></i> Framing:
+                        </span>
+                        <button type="button" onclick="toggleBoundaryModal()" id="btn-open-bounds-modal" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-800 text-cyan-300 hover:text-white hover:bg-slate-700 transition flex items-center gap-1.5 border border-cyan-500/40 shadow-xs" title="Define active boundaries & crop unwanted regions">
+                            <i class="fa-solid fa-crop-simple text-[10px] text-cyan-400"></i>
+                            <span>Bounds & Crop</span>
                         </button>
-                        <button type="button" onclick="resetCanvasZoom()" id="canvas-zoom-display" class="px-2 font-mono text-[11px] font-bold text-cyan-300 hover:text-white transition" title="Fit Screen / 100%">
+                    </div>
+
+                    <div class="h-4 w-px bg-slate-800"></div>
+
+                    <!-- Category 4: Canvas Zoom & Screen Fit -->
+                    <div class="flex items-center gap-1 bg-slate-950/80 rounded-xl p-1 border border-slate-800 text-[10px]">
+                        <span class="text-[9px] font-extrabold uppercase text-slate-400 px-1 flex items-center gap-1">
+                            <i class="fa-solid fa-magnifying-glass text-cyan-400"></i> Zoom:
+                        </span>
+                        <button type="button" onclick="zoomCanvas(-0.15)" class="w-6 h-6 rounded-md bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center text-xs font-bold transition" title="Zoom Out (-)">
+                            <i class="fa-solid fa-minus text-[9px]"></i>
+                        </button>
+                        <button type="button" onclick="resetCanvasZoom()" id="canvas-zoom-display" class="px-1.5 font-mono text-[11px] font-bold text-cyan-300 hover:text-white transition" title="Fit Screen / 100%">
                             100%
                         </button>
-                        <button type="button" onclick="zoomCanvas(0.15)" class="w-7 h-7 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center text-xs font-bold transition" title="Zoom In (+)">
-                            <i class="fa-solid fa-plus text-[10px]"></i>
+                        <button type="button" onclick="zoomCanvas(0.15)" class="w-6 h-6 rounded-md bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center text-xs font-bold transition" title="Zoom In (+)">
+                            <i class="fa-solid fa-plus text-[9px]"></i>
                         </button>
-                        <button type="button" onclick="toggleExpandWorkspace()" id="btn-expand-workspace" class="w-7 h-7 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-700 flex items-center justify-center text-xs transition ml-0.5 border-l border-slate-700" title="Expand Canvas Workspace">
-                            <i class="fa-solid fa-expand text-[10px]" id="expand-icon"></i>
+                        <button type="button" onclick="toggleExpandWorkspace()" id="btn-expand-workspace" class="w-6 h-6 rounded-md bg-slate-800 text-slate-400 hover:text-cyan-400 hover:bg-slate-700 flex items-center justify-center text-xs transition ml-0.5 border-l border-slate-700" title="Expand Canvas Workspace">
+                            <i class="fa-solid fa-expand text-[9px]" id="expand-icon"></i>
                         </button>
                     </div>
-                </div>
 
-                <!-- 24 Pro Templates & Add Text Buttons -->
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="openPinterestTemplateModal('gallery')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 via-purple-600 to-rose-600 hover:from-cyan-500 hover:to-rose-500 text-white font-extrabold text-xs shadow-md shadow-cyan-600/30 transition flex items-center gap-1.5 active:scale-95" title="Browse 24 Pro Templates or import from Pinterest">
-                        <i class="fa-solid fa-layer-group text-amber-300"></i>
-                        <span>Templates & Ideas</span>
-                    </button>
-                    <button type="button" onclick="addNewCustomTextOnPoster()" class="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold text-xs shadow-md shadow-cyan-600/30 transition flex items-center gap-1.5 active:scale-95">
-                        <i class="fa-solid fa-plus-circle text-amber-300"></i>
-                        <span>Add Text</span>
-                    </button>
+                    <div class="h-4 w-px bg-slate-800"></div>
+
+                    <!-- Category 5: Creative Ideas & Elements -->
+                    <div class="flex items-center gap-1.5 bg-slate-950/80 rounded-xl p-1 border border-slate-800 text-[10px]">
+                        <span class="text-[9px] font-extrabold uppercase text-slate-400 px-1 flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Creative:
+                        </span>
+                        <button type="button" onclick="openPinterestTemplateModal('gallery')" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-cyan-600 via-purple-600 to-rose-600 hover:from-cyan-500 hover:to-rose-500 text-white font-extrabold text-[11px] shadow-sm transition flex items-center gap-1 active:scale-95" title="Browse 24 Pro Templates or import from Pinterest">
+                            <i class="fa-solid fa-layer-group text-amber-300 text-[10px]"></i>
+                            <span>Templates & Ideas</span>
+                        </button>
+                        <button type="button" onclick="addNewCustomTextOnPoster()" class="px-2.5 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold text-[11px] shadow-sm transition flex items-center gap-1 active:scale-95">
+                            <i class="fa-solid fa-plus-circle text-amber-300 text-[10px]"></i>
+                            <span>+ Add Text</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
             <!-- Canvas Container with Direct On-Canvas Controls (Independently Scrolled) -->
-            <div id="canvas-container-wrap" class="relative flex items-center justify-center w-full flex-1 min-h-[120px] max-h-[20vh] sm:max-h-[26vh] lg:min-h-[400px] lg:max-h-none overflow-hidden lg:overflow-auto p-1 sm:p-4 select-none custom-scrollbar transition-all duration-300">
-                <canvas id="posterCanvas" class="max-w-full rounded-xl shadow-2xl border border-slate-700/60 object-contain cursor-grab active:cursor-grabbing transition-transform duration-150 max-h-[18vh] sm:max-h-[24vh] lg:max-h-[75vh]" title="Click text to edit sizing/color, drag to reposition, or double-click to type directly"></canvas>
+            <div id="canvas-container-wrap" class="relative flex items-center justify-center w-full flex-1 min-h-[130px] max-h-[24vh] sm:max-h-[28vh] lg:min-h-[400px] lg:max-h-none overflow-hidden lg:overflow-auto p-1 sm:p-4 select-none custom-scrollbar transition-all duration-300">
+                <canvas id="posterCanvas" class="max-w-full rounded-xl shadow-2xl border border-slate-700/60 object-contain cursor-grab active:cursor-grabbing transition-transform duration-150 max-h-[22vh] sm:max-h-[26vh] lg:max-h-[75vh]" title="Click text to edit sizing/color, drag to reposition, or double-click to type directly"></canvas>
 
                 <!-- On-Canvas Floating Quick Toolbar (Draggable & Dockable Anywhere) -->
                 <div id="canvas-floating-toolbar" class="hidden fixed z-[9000] bg-slate-900/95 backdrop-blur-md border border-cyan-500/50 shadow-2xl rounded-2xl p-2 text-white text-xs flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150 flex-wrap max-w-[calc(100vw-32px)] overflow-x-auto select-none">
