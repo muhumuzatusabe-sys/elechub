@@ -6,7 +6,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'elechub-default-secret-key-change-me')
-    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'elechub2026')
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '12345678910')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', f'sqlite:///{os.path.join(BASE_DIR, "elechub.db")}')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
