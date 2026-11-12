@@ -14,7 +14,7 @@
         <div class="flex items-center gap-3">
             <!-- Filter Dropdown -->
             <form method="GET" action="{{ url_for('candidates.index') }}" class="flex items-center gap-2">
-                <select name="election_id" onchange="this.form.submit()" class="text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                <select name="election_id" onchange="this.form.submit()" class="text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="">All Elections ({{ candidates|length }})</option>
                     {% for el in elections %}
                     <option value="{{ el.id }}" {% if selected_election_id == el.id %}selected{% endif %}>
@@ -23,7 +23,7 @@
                     {% endfor %}
                 </select>
             </form>
-            <a href="{{ url_for('candidates.new', election_id=selected_election_id or '') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+            <a href="{{ url_for('candidates.new', election_id=selected_election_id or '') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
                 <i class="fa-solid fa-plus"></i> New Candidate
             </a>
         </div>
@@ -51,7 +51,7 @@
                                 {{ c.party_or_slate or 'Independent' }}
                             </span>
                             <h3 class="text-base font-bold text-slate-900 truncate">{{ c.name }}</h3>
-                            <p class="text-xs font-semibold text-indigo-600 truncate">{{ c.position }}</p>
+                            <p class="text-xs font-semibold text-cyan-600 truncate">{{ c.position }}</p>
                             <p class="text-[11px] text-slate-400 truncate mt-0.5">{{ c.election.name }}</p>
                         </div>
                     </div>
@@ -83,11 +83,11 @@
 
             <!-- Footer Actions -->
             <div class="px-6 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ url_for('candidates.view', id=c.id) }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                <a href="{{ url_for('candidates.view', id=c.id) }}" class="text-xs font-bold text-cyan-600 hover:text-cyan-800 flex items-center gap-1">
                     Full Profile <i class="fa-solid fa-chevron-right text-[10px]"></i>
                 </a>
                 <div class="flex items-center space-x-2">
-                    <a href="{{ url_for('candidates.edit', id=c.id) }}" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/60 rounded-lg transition" title="Edit candidate">
+                    <a href="{{ url_for('candidates.edit', id=c.id) }}" class="p-1.5 text-slate-500 hover:text-cyan-600 hover:bg-slate-200/60 rounded-lg transition" title="Edit candidate">
                         <i class="fa-regular fa-pen-to-square text-xs"></i>
                     </a>
                     <form action="{{ url_for('candidates.delete', id=c.id) }}" method="POST" class="inline" onsubmit="return confirm('Delete candidate {{ c.name }}?')">
@@ -102,7 +102,7 @@
     </div>
     {% else %}
     <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-        <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mx-auto mb-4">
+        <div class="w-14 h-14 rounded-2xl bg-cyan-50 text-cyan-500 flex items-center justify-center mx-auto mb-4">
             <i class="fa-solid fa-user-plus text-2xl"></i>
         </div>
         <h3 class="text-base font-bold text-slate-800">No candidates found</h3>
@@ -113,7 +113,7 @@
             Get started by registering candidates with their campus positions, slogans, and campaign photos.
             {% endif %}
         </p>
-        <a href="{{ url_for('candidates.new', election_id=selected_election_id or '') }}" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition">
+        <a href="{{ url_for('candidates.new', election_id=selected_election_id or '') }}" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl shadow-md transition">
             <i class="fa-solid fa-plus"></i> Add Candidate
         </a>
     </div>

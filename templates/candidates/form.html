@@ -23,7 +23,7 @@
                     Campaign Season / Race <span class="text-rose-500">*</span>
                 </label>
                 <select name="election_id" id="election_id" required
-                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                     <option value="">-- Select Campaign Season --</option>
                     {% for el in elections %}
                     <option value="{{ el.id }}" {% if (candidate and candidate.election_id == el.id) or (selected_election_id == el.id) %}selected{% endif %}>
@@ -42,7 +42,7 @@
                     <input type="text" name="name" id="name" required
                         value="{{ candidate.name if candidate else '' }}"
                         placeholder="e.g. Candidate Full Name"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
                 <div>
                     <label for="position" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
@@ -51,7 +51,7 @@
                     <input type="text" name="position" id="position" required
                         value="{{ candidate.position if candidate else '' }}"
                         placeholder="e.g. Guild President"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
             </div>
 
@@ -64,7 +64,7 @@
                     <input type="text" name="faculty_or_hall" id="faculty_or_hall"
                         value="{{ candidate.faculty_or_hall if candidate and candidate.faculty_or_hall else '' }}"
                         placeholder="e.g. CEDAT / Livingstone Hall"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
                 <div>
                     <label for="party_or_slate" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
@@ -73,7 +73,7 @@
                     <input type="text" name="party_or_slate" id="party_or_slate"
                         value="{{ candidate.party_or_slate if candidate and candidate.party_or_slate else '' }}"
                         placeholder="e.g. Action Vanguard, Independent"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Candidate Brand Kit (Colors & Palette)</h3>
                         <p class="text-[11px] text-slate-400">These colors automatically style their flyers, SMS cards, and video reels.</p>
                     </div>
-                    <span class="text-xs font-mono text-indigo-600 font-semibold bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">Live Applied</span>
+                    <span class="text-xs font-mono text-cyan-600 font-semibold bg-cyan-50 px-2.5 py-1 rounded-lg border border-cyan-100">Live Applied</span>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                     <div>
@@ -132,7 +132,7 @@
                     <input type="text" name="slogan" id="slogan"
                         value="{{ candidate.slogan if candidate and candidate.slogan else '' }}"
                         placeholder="e.g. Action Over Rhetoric — Student Welfare First!"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                     <p class="text-[11px] text-slate-400 mt-1">Short and memorable banner headline.</p>
                 </div>
                 <div>
@@ -142,7 +142,7 @@
                     <input type="text" name="campaign_tagline" id="campaign_tagline"
                         value="{{ candidate.campaign_tagline if candidate and candidate.campaign_tagline else '' }}"
                         placeholder="e.g. The Voice That Truly Listens & Delivers"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                     <p class="text-[11px] text-slate-400 mt-1">Secondary subtitle for flyer footer ribbons.</p>
                 </div>
             </div>
@@ -154,7 +154,7 @@
                 </label>
                 <textarea name="manifesto_points" id="manifesto_points" rows="3"
                     placeholder="Transparent & Accountable Representation&#10;Accessible Campus Wi-Fi & Library Extensions&#10;24/7 Security Patrols & Health Center Support"
-                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-mono text-slate-800 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">{{ candidate.manifesto_points if candidate and candidate.manifesto_points else '' }}</textarea>
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-mono text-slate-800 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">{{ candidate.manifesto_points if candidate and candidate.manifesto_points else '' }}</textarea>
                 <p class="text-[11px] text-slate-400 mt-1">These bullet points will be auto-formatted on the Manifesto Flyer template.</p>
             </div>
 
@@ -171,7 +171,7 @@
                     <div class="space-y-2 flex-1">
                         <input type="file" name="photo" id="photo-input" accept="image/png, image/jpeg, image/jpg, image/webp"
                             onchange="previewPhoto(event)"
-                            class="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                            class="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100 cursor-pointer">
                         <p class="text-[11px] text-slate-400">
                             High-resolution portrait (plain or campus background works best). Transparent PNGs or clean JPEGs produce stunning posters.
                         </p>
@@ -188,7 +188,7 @@
                     <input type="text" name="phone" id="phone"
                         value="{{ candidate.phone if candidate and candidate.phone else '' }}"
                         placeholder="+256701122334"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
                 <div>
                     <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
@@ -197,7 +197,7 @@
                     <input type="email" name="email" id="email"
                         value="{{ candidate.email if candidate and candidate.email else '' }}"
                         placeholder="candidate@campus.ac.ug"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
                 <div>
                     <label for="social_handles" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
@@ -206,7 +206,7 @@
                     <input type="text" name="social_handles" id="social_handles"
                         value="{{ candidate.social_handles if candidate and candidate.social_handles else '' }}"
                         placeholder="@campaign_handle"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
                 </div>
             </div>
 
@@ -215,7 +215,7 @@
                 <a href="{{ url_for('candidates.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <button type="submit" class="px-7 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center gap-2">
                     <i class="fa-solid fa-save"></i>
                     <span>{{ 'Update Candidate Profile' if candidate else 'Save Candidate to Vault' }}</span>
                 </button>

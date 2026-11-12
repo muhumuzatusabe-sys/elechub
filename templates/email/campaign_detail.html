@@ -18,7 +18,7 @@
                         {{ campaign.status }}
                     </span>
                     {% if campaign.attach_poster %}
-                    <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-xs font-bold flex items-center gap-1">
+                    <span class="px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 text-xs font-bold flex items-center gap-1">
                         <i class="fa-solid fa-paperclip"></i> Poster Attached
                     </span>
                     {% endif %}
@@ -32,7 +32,7 @@
         <div class="flex items-center gap-2">
             {% if is_simulated and smtp_active %}
             <form method="POST" action="{{ url_for('email_campaigns.resend_live', campaign_id=campaign.id) }}" class="inline">
-                <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
                     <i class="fa-solid fa-paper-plane"></i> Send Live via SMTP
                 </button>
             </form>
@@ -66,7 +66,7 @@
             <div class="pt-2 flex flex-wrap items-center gap-3">
                 {% if smtp_active %}
                 <form method="POST" action="{{ url_for('email_campaigns.resend_live', campaign_id=campaign.id) }}" class="inline">
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
                         <i class="fa-solid fa-paper-plane"></i> Dispatch Now to {{ campaign.recipient_count }} Inboxes via Live SMTP
                     </button>
                 </form>
@@ -126,7 +126,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <input type="text" id="emailLogSearchInput" onkeyup="filterEmailLogTable()" placeholder="Search voter or email..."
-                    class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500">
                 <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 rounded-full text-slate-600">{{ logs|length }} logs</span>
             </div>
         </div>
@@ -177,7 +177,7 @@
                         </td>
                         <td class="py-3.5 px-6 text-slate-500 font-sans">
                             {% if log.attached_poster_path %}
-                                <span class="text-indigo-600 font-bold text-[11px]"><i class="fa-solid fa-paperclip"></i> Poster</span>
+                                <span class="text-cyan-600 font-bold text-[11px]"><i class="fa-solid fa-paperclip"></i> Poster</span>
                             {% else %}
                                 <span class="text-slate-300">—</span>
                             {% endif %}

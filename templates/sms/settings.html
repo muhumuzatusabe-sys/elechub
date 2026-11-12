@@ -9,7 +9,7 @@
     <div class="flex items-center justify-between">
         <div>
             <div class="flex items-center gap-2">
-                <a href="{{ url_for('sms.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                <a href="{{ url_for('sms.index') }}" class="text-xs font-bold text-slate-400 hover:text-cyan-600 transition flex items-center gap-1">
                     <i class="fa-solid fa-arrow-left"></i> Back to SMS Studio
                 </a>
             </div>
@@ -66,7 +66,7 @@
                     <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-black">1</span>
                     <span class="font-bold text-slate-800 ml-1">Log in to Africa's Talking</span>
                     <p class="text-[11px] text-slate-600 leading-normal">
-                        Go to <a href="https://account.africastalking.com" target="_blank" class="underline font-bold text-indigo-700">account.africastalking.com</a> and sign in with the email linked to your <code class="font-bold text-slate-800">{{ username }}</code> app.
+                        Go to <a href="https://account.africastalking.com" target="_blank" class="underline font-bold text-cyan-700">account.africastalking.com</a> and sign in with the email linked to your <code class="font-bold text-slate-800">{{ username }}</code> app.
                     </p>
                 </div>
 
@@ -108,21 +108,21 @@
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Africa's Talking Username *</label>
                 <input type="text" name="africastalking_username" id="atUsernameInput" value="{{ username }}" placeholder="e.g. your_at_username or sandbox"
-                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 <p class="text-[11px] text-amber-600 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Do NOT type "ELECHUB" here unless that is your exact Africa's Talking account username. Look at the top-right corner of your Africa's Talking dashboard (<a href="https://account.africastalking.com" target="_blank" class="underline font-bold">account.africastalking.com</a>) to find your real username.</p>
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Africa's Talking API Key *</label>
                 <input type="password" name="africastalking_api_key" id="atApiKeyInput" placeholder="{% if has_api_key %}••••••••••••••••••••••••••••••••{% else %}Paste your Africa's Talking API Key{% endif %}"
-                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 <p class="text-[11px] text-slate-400 mt-1">Found in your Africa's Talking portal under <span class="font-semibold">Settings &gt; API Key</span>. Starts with <code>atsk_...</code>. Leave blank to retain existing key.</p>
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Default Alphanumeric Sender ID / Short Code (Optional)</label>
                 <input type="text" name="africastalking_sender_id" value="{{ sender_id }}" placeholder="Leave blank to use Africa's Talking default" maxlength="11"
-                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 <p class="text-[11px] text-slate-400 mt-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> <span class="font-bold text-slate-600">Tip:</span> Leave this blank unless you have an approved Alphanumeric Sender ID from UCC / Africa's Talking. Entering an unapproved sender ID like "VOTE" will cause carriers to reject messages.</p>
             </div>
 
@@ -132,10 +132,10 @@
             <!-- Delivery Webhook Info -->
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1 text-xs">
                 <h5 class="font-bold text-slate-700 flex items-center gap-1.5">
-                    <i class="fa-solid fa-link text-indigo-600"></i> Africa's Talking Delivery Callback Webhook URL
+                    <i class="fa-solid fa-link text-cyan-600"></i> Africa's Talking Delivery Callback Webhook URL
                 </h5>
                 <p class="text-slate-500 text-[11px]">Configure this URL in your Africa's Talking SMS settings under <span class="font-semibold">Delivery Reports Callback URL</span>:</p>
-                <div class="p-2 rounded-lg bg-white border border-slate-200 font-mono text-[11px] text-indigo-700 break-all select-all font-semibold">
+                <div class="p-2 rounded-lg bg-white border border-slate-200 font-mono text-[11px] text-cyan-700 break-all select-all font-semibold">
                     {{ request.url_root }}webhooks/at-delivery
                 </div>
             </div>
@@ -147,10 +147,10 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="testGatewayConnection()" id="testConnBtn" class="px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5">
+                    <button type="button" onclick="testGatewayConnection()" id="testConnBtn" class="px-4 py-2 rounded-xl border border-cyan-200 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-bold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-plug"></i> Test Connection
                     </button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5">
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center gap-1.5">
                         <i class="fa-solid fa-floppy-disk"></i> Save Gateway Settings
                     </button>
                 </div>
@@ -167,7 +167,7 @@ async function testGatewayConnection() {
     const apiKey = document.getElementById('atApiKeyInput').value.trim();
 
     feedback.className = 'p-3.5 rounded-xl text-xs font-medium border bg-slate-50 border-slate-200 text-slate-700 flex items-center gap-2';
-    feedback.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-indigo-600"></i> Testing connection to Africa\'s Talking gateway...';
+    feedback.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-cyan-600"></i> Testing connection to Africa\'s Talking gateway...';
     feedback.classList.remove('hidden');
     btn.disabled = true;
 

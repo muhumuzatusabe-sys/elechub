@@ -12,9 +12,9 @@
 {% block content %}
 <div class="h-full flex flex-col space-y-6 pb-16 overflow-y-auto pr-1">
     <!-- Header Hero Card -->
-    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-7 rounded-2xl border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
+    <div class="bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900 text-white p-7 rounded-2xl border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
         <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-2 border border-indigo-500/30">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold mb-2 border border-cyan-500/30">
                 <i class="fa-solid fa-layer-group"></i>
                 <span>Multi-Purpose Batch Generator</span>
             </div>
@@ -44,8 +44,8 @@
             <span class="text-[11px] text-slate-400">Click any preset to prefill fields, or type your own custom message below</span>
         </div>
         <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="applyPreset('exam')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Exam Success Wishes
+            <button type="button" onclick="applyPreset('exam')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-cyan-50 hover:text-cyan-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-graduation-cap text-cyan-600"></i> Exam Success Wishes
             </button>
             <button type="button" onclick="applyPreset('congrats')" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center gap-1.5">
                 <i class="fa-solid fa-award text-emerald-600"></i> Hearty Congratulations
@@ -71,51 +71,51 @@
             <!-- Target Message Drafting Box -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-nib text-indigo-600"></i>
+                    <i class="fa-solid fa-pen-nib text-cyan-600"></i>
                     <span>1. Target Message Content (Completely Flexible)</span>
                 </h3>
 
                 <!-- Tagline / Category -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 mb-1">Header Category / Tagline (Optional)</label>
-                    <input type="text" id="target-tagline" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. OFFICIAL ACADEMIC GOODWILL">
+                    <input type="text" id="target-tagline" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-cyan-600" value="" placeholder="e.g. OFFICIAL ACADEMIC GOODWILL">
                 </div>
 
                 <!-- Target Title -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 mb-1">Main Target Headline / Title</label>
-                    <input type="text" id="target-title" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-extrabold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. SUCCESS IN END OF SEMESTER EXAMINATIONS">
+                    <input type="text" id="target-title" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-extrabold text-slate-900 focus:ring-2 focus:ring-cyan-600" value="" placeholder="e.g. SUCCESS IN END OF SEMESTER EXAMINATIONS">
                 </div>
 
                 <!-- Subtitle / Occasion -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 mb-1">Subtitle / Occasion / Department</label>
-                    <input type="text" id="target-subtitle" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. To All Scholars / Department">
+                    <input type="text" id="target-subtitle" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-cyan-600" value="" placeholder="e.g. To All Scholars / Department">
                 </div>
 
                 <!-- Target Body Message -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 mb-1">Target Message Body</label>
-                    <textarea id="target-message" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600 leading-relaxed" placeholder="Draft your target message here, or choose one of the quick presets above..."></textarea>
+                    <textarea id="target-message" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-cyan-600 leading-relaxed" placeholder="Draft your target message here, or choose one of the quick presets above..."></textarea>
                 </div>
 
                 <!-- Footer / Sender Line -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 mb-1">Footer / Sender / Signature Line</label>
-                    <input type="text" id="target-footer" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600" value="" placeholder="e.g. Office of the Guild President • 2026">
+                    <input type="text" id="target-footer" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-cyan-600" value="" placeholder="e.g. Office of the Guild President • 2026">
                 </div>
 
                 <!-- Optional Candidate Branding Checkbox -->
                 <div class="pt-2 border-t border-slate-100 space-y-3">
                     <label class="flex items-center space-x-2.5 cursor-pointer">
-                        <input type="checkbox" id="include-candidate-branding" onchange="toggleCandidateBranding(this.checked)" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                        <input type="checkbox" id="include-candidate-branding" onchange="toggleCandidateBranding(this.checked)" class="rounded text-cyan-600 focus:ring-cyan-500 w-4 h-4">
                         <span class="text-xs font-bold text-slate-800">Include Candidate & Campaign Endorsement Branding</span>
                     </label>
 
                     <div id="candidate-picker-box" class="hidden pl-6 space-y-2 pt-1">
                         <label class="block text-[11px] font-bold text-slate-600">Select Endorsing Candidate</label>
                         <select id="batch-candidate-select" onchange="onBatchCandidateChange(this.value)"
-                            class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-600">
+                            class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-cyan-600">
                             {% for c in candidates %}
                             <option value="{{ c.id }}" {% if selected_candidate and selected_candidate.id == c.id %}selected{% endif %}>
                                 {{ c.name }} — {{ c.position }}
@@ -130,14 +130,14 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 mb-1">Visual Theme</label>
-                            <select id="batch-theme" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                            <select id="batch-theme" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-cyan-600">
                                 <option value="dark">Dark Studio Slate</option>
                                 <option value="light">Crisp Light Ivory</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 mb-1">Export Format</label>
-                            <select id="batch-fmt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                            <select id="batch-fmt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-cyan-600">
                                 <option value="1:1" selected>Square (1:1 Feed)</option>
                                 <option value="9:16">Story / Status (9:16)</option>
                             </select>
@@ -148,9 +148,9 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 mb-1">
-                                <i class="fa-solid fa-shapes text-indigo-600 mr-1"></i> Display Layout
+                                <i class="fa-solid fa-shapes text-cyan-600 mr-1"></i> Display Layout
                             </label>
-                            <select id="batch-layout-style" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                            <select id="batch-layout-style" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-cyan-600">
                                 <option value="executive" selected>Grand Executive (Hero Center)</option>
                                 <option value="magazine">Modern Editorial (Split Layout)</option>
                                 <option value="certificate">Royal Commendation (Crest)</option>
@@ -160,7 +160,7 @@
                             <label class="block text-[11px] font-bold text-slate-600 mb-1">
                                 <i class="fa-solid fa-text-height text-amber-500 mr-1"></i> Message Typography
                             </label>
-                            <select id="batch-text-density" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600">
+                            <select id="batch-text-density" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-cyan-600">
                                 <option value="auto" selected>Auto-Balanced (Adaptive Fill)</option>
                                 <option value="large">Large & Bold (Prominent)</option>
                                 <option value="compact">Compact (Long Message)</option>
@@ -171,7 +171,7 @@
                     <!-- Curated Color Palette Quick-Picks -->
                     <div>
                         <label class="block text-[11px] font-bold text-slate-600 mb-1.5 flex items-center justify-between">
-                            <span><i class="fa-solid fa-palette text-indigo-600 mr-1"></i> Curated Color Choices</span>
+                            <span><i class="fa-solid fa-palette text-cyan-600 mr-1"></i> Curated Color Choices</span>
                             <span class="text-[10px] text-slate-400 font-normal">Click to apply palette</span>
                         </label>
                         <div class="grid grid-cols-4 gap-1.5">
@@ -180,7 +180,7 @@
                                 <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#fbbf24"></span>
                                 <span class="text-[10px] font-bold text-slate-700 truncate">Emerald</span>
                             </button>
-                            <button type="button" onclick="applyColorPalette('#1e3a8a', '#f59e0b', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 flex items-center gap-1.5 transition text-left group ring-2 ring-indigo-600 border-indigo-600 bg-indigo-50/50" title="Royal Navy & Amber">
+                            <button type="button" onclick="applyColorPalette('#1e3a8a', '#f59e0b', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 flex items-center gap-1.5 transition text-left group ring-2 ring-cyan-600 border-cyan-600 bg-cyan-50/50" title="Royal Navy & Amber">
                                 <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#1e3a8a"></span>
                                 <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#f59e0b"></span>
                                 <span class="text-[10px] font-bold text-slate-700 truncate">Navy</span>
@@ -195,10 +195,10 @@
                                 <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#38bdf8"></span>
                                 <span class="text-[10px] font-bold text-slate-700 truncate">Obsidian</span>
                             </button>
-                            <button type="button" onclick="applyColorPalette('#312e81', '#ec4899', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-indigo-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Imperial Indigo & Pink">
+                            <button type="button" onclick="applyColorPalette('#312e81', '#ec4899', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-cyan-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Imperial cyan & Pink">
                                 <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#312e81"></span>
                                 <span class="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0 -ml-2" style="background:#ec4899"></span>
-                                <span class="text-[10px] font-bold text-slate-700 truncate">Indigo</span>
+                                <span class="text-[10px] font-bold text-slate-700 truncate">cyan</span>
                             </button>
                             <button type="button" onclick="applyColorPalette('#14532d', '#eab308', this)" class="palette-choice-btn p-1.5 rounded-xl border border-slate-200 hover:border-amber-500 bg-slate-50 flex items-center gap-1.5 transition text-left group" title="Forest & Ochre">
                                 <span class="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0" style="background:#14532d"></span>
@@ -250,7 +250,7 @@
 
                     <div class="flex items-center gap-2">
                         <!-- Bulk Upload Photos Button -->
-                        <label class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition shadow-sm" title="Upload multiple individual photos at once">
+                        <label class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition shadow-sm" title="Upload multiple individual photos at once">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <span>Bulk Upload Photos</span>
                             <input type="file" id="bulk-photo-input" multiple accept="image/*" class="hidden" onchange="onBulkPhotoUpload(this)">
@@ -258,7 +258,7 @@
 
                         <!-- Single Add Person Button -->
                         <button type="button" onclick="addIndividualRow()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl border border-slate-200 flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-user-plus text-indigo-600"></i>
+                            <i class="fa-solid fa-user-plus text-cyan-600"></i>
                             <span>+ Add Person</span>
                         </button>
                     </div>
@@ -268,7 +268,7 @@
                 <div id="empty-individual-notice" class="p-8 text-center rounded-xl border-2 border-dashed border-slate-200 text-slate-400 text-xs space-y-2">
                     <i class="fa-solid fa-users text-2xl text-slate-300"></i>
                     <p class="font-bold text-slate-600">No individuals added to this slate yet.</p>
-                    <p class="text-[11px]">Click <strong class="text-indigo-600">+ Add Person</strong> or <strong class="text-indigo-600">Bulk Upload Photos</strong> above to begin.</p>
+                    <p class="text-[11px]">Click <strong class="text-cyan-600">+ Add Person</strong> or <strong class="text-cyan-600">Bulk Upload Photos</strong> above to begin.</p>
                 </div>
 
                 <!-- Individuals List Container (Starts Empty) -->
@@ -292,14 +292,14 @@
                             <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
                         </button>
                         <div id="batch-export-dropdown" class="hidden absolute right-0 mt-2 w-56 rounded-2xl bg-white shadow-2xl border border-slate-100 z-30 p-2 space-y-1">
-                            <button type="button" onclick="downloadAllZip('png'); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
-                                <i class="fa-solid fa-file-zipper text-indigo-600"></i>
+                            <button type="button" onclick="downloadAllZip('png'); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cyan-50 hover:text-cyan-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-zipper text-cyan-600"></i>
                                 <div>
                                     <div>Download ZIP (PNG HD)</div>
                                     <span class="text-[10px] text-slate-400 font-normal">Lossless full resolution</span>
                                 </div>
                             </button>
-                            <button type="button" onclick="downloadAllZip('jpeg'); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
+                            <button type="button" onclick="downloadAllZip('jpeg'); toggleBatchExportMenu(false);" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cyan-50 hover:text-cyan-600 text-xs font-bold text-slate-800 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-file-zipper text-emerald-600"></i>
                                 <div>
                                     <div>Download ZIP (JPG)</div>
@@ -324,7 +324,7 @@
                     <i class="fa-solid fa-images text-4xl text-slate-300 mb-3 block"></i>
                     <p class="text-xs font-semibold text-slate-700">No batch fliers generated yet.</p>
                     <p class="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
-                        Draft your target message, upload the photos of individuals, and click <strong class="text-indigo-600">"Generate All Fliers"</strong> above.
+                        Draft your target message, upload the photos of individuals, and click <strong class="text-cyan-600">"Generate All Fliers"</strong> above.
                     </p>
                 </div>
             </div>
@@ -541,10 +541,10 @@ function applyColorPalette(primary, secondary, el = null) {
 
     // Highlight selected swatch button
     document.querySelectorAll('.palette-choice-btn').forEach(btn => {
-        btn.classList.remove('ring-2', 'ring-indigo-600', 'border-indigo-600', 'bg-indigo-50/50');
+        btn.classList.remove('ring-2', 'ring-cyan-600', 'border-cyan-600', 'bg-cyan-50/50');
     });
     if (el) {
-        el.classList.add('ring-2', 'ring-indigo-600', 'border-indigo-600', 'bg-indigo-50/50');
+        el.classList.add('ring-2', 'ring-cyan-600', 'border-cyan-600', 'bg-cyan-50/50');
     }
 }
 
@@ -680,7 +680,7 @@ async function generateAllBatchFlyers() {
                     <p class="text-[11px] text-slate-500">${role || 'Recipient'}</p>
                 </div>
                 <div class="flex items-center space-x-1.5 pt-2 border-t border-slate-100">
-                    <button type="button" onclick="openBatchFlyerDownloadModal(${idx})" class="flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm" title="Download PNG, JPG or PDF">
+                    <button type="button" onclick="openBatchFlyerDownloadModal(${idx})" class="flex-1 py-2 px-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm" title="Download PNG, JPG or PDF">
                         <i class="fa-solid fa-download"></i> Save / Export
                     </button>
                     <button type="button" onclick="shareBatchFlyerWhatsApp(${idx})" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white text-xs font-bold transition shadow-sm" title="Share via WhatsApp">
@@ -754,7 +754,7 @@ function selectBatchSingleFormat(fmt) {
         const btn = document.getElementById('btn-batch-exp-' + f);
         if (btn) {
             if (f === fmt) {
-                btn.className = 'p-2.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-indigo-900 text-center transition flex flex-col items-center gap-0.5';
+                btn.className = 'p-2.5 rounded-2xl border-2 border-cyan-600 bg-cyan-50/70 text-cyan-900 text-center transition flex flex-col items-center gap-0.5';
             } else {
                 btn.className = 'p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5';
             }
@@ -965,7 +965,7 @@ function downloadAllPDFBooklet() {
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-200">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
                     <i class="fa-solid fa-download"></i>
                 </div>
                 <div>
@@ -985,10 +985,10 @@ function downloadAllPDFBooklet() {
         <div class="space-y-1.5">
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Choose Format</label>
             <div class="grid grid-cols-3 gap-2">
-                <button type="button" id="btn-batch-exp-png" onclick="selectBatchSingleFormat('png')" class="p-2.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-indigo-900 text-center transition flex flex-col items-center gap-0.5">
-                    <i class="fa-solid fa-file-image text-indigo-600 text-base"></i>
+                <button type="button" id="btn-batch-exp-png" onclick="selectBatchSingleFormat('png')" class="p-2.5 rounded-2xl border-2 border-cyan-600 bg-cyan-50/70 text-cyan-900 text-center transition flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-file-image text-cyan-600 text-base"></i>
                     <span class="text-xs font-extrabold">PNG</span>
-                    <span class="text-[9px] text-indigo-600 font-semibold">Lossless HD</span>
+                    <span class="text-[9px] text-cyan-600 font-semibold">Lossless HD</span>
                 </button>
                 <button type="button" id="btn-batch-exp-jpeg" onclick="selectBatchSingleFormat('jpeg')" class="p-2.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-slate-700 text-center transition flex flex-col items-center gap-0.5">
                     <i class="fa-regular fa-file-image text-slate-500 text-base"></i>
@@ -1007,7 +1007,7 @@ function downloadAllPDFBooklet() {
             <button type="button" onclick="closeBatchFlyerDownloadModal()" class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
                 Cancel
             </button>
-            <button type="button" onclick="executeBatchSingleDownload()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+            <button type="button" onclick="executeBatchSingleDownload()" class="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-extrabold shadow-md shadow-cyan-600/30 transition flex items-center gap-2">
                 <i class="fa-solid fa-download"></i>
                 <span id="lbl-batch-export-btn">Download PNG</span>
             </button>
@@ -1060,7 +1060,7 @@ function downloadAllPDFBooklet() {
                 <span>Open Mail Client</span>
             </button>
 
-            <button type="button" onclick="launchBatchBroadcastStudio()" class="py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow transition">
+            <button type="button" onclick="launchBatchBroadcastStudio()" class="py-2.5 px-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow transition">
                 <i class="fa-solid fa-paper-plane"></i>
                 <span>Campus Broadcast Studio</span>
             </button>

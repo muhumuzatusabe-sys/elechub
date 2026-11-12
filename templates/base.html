@@ -19,12 +19,16 @@
                     },
                     colors: {
                         brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#1e1b4b',
+                            50: '#ecfeff',
+                            100: '#cffafe',
+                            200: '#a5f3fc',
+                            300: '#67e8f9',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            800: '#155e75',
+                            900: '#164e63',
                         }
                     }
                 }
@@ -33,7 +37,7 @@
     </script>
     <!-- PWA & Mobile Web App Meta -->
     <link rel="manifest" href="/static/manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#06b6d4">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -104,14 +108,14 @@
     <!-- Sidebar Navigation Drawer -->
     <aside id="sidebar-drawer" class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 border-r border-slate-800 flex flex-col flex-shrink-0 select-none transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-64 shadow-2xl lg:shadow-none">
         <!-- Brand Logo Header -->
-        <div class="h-16 flex items-center justify-between px-5 sm:px-6 border-b border-slate-800 bg-slate-950/40">
+        <div class="h-16 flex items-center justify-between px-5 sm:px-6 border-b border-cyan-950/80 bg-slate-950/80">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 flex-shrink-0">
+                <div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 flex-shrink-0 border border-cyan-500/40">
                     <img src="{{ url_for('static', filename='icons/icon-192.png') }}" class="w-full h-full object-cover" alt="ELECHUB">
                 </div>
                 <div>
                     <h1 class="text-white font-extrabold text-base tracking-tight leading-none">ELECHUB</h1>
-                    <span class="text-[10px] uppercase font-bold tracking-wider text-amber-400">Campaign Creative Studio</span>
+                    <span class="text-[10px] uppercase font-bold tracking-wider text-cyan-400">Campaign Command Center</span>
                 </div>
             </div>
             <!-- Mobile Close Drawer Button -->
@@ -122,89 +126,89 @@
 
         <!-- Navigation Links -->
         <nav class="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
-            <div class="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Command Center</div>
+            <div class="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-cyan-400/80">Command Center</div>
             
-            <a href="{{ url_for('dashboard.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'dashboard.index' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                <i class="fa-solid fa-gauge-high w-5 text-center text-slate-400 {% if request.endpoint == 'dashboard.index' %}text-white{% endif %}"></i>
+            <a href="{{ url_for('dashboard.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'dashboard.index' %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <i class="fa-solid fa-gauge-high w-5 text-center {% if request.endpoint == 'dashboard.index' %}text-slate-950{% else %}text-cyan-400{% endif %}"></i>
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ url_for('candidates.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('candidates.') %}bg-indigo-600 text-white shadow-md shadow-indigo-600/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                <i class="fa-solid fa-id-card-clip w-5 text-center text-slate-400 {% if request.endpoint and request.endpoint.startswith('candidates.') %}text-white{% endif %}"></i>
+            <a href="{{ url_for('candidates.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('candidates.') %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <i class="fa-solid fa-id-card-clip w-5 text-center {% if request.endpoint and request.endpoint.startswith('candidates.') %}text-slate-950{% else %}text-cyan-400{% endif %}"></i>
                 <span>Candidates Vault</span>
             </a>
 
             <!-- Creative & Production Studio -->
-            <div class="pt-5 px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+            <div class="pt-5 px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-cyan-400/80 flex items-center justify-between">
                 <span>Creative & Mobilization</span>
-                <span class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded font-bold font-mono">STUDIO</span>
+                <span class="text-[9px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold font-mono">STUDIO</span>
             </div>
 
-            <a href="{{ url_for('posters.studio') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'posters.studio' %}bg-indigo-600 text-white{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+            <a href="{{ url_for('posters.studio') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'posters.studio' %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-palette w-5 text-center text-rose-400"></i>
+                    <i class="fa-solid fa-palette w-5 text-center text-cyan-400"></i>
                     <span>Poster & Flyer Studio</span>
                 </div>
-                <span class="text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-1.5 py-0.5 rounded font-bold">300 DPI</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">300 DPI</span>
             </a>
 
-            <a href="{{ url_for('posters.projects_list') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'posters.projects_list' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+            <a href="{{ url_for('posters.projects_list') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'posters.projects_list' %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-folder-open w-5 text-center text-amber-400"></i>
+                    <i class="fa-solid fa-folder-open w-5 text-center text-cyan-400"></i>
                     <span>Saved Projects Vault</span>
                 </div>
-                <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">PROJECTS</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">PROJECTS</span>
             </a>
 
-            <a href="{{ url_for('posters.batch') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'posters.batch' %}bg-amber-500 text-slate-950 font-bold{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+            <a href="{{ url_for('posters.batch') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint == 'posters.batch' %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-layer-group w-5 text-center {% if request.endpoint == 'posters.batch' %}text-slate-950{% else %}text-amber-400{% endif %}"></i>
+                    <i class="fa-solid fa-layer-group w-5 text-center text-cyan-400"></i>
                     <span>Batch Multiple Fliers</span>
                 </div>
-                <span class="text-[10px] {% if request.endpoint == 'posters.batch' %}bg-slate-950 text-amber-300{% else %}bg-amber-500/20 text-amber-300 border border-amber-500/30{% endif %} px-1.5 py-0.5 rounded font-bold">BATCH</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">BATCH</span>
             </a>
 
-            <a href="{{ url_for('sms.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('sms.') %}bg-indigo-600 text-white{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+            <a href="{{ url_for('sms.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('sms.') %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-comment-sms w-5 text-center text-emerald-400"></i>
+                    <i class="fa-solid fa-comment-sms w-5 text-center text-cyan-400"></i>
                     <span>Bulk SMS Studio</span>
                 </div>
-                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">SMS</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">SMS</span>
             </a>
 
-            <a href="{{ url_for('email_campaigns.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('email_campaigns.') %}bg-indigo-600 text-white{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+            <a href="{{ url_for('email_campaigns.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('email_campaigns.') %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-envelope-open-text w-5 text-center text-sky-400"></i>
+                    <i class="fa-solid fa-envelope-open-text w-5 text-center text-cyan-400"></i>
                     <span>Bulk Email Studio</span>
                 </div>
-                <span class="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-500/30 px-1.5 py-0.5 rounded font-bold">EMAIL</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">EMAIL</span>
             </a>
 
-            <a href="{{ url_for('video.creator') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('video.') %}bg-indigo-600 text-white{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+            <a href="{{ url_for('video.creator') }}" onclick="toggleMobileSidebar(false)" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('video.') %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-film w-5 text-center text-purple-400"></i>
+                    <i class="fa-solid fa-film w-5 text-center text-cyan-400"></i>
                     <span>Field Video Reels (9:16)</span>
                 </div>
-                <span class="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-bold">REELS</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">REELS</span>
             </a>
 
             <!-- Administration / Organization -->
-            <div class="pt-5 px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Campaign Org</div>
+            <div class="pt-5 px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-cyan-400/80">Campaign Org</div>
 
-            <a href="{{ url_for('contacts.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('contacts.') %}bg-indigo-600 text-white shadow-md shadow-indigo-600/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                <i class="fa-solid fa-address-book w-5 text-center text-slate-400 {% if request.endpoint and request.endpoint.startswith('contacts.') %}text-white{% endif %}"></i>
+            <a href="{{ url_for('contacts.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('contacts.') %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <i class="fa-solid fa-address-book w-5 text-center {% if request.endpoint and request.endpoint.startswith('contacts.') %}text-slate-950{% else %}text-cyan-400{% endif %}"></i>
                 <span>Voter Contacts</span>
             </a>
 
-            <a href="{{ url_for('elections.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('elections.') %}bg-indigo-600 text-white shadow-md shadow-indigo-600/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                <i class="fa-solid fa-calendar-days w-5 text-center text-slate-400 {% if request.endpoint and request.endpoint.startswith('elections.') %}text-white{% endif %}"></i>
+            <a href="{{ url_for('elections.index') }}" onclick="toggleMobileSidebar(false)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all {% if request.endpoint and request.endpoint.startswith('elections.') %}bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <i class="fa-solid fa-calendar-days w-5 text-center {% if request.endpoint and request.endpoint.startswith('elections.') %}text-slate-950{% else %}text-cyan-400{% endif %}"></i>
                 <span>Campaign Seasons</span>
             </a>
         </nav>
 
         <!-- Install App Banner Button -->
         <div class="px-4 py-3 border-t border-slate-800/80">
-            <button id="pwa-install-btn" onclick="installELECHUB()" class="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/30 transition">
+            <button id="pwa-install-btn" onclick="installELECHUB()" class="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-400 hover:to-teal-300 text-slate-950 rounded-xl text-xs font-extrabold shadow-md shadow-cyan-500/30 transition">
                 <i class="fa-solid fa-download text-xs"></i>
                 <span>Install ELECHUB App</span>
             </button>
@@ -253,12 +257,12 @@
                 {% endif %}
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
-                <a href="{{ url_for('candidates.new') }}" class="inline-flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition">
+                <a href="{{ url_for('candidates.new') }}" class="inline-flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-xl shadow-sm shadow-cyan-600/20 transition">
                     <i class="fa-solid fa-user-plus text-[11px]"></i>
                     <span class="hidden sm:inline">Add Candidate</span>
                 </a>
                 <a href="{{ url_for('contacts.new') }}" class="inline-flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold rounded-xl shadow-sm transition">
-                    <i class="fa-solid fa-file-csv text-[11px] text-emerald-600"></i>
+                    <i class="fa-solid fa-file-csv text-[11px] text-cyan-600"></i>
                     <span class="hidden sm:inline">New Contact List</span>
                 </a>
             </div>
@@ -301,7 +305,7 @@
         <!-- Mobile Bottom Navigation Dock -->
         {% if session.get('is_admin') %}
         <nav class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 z-30 flex items-center justify-around px-1 text-[10px] font-bold select-none safe-bottom-dock">
-            <a href="{{ url_for('dashboard.index') }}" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl transition {% if request.endpoint == 'dashboard.index' %}text-indigo-400 font-extrabold{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+            <a href="{{ url_for('dashboard.index') }}" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl transition {% if request.endpoint == 'dashboard.index' %}text-cyan-400 font-extrabold{% else %}text-slate-400 hover:text-slate-200{% endif %}">
                 <i class="fa-solid fa-gauge-high text-base mb-0.5"></i>
                 <span>Home</span>
             </a>

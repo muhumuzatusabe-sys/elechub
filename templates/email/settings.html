@@ -9,7 +9,7 @@
     <div class="flex items-center justify-between">
         <div>
             <div class="flex items-center gap-2">
-                <a href="{{ url_for('email_campaigns.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                <a href="{{ url_for('email_campaigns.index') }}" class="text-xs font-bold text-slate-400 hover:text-cyan-600 transition flex items-center gap-1">
                     <i class="fa-solid fa-arrow-left"></i> Back to Email Studio
                 </a>
             </div>
@@ -29,7 +29,7 @@
                 <span class="text-sm font-black text-slate-900">
                     {% if smtp_active %}Live SMTP Active{% else %}Smart Simulation Mode{% endif %}
                 </span>
-                <span class="text-xs text-slate-500">• Server: <code class="font-mono text-indigo-600">{{ mail_server }}:{{ mail_port }}</code></span>
+                <span class="text-xs text-slate-500">• Server: <code class="font-mono text-cyan-600">{{ mail_server }}:{{ mail_port }}</code></span>
             </div>
             <p class="text-xs text-slate-400 mt-1">
                 {% if smtp_active %}
@@ -50,26 +50,26 @@
             <span class="text-[11px] text-slate-400">Click to autofill host, port, and encryption</span>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <button type="button" onclick="applyPreset('gmail')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+            <button type="button" onclick="applyPreset('gmail')" class="p-3 rounded-xl border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-cyan-700">
                     <i class="fa-brands fa-google text-red-500"></i> Gmail / Workspace
                 </div>
                 <p class="text-[10px] text-slate-500 mt-1">Port 587 (TLS)</p>
             </button>
-            <button type="button" onclick="applyPreset('zoho')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+            <button type="button" onclick="applyPreset('zoho')" class="p-3 rounded-xl border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-cyan-700">
                     <i class="fa-solid fa-briefcase text-blue-600"></i> Zoho Mail
                 </div>
                 <p class="text-[10px] text-slate-500 mt-1">Port 465 (SSL)</p>
             </button>
-            <button type="button" onclick="applyPreset('sendgrid')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+            <button type="button" onclick="applyPreset('sendgrid')" class="p-3 rounded-xl border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-cyan-700">
                     <i class="fa-solid fa-paper-plane text-sky-500"></i> SendGrid
                 </div>
                 <p class="text-[10px] text-slate-500 mt-1">High volume bulk</p>
             </button>
-            <button type="button" onclick="applyPreset('mailgun')" class="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition group">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-indigo-700">
+            <button type="button" onclick="applyPreset('mailgun')" class="p-3 rounded-xl border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/50 text-left transition group">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-cyan-700">
                     <i class="fa-solid fa-gun text-emerald-600"></i> Mailgun
                 </div>
                 <p class="text-[10px] text-slate-500 mt-1">Dedicated SMTP</p>
@@ -87,7 +87,7 @@
         </p>
         <ol class="list-decimal list-inside text-[11px] text-amber-950 space-y-0.5 font-medium pl-1">
             <li>Ensure <strong>2-Step Verification</strong> is enabled on your Google account.</li>
-            <li>Visit <a href="https://myaccount.google.com/apppasswords" target="_blank" class="underline text-indigo-700 font-bold">myaccount.google.com/apppasswords</a>.</li>
+            <li>Visit <a href="https://myaccount.google.com/apppasswords" target="_blank" class="underline text-cyan-700 font-bold">myaccount.google.com/apppasswords</a>.</li>
             <li>Create an app named <strong>ELECHUB</strong> and copy the generated <strong>16-character App Password</strong> (e.g. <code class="bg-amber-100 px-1 py-0.5 rounded font-mono">abcd efgh ijkl mnop</code>).</li>
             <li>Paste this 16-character code into the <strong>Mail Password</strong> field below.</li>
         </ol>
@@ -100,23 +100,23 @@
                 <div class="sm:col-span-2">
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">SMTP Mail Server Host *</label>
                     <input type="text" name="mail_server" id="mailServerInput" value="{{ mail_server }}" placeholder="e.g. smtp.gmail.com" required
-                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Port *</label>
                     <input type="number" name="mail_port" id="mailPortInput" value="{{ mail_port }}" placeholder="587" required
-                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 </div>
             </div>
 
             <!-- Encryption Options -->
             <div class="flex flex-wrap items-center gap-6 pt-1">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="mail_use_tls" id="mailUseTlsInput" {% if mail_use_tls %}checked{% endif %} class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                    <input type="checkbox" name="mail_use_tls" id="mailUseTlsInput" {% if mail_use_tls %}checked{% endif %} class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500 w-4 h-4">
                     <span class="text-xs font-bold text-slate-700">Use TLS (STARTTLS — Recommended for Port 587)</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="mail_use_ssl" id="mailUseSslInput" {% if mail_use_ssl %}checked{% endif %} class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                    <input type="checkbox" name="mail_use_ssl" id="mailUseSslInput" {% if mail_use_ssl %}checked{% endif %} class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500 w-4 h-4">
                     <span class="text-xs font-bold text-slate-700">Use SSL (Port 465)</span>
                 </label>
             </div>
@@ -124,26 +124,26 @@
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Account Username / Email Address *</label>
                 <input type="text" name="mail_username" id="mailUsernameInput" value="{{ mail_username }}" placeholder="e.g. campus.campaign@gmail.com"
-                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 <p class="text-[11px] text-slate-400 mt-1">The email address associated with your outgoing SMTP mailbox.</p>
             </div>
 
             <div>
                 <div class="flex items-center justify-between mb-1.5">
                     <label class="block text-xs font-bold text-slate-700">Account Password or App Password *</label>
-                    <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] text-indigo-600 hover:text-indigo-700 font-bold flex items-center gap-1">
+                    <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] text-cyan-600 hover:text-cyan-700 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-eye" id="pwdEyeIcon"></i> <span id="pwdToggleText">Show</span>
                     </button>
                 </div>
                 <input type="password" name="mail_password" id="mailPasswordInput" placeholder="{% if has_password %}••••••••••••••••••••••••••••••••{% else %}Paste your 16-character App Password{% endif %}"
-                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 <p class="text-[11px] text-slate-400 mt-1">For Gmail, enter your Google App Password without spaces. Leave blank to keep existing password.</p>
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Default From Sender Display Header (Optional)</label>
                 <input type="text" name="mail_default_sender" id="mailSenderInput" value="{{ mail_default_sender }}" placeholder="e.g. ELECHUB Campaign Command &lt;noreply@elechub.campus.ac.ug&gt;"
-                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                    class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
                 <p class="text-[11px] text-slate-400 mt-1">Friendly sender name shown in student mail apps (e.g. Gmail/Outlook).</p>
             </div>
 
@@ -157,10 +157,10 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="testSmtpConnection()" id="testConnBtn" class="px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5">
+                    <button type="button" onclick="testSmtpConnection()" id="testConnBtn" class="px-4 py-2 rounded-xl border border-cyan-200 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-bold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-plug"></i> Test Connection
                     </button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center gap-2">
                         <i class="fa-solid fa-floppy-disk"></i> Save & Activate
                     </button>
                 </div>
@@ -172,16 +172,16 @@
     <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
         <div>
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-paper-plane text-indigo-600"></i> Send a Real Test Email to Your Inbox
+                <i class="fa-solid fa-paper-plane text-cyan-600"></i> Send a Real Test Email to Your Inbox
             </h3>
             <p class="text-xs text-slate-500 mt-0.5">Verify that your mail server credentials actually deliver an email to your physical inbox before launching student campaign broadcasts.</p>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3">
             <input type="email" id="quickTestEmailInput" placeholder="Enter recipient email (e.g. your_email@gmail.com)"
-                class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium">
             <button type="button" onclick="sendQuickTestEmail()" id="quickTestEmailBtn"
-                class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center justify-center gap-2 shrink-0">
+                class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center justify-center gap-2 shrink-0">
                 <i class="fa-solid fa-paper-plane"></i> Send Test Email
             </button>
         </div>

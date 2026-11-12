@@ -29,9 +29,9 @@
                 <i class="fa-solid fa-gear text-slate-500"></i> Gateway Settings
             </a>
             <a href="{{ url_for('contacts.index') }}" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-address-book text-indigo-600"></i> Voter Contact Lists
+                <i class="fa-solid fa-address-book text-cyan-600"></i> Voter Contact Lists
             </a>
-            <a href="{{ url_for('email_campaigns.compose') }}" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+            <a href="{{ url_for('email_campaigns.compose') }}" class="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center gap-2">
                 <i class="fa-solid fa-envelope-open-text"></i>
                 <span>Compose Campaign Email</span>
             </a>
@@ -43,7 +43,7 @@
         <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Email Blasts</p>
-                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                <div class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center text-sm font-bold">
                     <i class="fa-solid fa-bullhorn"></i>
                 </div>
             </div>
@@ -113,10 +113,10 @@
                     {% for c in campaigns %}
                     <tr class="hover:bg-slate-50/60 transition">
                         <td class="py-4 px-6 font-bold text-slate-900">
-                            <a href="{{ url_for('email_campaigns.campaign_detail', campaign_id=c.id) }}" class="hover:text-indigo-600 transition flex items-center gap-2">
+                            <a href="{{ url_for('email_campaigns.campaign_detail', campaign_id=c.id) }}" class="hover:text-cyan-600 transition flex items-center gap-2">
                                 <span>{{ c.subject }}</span>
                                 {% if c.attach_poster %}
-                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold" title="Poster Attached">
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700 font-bold" title="Poster Attached">
                                         <i class="fa-solid fa-paperclip"></i> Poster
                                     </span>
                                 {% endif %}
@@ -139,7 +139,7 @@
                             {{ c.created_at.strftime('%b %d, %Y • %I:%M %p') }}
                         </td>
                         <td class="py-4 px-6 text-right">
-                            <a href="{{ url_for('email_campaigns.campaign_detail', campaign_id=c.id) }}" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition inline-flex items-center gap-1">
+                            <a href="{{ url_for('email_campaigns.campaign_detail', campaign_id=c.id) }}" class="px-3 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 font-bold text-xs transition inline-flex items-center gap-1">
                                 <i class="fa-solid fa-list-check"></i> Audit Log
                             </a>
                         </td>
@@ -150,12 +150,12 @@
         </div>
         {% else %}
         <div class="py-16 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-4">
+            <div class="w-16 h-16 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center mx-auto text-2xl mb-4">
                 <i class="fa-solid fa-envelope-open-text"></i>
             </div>
             <h4 class="text-sm font-bold text-slate-800">No Bulk Email Campaigns Yet</h4>
             <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1 mb-6">Dispatch formatted manifesto letters, debate notices, and polling alerts to student voter emails.</p>
-            <a href="{{ url_for('email_campaigns.compose') }}" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition inline-flex items-center gap-2">
+            <a href="{{ url_for('email_campaigns.compose') }}" class="px-5 py-2.5 rounded-xl bg-cyan-600 text-white text-xs font-bold hover:bg-cyan-700 transition inline-flex items-center gap-2">
                 <i class="fa-solid fa-paper-plane"></i> Compose First Email Blast
             </a>
         </div>
@@ -212,7 +212,7 @@
                         </td>
                         <td class="py-3 px-6 text-slate-500 font-sans">
                             {% if log.attached_poster_path %}
-                                <span class="text-indigo-600 font-bold text-[11px]"><i class="fa-solid fa-image"></i> Poster</span>
+                                <span class="text-cyan-600 font-bold text-[11px]"><i class="fa-solid fa-image"></i> Poster</span>
                             {% else %}
                                 <span class="text-slate-300">—</span>
                             {% endif %}

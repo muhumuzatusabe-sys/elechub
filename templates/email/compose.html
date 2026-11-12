@@ -58,7 +58,7 @@
     <div class="flex items-center justify-between">
         <div>
             <div class="flex items-center gap-2">
-                <a href="{{ url_for('email_campaigns.index') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1">
+                <a href="{{ url_for('email_campaigns.index') }}" class="text-xs font-bold text-slate-400 hover:text-cyan-600 transition flex items-center gap-1">
                     <i class="fa-solid fa-arrow-left"></i> Back to Email Studio
                 </a>
             </div>
@@ -66,7 +66,7 @@
             <p class="text-xs text-slate-500">Draft rich manifesto letters, format policy points with custom styles, and personalize with voter merge tags.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button type="button" onclick="openTestModal()" class="px-4 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-2">
+            <button type="button" onclick="openTestModal()" class="px-4 py-2.5 rounded-xl border border-cyan-200 bg-cyan-50/50 hover:bg-cyan-100 text-cyan-700 text-xs font-bold transition flex items-center gap-2">
                 <i class="fa-solid fa-vial"></i> Send Test to Myself
             </button>
             <button type="button" onclick="fetchLiveEmailPreview()" class="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-2">
@@ -112,7 +112,7 @@
             <span class="text-[11px] text-slate-400 font-medium">Click any template or start blank — all text and styles are 100% editable</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-            <button type="button" onclick="loadEmailTemplate('blank')" class="p-3.5 rounded-xl border-2 border-indigo-600 bg-indigo-50/40 text-left transition email-tpl-btn">
+            <button type="button" onclick="loadEmailTemplate('blank')" class="p-3.5 rounded-xl border-2 border-cyan-600 bg-cyan-50/40 text-left transition email-tpl-btn">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-extrabold text-slate-900">1. Blank Freeform Draft</span>
                     <i class="fa-solid fa-feather-pointed text-emerald-600 text-xs"></i>
@@ -123,7 +123,7 @@
             <button type="button" onclick="loadEmailTemplate('manifesto')" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition email-tpl-btn">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-extrabold text-slate-900">2. Manifesto & Agenda</span>
-                    <i class="fa-solid fa-book-open text-indigo-600 text-xs"></i>
+                    <i class="fa-solid fa-book-open text-cyan-600 text-xs"></i>
                 </div>
                 <p class="text-[11px] text-slate-500 mt-1">Vision letter, core policy pillars, and student leadership promise.</p>
             </button>
@@ -157,10 +157,10 @@
                 <!-- Candidate Selection -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-user-tie text-indigo-600"></i> Associated Candidate
+                        <i class="fa-solid fa-user-tie text-cyan-600"></i> Associated Candidate
                     </h3>
                     <select name="candidate_id" id="candidate_id" onchange="onCandidateChange()"
-                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-600 bg-white">
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-cyan-600 bg-white">
                         <option value="">-- General Campaign / Slate Broadcast --</option>
                         {% for c in candidates %}
                         <option value="{{ c.id }}" {% if selected_candidate_id == c.id %}selected{% endif %} data-name="{{ c.name }}" data-position="{{ c.position }}" data-slogan="{{ c.slogan }}">
@@ -173,7 +173,7 @@
                     <div class="pt-2 border-t border-slate-100">
                         <label class="flex items-start gap-2.5 cursor-pointer">
                             <input type="checkbox" name="attach_poster" id="attach_poster" value="1" {% if preselect_attach_poster %}checked{% endif %}
-                                class="w-4 h-4 mt-0.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                                class="w-4 h-4 mt-0.5 rounded text-cyan-600 focus:ring-cyan-500 border-slate-300">
                             <div>
                                 <span class="text-xs font-bold text-slate-800">Attach Official Campaign Poster</span>
                                 <p class="text-[11px] text-slate-500">Automatically attaches candidate's generated flyer/poster to each voter email.</p>
@@ -185,21 +185,21 @@
                 <!-- Recipient Source Selection -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-indigo-600"></i> Voter Inboxes Source
+                        <i class="fa-solid fa-users text-cyan-600"></i> Voter Inboxes Source
                     </h3>
 
                     <!-- Target Mode Selector -->
                     <div class="space-y-2">
                         <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                            <input type="radio" name="target_mode" value="list" checked onclick="toggleTargetMode('list')" class="text-indigo-600 focus:ring-indigo-500">
+                            <input type="radio" name="target_mode" value="list" checked onclick="toggleTargetMode('list')" class="text-cyan-600 focus:ring-cyan-500">
                             <span>Single Voter Contact List</span>
                         </label>
                         <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                            <input type="radio" name="target_mode" value="election_all" onclick="toggleTargetMode('election_all')" class="text-indigo-600 focus:ring-indigo-500">
+                            <input type="radio" name="target_mode" value="election_all" onclick="toggleTargetMode('election_all')" class="text-cyan-600 focus:ring-cyan-500">
                             <span>All Election Lists Combined (Deduped)</span>
                         </label>
                         <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                            <input type="radio" name="target_mode" value="manual" onclick="toggleTargetMode('manual')" class="text-indigo-600 focus:ring-indigo-500">
+                            <input type="radio" name="target_mode" value="manual" onclick="toggleTargetMode('manual')" class="text-cyan-600 focus:ring-cyan-500">
                             <span>Direct Manual Email Inboxes</span>
                         </label>
                     </div>
@@ -245,14 +245,14 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Subject Line *</label>
                         <input type="text" name="subject" id="emailSubject" required
                             placeholder="e.g. Important Campaign Announcement for Student Voters"
-                            class="w-full px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500">
                     </div>
 
                     <!-- Merge Tag Chips -->
                     <div>
                         <p class="text-[11px] font-bold text-slate-500 mb-1.5">Insert Mail-Merge Personalization Tags:</p>
                         <div class="flex flex-wrap gap-1.5">
-                            <button type="button" onclick="insertMergeTag('{% raw %}{{ name }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-mono font-bold transition">
+                            <button type="button" onclick="insertMergeTag('{% raw %}{{ name }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-mono font-bold transition">
                                 + {% raw %}{{ name }}{% endraw %}
                             </button>
                             <button type="button" onclick="insertMergeTag('{% raw %}{{ candidate_name }}{% endraw %}')" class="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-mono font-bold transition">
@@ -276,7 +276,7 @@
                             <label class="block text-xs font-bold text-slate-700">Email Body (Rich HTML Format) *</label>
                             <!-- Quick Formatting Action Chips -->
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <button type="button" onclick="insertCalloutBox()" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold transition flex items-center gap-1" title="Insert styled manifesto highlight box">
+                                <button type="button" onclick="insertCalloutBox()" class="px-2.5 py-1 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-[11px] font-bold transition flex items-center gap-1" title="Insert styled manifesto highlight box">
                                     <i class="fa-solid fa-highlighter text-[10px]"></i> Policy Callout
                                 </button>
                                 <button type="button" onclick="insertAgendaPillars()" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] font-bold transition flex items-center gap-1" title="Insert 3-pillar numbered agenda">
@@ -310,11 +310,11 @@
                                     <option value="blockquote">Quote</option>
                                 </select>
                                 <label class="flex items-center gap-1 px-1.5 py-1 bg-white rounded border border-slate-200 text-[10px] cursor-pointer" title="Pick text color">
-                                    <i class="fa-solid fa-palette text-indigo-600"></i>
+                                    <i class="fa-solid fa-palette text-cyan-600"></i>
                                     <input type="color" onchange="execFallbackFormat('foreColor', this.value)" class="w-4 h-4 p-0 border-0 rounded cursor-pointer">
                                 </label>
                             </div>
-                            <div id="fallbackEditor" contenteditable="true" oninput="syncFallbackContent()" style="min-height: 280px;" class="p-4 bg-white border border-slate-200 rounded-b-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans text-xs text-slate-800 leading-relaxed"></div>
+                            <div id="fallbackEditor" contenteditable="true" oninput="syncFallbackContent()" style="min-height: 280px;" class="p-4 bg-white border border-slate-200 rounded-b-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 font-sans text-xs text-slate-800 leading-relaxed"></div>
                         </div>
                     </div>
 
@@ -323,7 +323,7 @@
                         <a href="{{ url_for('email_campaigns.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition">
                             Cancel
                         </a>
-                        <button type="submit" id="broadcastEmailBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                        <button type="submit" id="broadcastEmailBtn" class="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center gap-2">
                             <i class="fa-solid fa-paper-plane"></i>
                             <span>Queue & Broadcast Email Blast</span>
                         </button>
@@ -335,17 +335,17 @@
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div>
                             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                                <i class="fa-solid fa-envelope-open text-indigo-600"></i> First 3 Recipient Inbox Previews
+                                <i class="fa-solid fa-envelope-open text-cyan-600"></i> First 3 Recipient Inbox Previews
                             </h3>
                             <p class="text-[11px] text-slate-400">See personalized subjects and rendered bodies for student recipients.</p>
                         </div>
-                        <button type="button" onclick="fetchLiveEmailPreview()" class="text-xs font-bold text-indigo-600 hover:underline">
+                        <button type="button" onclick="fetchLiveEmailPreview()" class="text-xs font-bold text-cyan-600 hover:underline">
                             <i class="fa-solid fa-rotate"></i> Refresh Preview
                         </button>
                     </div>
                     <div id="emailPreviewCards" class="space-y-3">
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 text-center text-xs text-slate-400">
-                            Click <span class="font-bold text-indigo-600 cursor-pointer" onclick="fetchLiveEmailPreview()">Preview</span> to simulate personalized email rendering for registered voters.
+                            Click <span class="font-bold text-cyan-600 cursor-pointer" onclick="fetchLiveEmailPreview()">Preview</span> to simulate personalized email rendering for registered voters.
                         </div>
                     </div>
                 </div>
@@ -359,7 +359,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-vial text-indigo-600"></i> Dispatch Test Email
+                <i class="fa-solid fa-vial text-cyan-600"></i> Dispatch Test Email
             </h3>
             <button onclick="closeTestModal()" class="text-slate-400 hover:text-slate-600 text-sm">
                 <i class="fa-solid fa-xmark"></i>
@@ -369,7 +369,7 @@
 
         <div>
             <label class="block text-xs font-bold text-slate-700 mb-1.5">Your Test Email Address</label>
-            <input type="email" id="testEmailAddress" placeholder="admin@campus.ac.ug" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+            <input type="email" id="testEmailAddress" placeholder="admin@campus.ac.ug" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono">
         </div>
 
         <div id="testEmailResultBox" class="text-xs p-3 rounded-xl hidden"></div>
@@ -378,7 +378,7 @@
             <button type="button" onclick="closeTestModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50">
                 Close
             </button>
-            <button type="button" id="sendEmailTestBtn" onclick="submitTestEmail()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5">
+            <button type="button" id="sendEmailTestBtn" onclick="submitTestEmail()" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-1.5">
                 <i class="fa-solid fa-paper-plane"></i> Send Test Now
             </button>
         </div>
@@ -589,10 +589,10 @@ function loadEmailTemplate(type, force = false) {
     const targetIdx = btnIndexMap[type] !== undefined ? btnIndexMap[type] : 0;
     document.querySelectorAll('.email-tpl-btn').forEach((b, idx) => {
         if (idx === targetIdx) {
-            b.classList.add('border-indigo-600', 'bg-indigo-50/40');
+            b.classList.add('border-cyan-600', 'bg-cyan-50/40');
             b.classList.remove('border-slate-200');
         } else {
-            b.classList.remove('border-indigo-600', 'bg-indigo-50/40');
+            b.classList.remove('border-cyan-600', 'bg-cyan-50/40');
             b.classList.add('border-slate-200');
         }
     });
@@ -676,7 +676,7 @@ function fetchLiveEmailPreview() {
     const contactListId = document.getElementById('contact_list_id').value;
     const cardsContainer = document.getElementById('emailPreviewCards');
 
-    cardsContainer.innerHTML = `<div class="py-4 text-center text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin text-indigo-600"></i> Rendering voter email previews...</div>`;
+    cardsContainer.innerHTML = `<div class="py-4 text-center text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin text-cyan-600"></i> Rendering voter email previews...</div>`;
 
     fetch('{{ url_for("email_campaigns.api_preview") }}', {
         method: 'POST',
@@ -694,11 +694,11 @@ function fetchLiveEmailPreview() {
             cardsContainer.innerHTML = '';
             data.previews.forEach((p, idx) => {
                 const card = document.createElement('div');
-                card.className = 'p-4 rounded-xl border border-indigo-100 bg-indigo-50/30 space-y-2';
+                card.className = 'p-4 rounded-xl border border-cyan-100 bg-cyan-50/30 space-y-2';
                 card.innerHTML = `
-                    <div class="flex items-center justify-between text-xs pb-1 border-b border-indigo-100">
-                        <span class="font-bold text-slate-800"><i class="fa-solid fa-user text-indigo-500 mr-1"></i> ${p.recipient_name} &lt;${p.recipient_email}&gt;</span>
-                        <span class="text-[10px] text-indigo-700 font-semibold uppercase">Voter Preview</span>
+                    <div class="flex items-center justify-between text-xs pb-1 border-b border-cyan-100">
+                        <span class="font-bold text-slate-800"><i class="fa-solid fa-user text-cyan-500 mr-1"></i> ${p.recipient_name} &lt;${p.recipient_email}&gt;</span>
+                        <span class="text-[10px] text-cyan-700 font-semibold uppercase">Voter Preview</span>
                     </div>
                     <div class="text-xs font-bold text-slate-900">Subject: ${escapeHtml(p.rendered_subject)}</div>
                     <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-700 prose max-w-none">${p.rendered_body}</div>

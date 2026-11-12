@@ -21,20 +21,20 @@
     </div>
 
     <!-- Requirements Card -->
-    <div class="bg-gradient-to-br from-indigo-50/70 to-blue-50/70 rounded-2xl border border-indigo-100 p-5">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-900 mb-2 flex items-center gap-1.5">
-            <i class="fa-solid fa-circle-info text-indigo-600"></i> Automatic Smart Parsing Rules
+    <div class="bg-gradient-to-br from-cyan-50/70 to-blue-50/70 rounded-2xl border border-cyan-100 p-5">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-900 mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info text-cyan-600"></i> Automatic Smart Parsing Rules
         </h4>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-indigo-950 mt-3">
-            <div class="p-3 bg-white/80 rounded-xl border border-indigo-100/60">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-cyan-950 mt-3">
+            <div class="p-3 bg-white/80 rounded-xl border border-cyan-100/60">
                 <span class="font-bold block mb-1">1. Expected Columns</span>
-                <p class="text-[11px] text-slate-600"><code class="font-mono text-indigo-700">name, phone, email</code> (detected automatically case-insensitively).</p>
+                <p class="text-[11px] text-slate-600"><code class="font-mono text-cyan-700">name, phone, email</code> (detected automatically case-insensitively).</p>
             </div>
-            <div class="p-3 bg-white/80 rounded-xl border border-indigo-100/60">
+            <div class="p-3 bg-white/80 rounded-xl border border-cyan-100/60">
                 <span class="font-bold block mb-1">2. Phone Validation</span>
-                <p class="text-[11px] text-slate-600">Ugandan local numbers (<code class="font-mono text-indigo-700">07xx...</code>) auto-converted to international format (<code class="font-mono text-indigo-700">+2567xx...</code>).</p>
+                <p class="text-[11px] text-slate-600">Ugandan local numbers (<code class="font-mono text-cyan-700">07xx...</code>) auto-converted to international format (<code class="font-mono text-cyan-700">+2567xx...</code>).</p>
             </div>
-            <div class="p-3 bg-white/80 rounded-xl border border-indigo-100/60">
+            <div class="p-3 bg-white/80 rounded-xl border border-cyan-100/60">
                 <span class="font-bold block mb-1">3. Auto Deduplication</span>
                 <p class="text-[11px] text-slate-600">Duplicates within the file or already saved in this list are automatically detected and safely skipped.</p>
             </div>
@@ -45,7 +45,7 @@
     <div class="bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm">
         <form method="POST" enctype="multipart/form-data" class="space-y-6">
             <!-- Drag & Drop Zone -->
-            <div class="border-2 border-dashed border-slate-300 hover:border-indigo-400 rounded-2xl p-8 text-center transition bg-slate-50/50 cursor-pointer"
+            <div class="border-2 border-dashed border-slate-300 hover:border-cyan-400 rounded-2xl p-8 text-center transition bg-slate-50/50 cursor-pointer"
                  onclick="document.getElementById('csv_file').click()">
                 <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
                     <i class="fa-solid fa-file-csv text-2xl"></i>
@@ -66,7 +66,7 @@
                 <a href="{{ url_for('contacts.view', id=contact_list.id) }}" class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center gap-2">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                     <span>Process & Import Contacts</span>
                 </button>
