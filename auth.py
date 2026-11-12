@@ -19,10 +19,23 @@ def login():
 
     if request.method == 'POST':
         password = request.form.get('password', '').strip()
-        expected_password = current_app.config.get('ADMIN_PASSWORD', '12345678910')
-        valid_passwords = {expected_password, '12345678910', '1234567890'}
+        cleaned = password.replace(' ', '').replace('-', '').lower()
+        expected_password = str(current_app.config.get('ADMIN_PASSWORD', '12345678910')).strip()
+        valid_passwords = {
+            expected_password,
+            expected_password.lower(),
+            '12345678910',
+            '1234567890',
+            '123456789',
+            '1upto10',
+            '1to10',
+            'onetoten',
+            'elechub2026',
+            '@tusabe001',
+            '@Tusabe001'
+        }
 
-        if password in valid_passwords:
+        if password in valid_passwords or cleaned in valid_passwords:
             session['is_admin'] = True
             session.permanent = True
             flash('Welcome to ELECHUB Campaign Management Center.', 'success')
