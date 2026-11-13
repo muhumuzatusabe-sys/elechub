@@ -2192,31 +2192,40 @@
 </button>
 
 <!-- Poster Boundaries & Format Cropping — Draggable Floating Window (keeps canvas 100% visible and uncluttered) -->
-<div id="boundaryModal" class="hidden fixed top-16 right-6 w-[360px] max-h-[85vh] z-[8000] shadow-2xl rounded-2xl bg-white border border-slate-200/90 flex flex-col overflow-hidden select-none" style="max-width: 92vw;">
-    <div id="boundary-drag-handle" class="flex items-center justify-between border-b border-slate-100 py-3 px-4 flex-shrink-0 bg-slate-50/95 backdrop-blur-sm cursor-grab active:cursor-grabbing select-none" title="Drag to move crop panel anywhere">
-        <div class="flex items-center space-x-2.5">
+<div id="boundaryModal" class="hidden fixed top-16 right-4 sm:right-6 w-[290px] sm:w-[350px] max-h-[85vh] z-[8000] shadow-2xl rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200/90 flex flex-col overflow-hidden select-none transition-[width,opacity] duration-150" style="max-width: 96vw;">
+    <div id="boundary-drag-handle" class="flex items-center justify-between border-b border-slate-100 py-2.5 px-3 sm:px-4 flex-shrink-0 bg-slate-50/95 backdrop-blur-sm cursor-grab active:cursor-grabbing select-none" title="Drag to move crop panel anywhere">
+        <div class="flex items-center space-x-2">
             <i class="fa-solid fa-grip-vertical text-slate-400 text-xs mr-0.5"></i>
-            <div class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold text-sm shadow-sm">
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm flex-shrink-0">
                 <i class="fa-solid fa-crop-simple"></i>
             </div>
-            <div>
-                <h3 class="text-xs font-extrabold text-slate-900 leading-tight">Crop &amp; Boundaries</h3>
-                <p class="text-[10px] text-slate-500 flex items-center gap-1">
+            <div class="min-w-0">
+                <h3 class="text-xs font-extrabold text-slate-900 leading-tight truncate">Crop &amp; Bounds</h3>
+                <p class="text-[9px] text-slate-500 flex items-center gap-1 truncate" id="bm-status-label">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-                    Live Canvas &bull; Drag anywhere
+                    Drag anywhere &bull; Resizable
                 </p>
             </div>
         </div>
         <div class="flex items-center space-x-1">
-            <button type="button" onclick="resetBoundaryModalPos()" class="w-7 h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs transition" title="Reset panel position">
+            <button type="button" id="btn-bm-ghost" onclick="toggleBoundaryGhostMode()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-cyan-600 flex items-center justify-center text-xs transition" title="Toggle transparency (see through to canvas)">
+                <i class="fa-solid fa-eye text-[10px]" id="bm-ghost-icon"></i>
+            </button>
+            <button type="button" id="btn-bm-size" onclick="cycleBoundaryModalSize()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-cyan-600 flex items-center justify-center text-xs transition" title="Change panel width (Mini / Compact / Full)">
+                <i class="fa-solid fa-up-right-and-down-left-from-center text-[9px]"></i>
+            </button>
+            <button type="button" id="btn-bm-collapse" onclick="toggleBoundaryModalCollapse()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center text-xs transition" title="Minimize to tiny floating pill">
+                <i class="fa-solid fa-minus text-[10px]" id="bm-collapse-icon"></i>
+            </button>
+            <button type="button" onclick="resetBoundaryModalPos()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs transition" title="Reset panel position">
                 <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
             </button>
-            <button type="button" onclick="closeBoundaryModal()" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs transition" title="Close">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="button" onclick="closeBoundaryModal()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs transition" title="Close">
+                <i class="fa-solid fa-xmark text-xs"></i>
             </button>
         </div>
     </div>
-    <div class="p-4 space-y-4 flex-1 overflow-y-auto">
+    <div id="boundary-modal-body" class="p-3 sm:p-4 space-y-3 sm:space-y-4 flex-1 overflow-y-auto">
         <!-- Format Targets / Quick Ratio Presets -->
         <div class="space-y-2">
             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700">Quick Format Aspect Targets</label>
@@ -2328,32 +2337,41 @@
 </div>
 
 <!-- Extra Photo / Multi-Person Layer Floating Draggable Editor -->
-<div id="extraPhotoEditorModal" class="hidden fixed top-16 left-8 w-[360px] max-h-[85vh] z-[8000] shadow-2xl rounded-2xl bg-white border border-slate-200/90 flex flex-col overflow-hidden select-none" style="max-width: 92vw;">
-    <div id="extra-photo-drag-handle" class="flex items-center justify-between border-b border-slate-100 py-3 px-4 flex-shrink-0 bg-slate-50/95 backdrop-blur-sm cursor-grab active:cursor-grabbing select-none" title="Drag to move photo editor anywhere">
-        <div class="flex items-center space-x-2.5">
+<div id="extraPhotoEditorModal" class="hidden fixed top-16 left-3 sm:left-8 w-[290px] sm:w-[350px] max-h-[85vh] z-[8000] shadow-2xl rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200/90 flex flex-col overflow-hidden select-none transition-[width,opacity] duration-150" style="max-width: 96vw;">
+    <div id="extra-photo-drag-handle" class="flex items-center justify-between border-b border-slate-100 py-2.5 px-3 sm:px-4 flex-shrink-0 bg-slate-50/95 backdrop-blur-sm cursor-grab active:cursor-grabbing select-none" title="Drag to move photo editor anywhere">
+        <div class="flex items-center space-x-2">
             <i class="fa-solid fa-grip-vertical text-slate-400 text-xs mr-0.5"></i>
-            <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm shadow-sm">
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm flex-shrink-0">
                 <i class="fa-solid fa-user-tag"></i>
             </div>
-            <div>
-                <h3 class="text-xs font-extrabold text-slate-900 leading-tight" id="extra-photo-title">Photo Layer Editor</h3>
-                <p class="text-[10px] text-slate-500 flex items-center gap-1">
+            <div class="min-w-0">
+                <h3 class="text-xs font-extrabold text-slate-900 leading-tight truncate" id="extra-photo-title">Photo Layer Editor</h3>
+                <p class="text-[9px] text-slate-500 flex items-center gap-1 truncate" id="ep-status-label">
                     <span class="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block animate-pulse"></span>
-                    Live Canvas &bull; Drag anywhere
+                    Drag anywhere &bull; Resizable
                 </p>
             </div>
         </div>
         <div class="flex items-center space-x-1">
-            <button type="button" onclick="resetExtraPhotoEditorPos()" class="w-7 h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs transition" title="Reset panel position">
+            <button type="button" id="btn-ep-ghost" onclick="toggleExtraPhotoGhostMode()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-purple-600 flex items-center justify-center text-xs transition" title="Toggle transparency (see through to canvas)">
+                <i class="fa-solid fa-eye text-[10px]" id="ep-ghost-icon"></i>
+            </button>
+            <button type="button" id="btn-ep-size" onclick="cycleExtraPhotoSize()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-purple-600 flex items-center justify-center text-xs transition" title="Change panel width (Mini / Compact / Full)">
+                <i class="fa-solid fa-up-right-and-down-left-from-center text-[9px]"></i>
+            </button>
+            <button type="button" id="btn-ep-collapse" onclick="toggleExtraPhotoModalCollapse()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center text-xs transition" title="Minimize to tiny floating pill">
+                <i class="fa-solid fa-minus text-[10px]" id="ep-collapse-icon"></i>
+            </button>
+            <button type="button" onclick="resetExtraPhotoEditorPos()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs transition" title="Reset panel position">
                 <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
             </button>
-            <button type="button" onclick="closeExtraPhotoEditor()" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs transition" title="Close">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="button" onclick="closeExtraPhotoEditor()" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs transition" title="Close">
+                <i class="fa-solid fa-xmark text-xs"></i>
             </button>
         </div>
     </div>
     
-    <div class="p-4 space-y-4 flex-1 overflow-y-auto">
+    <div id="extra-photo-modal-body" class="p-3 sm:p-4 space-y-3 sm:space-y-4 flex-1 overflow-y-auto">
         <!-- Thumbnail & Replace Button -->
         <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
             <div class="flex items-center gap-3">
@@ -7255,9 +7273,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const ie = document.getElementById('canvas-inline-editor-wrap');
             const w = ie ? ie.offsetWidth : 360;
             const h = ie ? ie.offsetHeight : 180;
-            // Fixed positioning: constrain to viewport
-            userCustomInlineEditorLeft = Math.max(8, Math.min(window.innerWidth - w - 8, ieInitialLeft + dx));
-            userCustomInlineEditorTop = Math.max(8, Math.min(window.innerHeight - h - 8, ieInitialTop + dy));
+            // Fixed positioning: allow dragging anywhere on or off screen (leaves 32px grab tab)
+            userCustomInlineEditorLeft = Math.max(-w + 32, Math.min(window.innerWidth - 32, ieInitialLeft + dx));
+            userCustomInlineEditorTop = Math.max(0, Math.min(window.innerHeight - 32, ieInitialTop + dy));
             isUserCustomInlineEditorPos = true;
             if (ie) {
                 ie.style.left = `${userCustomInlineEditorLeft}px`;
@@ -7272,8 +7290,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const bm = document.getElementById('boundaryModal');
             const w = bm ? bm.offsetWidth : 360;
             const h = bm ? bm.offsetHeight : 450;
-            userCustomBoundaryLeft = Math.max(8, Math.min(window.innerWidth - w - 8, bmInitialLeft + dx));
-            userCustomBoundaryTop = Math.max(8, Math.min(window.innerHeight - h - 8, bmInitialTop + dy));
+            // Allow dragging anywhere on or off screen (leaves at least 32px grab tab on screen)
+            userCustomBoundaryLeft = Math.max(-w + 32, Math.min(window.innerWidth - 32, bmInitialLeft + dx));
+            userCustomBoundaryTop = Math.max(0, Math.min(window.innerHeight - 32, bmInitialTop + dy));
             if (bm) {
                 bm.style.left = `${userCustomBoundaryLeft}px`;
                 bm.style.top = `${userCustomBoundaryTop}px`;
@@ -7288,8 +7307,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const em = document.getElementById('extraPhotoEditorModal');
             const w = em ? em.offsetWidth : 360;
             const h = em ? em.offsetHeight : 450;
-            userCustomExtraPhotoLeft = Math.max(8, Math.min(window.innerWidth - w - 8, epmInitialLeft + dx));
-            userCustomExtraPhotoTop = Math.max(8, Math.min(window.innerHeight - h - 8, epmInitialTop + dy));
+            // Allow dragging anywhere on or off screen (leaves at least 32px grab tab on screen)
+            userCustomExtraPhotoLeft = Math.max(-w + 32, Math.min(window.innerWidth - 32, epmInitialLeft + dx));
+            userCustomExtraPhotoTop = Math.max(0, Math.min(window.innerHeight - 32, epmInitialTop + dy));
             if (em) {
                 em.style.left = `${userCustomExtraPhotoLeft}px`;
                 em.style.top = `${userCustomExtraPhotoTop}px`;
@@ -7408,8 +7428,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const ie = document.getElementById('canvas-inline-editor-wrap');
             const w = ie ? ie.offsetWidth : 360;
             const h = ie ? ie.offsetHeight : 180;
-            userCustomInlineEditorLeft = Math.max(8, Math.min(window.innerWidth - w - 8, ieInitialLeft + dx));
-            userCustomInlineEditorTop = Math.max(8, Math.min(window.innerHeight - h - 8, ieInitialTop + dy));
+            // Allow dragging anywhere on or off screen (leaves 32px grab tab)
+            userCustomInlineEditorLeft = Math.max(-w + 32, Math.min(window.innerWidth - 32, ieInitialLeft + dx));
+            userCustomInlineEditorTop = Math.max(0, Math.min(window.innerHeight - 32, ieInitialTop + dy));
             isUserCustomInlineEditorPos = true;
             if (ie) {
                 ie.style.left = `${userCustomInlineEditorLeft}px`;
@@ -7426,8 +7447,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const bm = document.getElementById('boundaryModal');
             const w = bm ? bm.offsetWidth : 360;
             const h = bm ? bm.offsetHeight : 450;
-            userCustomBoundaryLeft = Math.max(8, Math.min(window.innerWidth - w - 8, bmInitialLeft + dx));
-            userCustomBoundaryTop = Math.max(8, Math.min(window.innerHeight - h - 8, bmInitialTop + dy));
+            // Allow dragging anywhere on or off screen (leaves at least 32px grab tab on screen)
+            userCustomBoundaryLeft = Math.max(-w + 32, Math.min(window.innerWidth - 32, bmInitialLeft + dx));
+            userCustomBoundaryTop = Math.max(0, Math.min(window.innerHeight - 32, bmInitialTop + dy));
             if (bm) {
                 bm.style.left = `${userCustomBoundaryLeft}px`;
                 bm.style.top = `${userCustomBoundaryTop}px`;
@@ -7444,8 +7466,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const em = document.getElementById('extraPhotoEditorModal');
             const w = em ? em.offsetWidth : 360;
             const h = em ? em.offsetHeight : 450;
-            userCustomExtraPhotoLeft = Math.max(8, Math.min(window.innerWidth - w - 8, epmInitialLeft + dx));
-            userCustomExtraPhotoTop = Math.max(8, Math.min(window.innerHeight - h - 8, epmInitialTop + dy));
+            // Allow dragging anywhere on or off screen (leaves at least 32px grab tab on screen)
+            userCustomExtraPhotoLeft = Math.max(-w + 32, Math.min(window.innerWidth - 32, epmInitialLeft + dx));
+            userCustomExtraPhotoTop = Math.max(0, Math.min(window.innerHeight - 32, epmInitialTop + dy));
             if (em) {
                 em.style.left = `${userCustomExtraPhotoLeft}px`;
                 em.style.top = `${userCustomExtraPhotoTop}px`;
@@ -7672,17 +7695,81 @@ function onRibbonFadeHeightInput(val) {
 }
 
 /* -------------------------------------------------------------
-   POSTER BOUNDARY & CROP TOOL
+   POSTER BOUNDARY & CROP TOOL (Draggable anywhere & Collapsible)
    Define active regions, eliminate unwanted margins, fit formats
    ------------------------------------------------------------- */
+let isBoundaryCollapsed = false;
+let boundarySizeMode = 1;
+const boundarySizes = ['230px', '280px', '350px'];
+let isBoundaryGhost = false;
+
+function toggleBoundaryModalCollapse() {
+    const modal = document.getElementById('boundaryModal');
+    const body = document.getElementById('boundary-modal-body');
+    const icon = document.getElementById('bm-collapse-icon');
+    const status = document.getElementById('bm-status-label');
+    if (!modal || !body) return;
+
+    isBoundaryCollapsed = !isBoundaryCollapsed;
+    if (isBoundaryCollapsed) {
+        body.classList.add('hidden');
+        modal.style.maxHeight = '50px';
+        modal.style.width = 'auto';
+        if (icon) icon.className = 'fa-solid fa-plus text-[10px]';
+        if (status) status.innerText = 'Tap + or drag tab';
+        showToast('Crop panel minimized to floating tab');
+    } else {
+        body.classList.remove('hidden');
+        modal.style.maxHeight = '85vh';
+        modal.style.width = boundarySizes[boundarySizeMode];
+        if (icon) icon.className = 'fa-solid fa-minus text-[10px]';
+        if (status) status.innerText = 'Drag anywhere • Resizable';
+        showToast('Crop panel expanded');
+    }
+}
+
+function cycleBoundaryModalSize() {
+    const modal = document.getElementById('boundaryModal');
+    if (!modal) return;
+    if (isBoundaryCollapsed) toggleBoundaryModalCollapse();
+    boundarySizeMode = (boundarySizeMode + 1) % boundarySizes.length;
+    const newWidth = boundarySizes[boundarySizeMode];
+    modal.style.width = newWidth;
+    showToast(`Crop size: ${newWidth} (${['Mini', 'Compact', 'Full'][boundarySizeMode]})`);
+}
+
+function toggleBoundaryGhostMode() {
+    const modal = document.getElementById('boundaryModal');
+    const icon = document.getElementById('bm-ghost-icon');
+    if (!modal) return;
+    isBoundaryGhost = !isBoundaryGhost;
+    if (isBoundaryGhost) {
+        modal.classList.add('opacity-30', 'hover:opacity-100');
+        if (icon) icon.className = 'fa-solid fa-eye-slash text-cyan-600 text-[10px]';
+        showToast('Crop see-through mode: on (hover/tap to focus)');
+    } else {
+        modal.classList.remove('opacity-30', 'hover:opacity-100');
+        if (icon) icon.className = 'fa-solid fa-eye text-[10px]';
+        showToast('Crop see-through mode: off');
+    }
+}
+
 function resetBoundaryModalPos() {
     const modal = document.getElementById('boundaryModal');
     if (!modal) return;
     userCustomBoundaryLeft = null;
     userCustomBoundaryTop = null;
-    modal.style.left = '';
-    modal.style.top = '72px';
-    modal.style.right = '24px';
+    if (window.innerWidth < 640) {
+        modal.style.left = '8px';
+        modal.style.top = '65px';
+        modal.style.width = '280px';
+        modal.style.right = 'auto';
+    } else {
+        modal.style.left = '';
+        modal.style.top = '72px';
+        modal.style.right = '24px';
+        modal.style.width = '350px';
+    }
 }
 
 function toggleBoundaryModal() {
@@ -7696,9 +7783,7 @@ function toggleBoundaryModal() {
             modal.style.top = `${userCustomBoundaryTop}px`;
             modal.style.right = 'auto';
         } else {
-            modal.style.left = '';
-            modal.style.top = '72px';
-            modal.style.right = '24px';
+            resetBoundaryModalPos();
         }
         updateBoundaryModalUI();
     } else {
@@ -7914,14 +7999,78 @@ function handleExtraPhotoReplace(event) {
     reader.readAsDataURL(file);
 }
 
+let isExtraPhotoCollapsed = false;
+let extraPhotoSizeMode = 1; // 0: Mini (230px), 1: Compact (280px), 2: Full (350px)
+const extraPhotoSizes = ['230px', '280px', '350px'];
+let isExtraPhotoGhost = false;
+
+function toggleExtraPhotoModalCollapse() {
+    const modal = document.getElementById('extraPhotoEditorModal');
+    const body = document.getElementById('extra-photo-modal-body');
+    const icon = document.getElementById('ep-collapse-icon');
+    const status = document.getElementById('ep-status-label');
+    if (!modal || !body) return;
+
+    isExtraPhotoCollapsed = !isExtraPhotoCollapsed;
+    if (isExtraPhotoCollapsed) {
+        body.classList.add('hidden');
+        modal.style.maxHeight = '50px';
+        modal.style.width = 'auto';
+        if (icon) icon.className = 'fa-solid fa-plus text-[10px]';
+        if (status) status.innerText = 'Tap + or drag tab';
+        showToast('Photo editor minimized to floating tab');
+    } else {
+        body.classList.remove('hidden');
+        modal.style.maxHeight = '85vh';
+        modal.style.width = extraPhotoSizes[extraPhotoSizeMode];
+        if (icon) icon.className = 'fa-solid fa-minus text-[10px]';
+        if (status) status.innerText = 'Drag anywhere • Resizable';
+        showToast('Photo editor expanded');
+    }
+}
+
+function cycleExtraPhotoSize() {
+    const modal = document.getElementById('extraPhotoEditorModal');
+    if (!modal) return;
+    if (isExtraPhotoCollapsed) toggleExtraPhotoModalCollapse();
+    extraPhotoSizeMode = (extraPhotoSizeMode + 1) % extraPhotoSizes.length;
+    const newWidth = extraPhotoSizes[extraPhotoSizeMode];
+    modal.style.width = newWidth;
+    showToast(`Photo editor: ${newWidth} (${['Mini', 'Compact', 'Full'][extraPhotoSizeMode]})`);
+}
+
+function toggleExtraPhotoGhostMode() {
+    const modal = document.getElementById('extraPhotoEditorModal');
+    const icon = document.getElementById('ep-ghost-icon');
+    if (!modal) return;
+    isExtraPhotoGhost = !isExtraPhotoGhost;
+    if (isExtraPhotoGhost) {
+        modal.classList.add('opacity-30', 'hover:opacity-100');
+        if (icon) icon.className = 'fa-solid fa-eye-slash text-purple-600 text-[10px]';
+        showToast('Photo see-through mode: on (hover/tap to focus)');
+    } else {
+        modal.classList.remove('opacity-30', 'hover:opacity-100');
+        if (icon) icon.className = 'fa-solid fa-eye text-[10px]';
+        showToast('Photo see-through mode: off');
+    }
+}
+
 function resetExtraPhotoEditorPos() {
     const modal = document.getElementById('extraPhotoEditorModal');
     if (!modal) return;
     userCustomExtraPhotoLeft = null;
     userCustomExtraPhotoTop = null;
-    modal.style.left = '32px';
-    modal.style.top = '72px';
-    modal.style.right = 'auto';
+    if (window.innerWidth < 640) {
+        modal.style.left = '8px';
+        modal.style.top = '65px';
+        modal.style.width = '280px';
+        modal.style.right = 'auto';
+    } else {
+        modal.style.left = '32px';
+        modal.style.top = '72px';
+        modal.style.width = '350px';
+        modal.style.right = 'auto';
+    }
 }
 
 function openExtraPhotoEditor(photoId) {
@@ -8012,9 +8161,7 @@ function openExtraPhotoEditor(photoId) {
         modal.style.top = `${userCustomExtraPhotoTop}px`;
         modal.style.right = 'auto';
     } else {
-        modal.style.left = '32px';
-        modal.style.top = '72px';
-        modal.style.right = 'auto';
+        resetExtraPhotoEditorPos();
     }
 }
 
